@@ -1,7 +1,7 @@
 %bcond_with     bootstrap 
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.3
+%define		GCC_VERSION	3.3.1
 %define	apiver	2.3
 %define	apisrc	w32api-%{apiver}
 %define runver	3.0
@@ -10,12 +10,12 @@ Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	2
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	39147717455d8dba4d43d1b058ea46e2
+# Source0-md5:	1135a104e9fa36fdf7c663598fab5c40
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
 # Source1-md5:	31d5e495150e392ac0fe6b51011d3fa2
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
