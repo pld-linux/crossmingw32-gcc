@@ -1,44 +1,47 @@
 Summary:	Mingw32 GNU Binary Utility Development Utilities - gcc
 Name:		crossmingw32-gcc
-# sources version is 2.95.2 but patched binaries use 2.95.3 in gcc-lib directory...
-%define gccpreversion 2.95.3
-%define gccversion 2.95.2
-%define version 990111
-Version:	%{version}
-Release:	3
+%define gccversion 2.95.3.test1
+Version:	2.95.3
+Release:	1
+Epoch:		1
 License:	GPL
-Group:		Development/Tools
-Group(pl):	Programowanie/Narzêdzia
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
 ExclusiveArch:	%{ix86}
 Source0:	ftp://ftp.gnu.org/pub/gnu/gcc-%{gccversion}.tar.gz
 Patch0:		gcc-info.patch
-#Patch1:	gcc-libgcj-config.patch
-Patch2:		gcc-pld-linux.patch
-Patch3:		gcc-libstdc++.patch
-Patch4:		gcc-bootstrap.patch
-Patch5:		gcc-cpp-macro-doc.patch
-Patch6:		gcc-default-arch.patch
-Patch7:		gcc-cvs-updates.patch
-Patch8:		gcc-alpha-ev5-fix.patch
-Patch9:		gcc-libstdc++-out-of-mem.patch
-Patch10:	gcc-libstdc++-valarray.patch
-Patch11:	gcc-libstdc++-wstring.patch
-Patch12:	gcc-libstdc++-wall3.patch
-Patch13:	gcc-libstdc++-bastring.patch
-Patch14:	gcc-manpage.patch
-Patch15:	gcc-cpp-dos-newlines.patch
-Patch16:	gcc-g++-is-tree.patch
-Patch17:	gcc-gpc.patch
-Patch18:	gcc-arm-config.patch
-Patch19:	gcc-m68k-pic.patch
-Patch20:	gcc-sparc32-rfi.patch
-Patch21:	gcc-builtin-apply.patch
-Patch22:	gcc-ppc-ice.patch
-Patch23:	gcc-ppc-descriptions.patch
-Patch24:	gcc-ppc-andrew-dwarf-eh.patch
-Patch25:	%{name}-libio.patch
-Patch26:	%{name}-includes.patch
-Patch27:	%{name}-libiberty.diff
+Patch1:		gcc-pld-linux.patch
+Patch2:		gcc-libstdc++.patch
+Patch3:		gcc-bootstrap.patch
+Patch4:		gcc-cpp-macro-doc.patch
+Patch5:		gcc-default-arch.patch
+#Patch6:	gcc-cvs-updates-20000826.patch.gz
+Patch7:		gcc-libstdc++-out-of-mem.patch
+Patch8:		gcc-libstdc++-wstring.patch
+#Patch9:	gcc-libstdc++-wall3.patch
+Patch10:	gcc-libstdc++-bastring.patch
+Patch11:	gcc-manpage.patch
+Patch12:	gcc-cpp-dos-newlines.patch
+Patch13:	gcc-gpc.patch
+#Patch14:	gcc-arm-config.patch
+Patch15:	gcc-m68k-pic.patch
+Patch16:	gcc-sparc32-rfi.patch
+Patch17:	gcc-builtin-apply.patch
+Patch18:	gcc-gcj-backport.patch
+Patch19:	gcc-ppc-ice.patch
+Patch20:	gcc-ppc-descriptions.patch
+#Patch21:	gcc-ppc-andrew-dwarf-eh.patch
+Patch22:	gcc-alpha-complex-float.patch
+#Patch23:	gcc-emit-rtl.patch
+Patch24:	gcc-gcj-vs-iconv.patch
+Patch25:	gcc-libobjc.patch
+Patch26:	gcc-pointer-arith.patch
+#Patch27:	gcc-glibc-2.2.patch
+#Patch28:	gcc-O2-bug.patch
+Patch29:	%{name}-libio.patch
+Patch30:	%{name}-includes.patch
+Patch31:	%{name}-libiberty.patch
 BuildRequires:	crossmingw32-platform
 BuildRequires:	crossmingw32-binutils
 BuildRequires:	flex
@@ -48,12 +51,12 @@ Requires:	crossmingw32-binutils
 Requires:	crossmingw32-platform
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define target i386-mingw32
-%define target_platform i386-pc-mingw32
-%define _prefix /usr
-%define arch %{_prefix}/%{target}
-%define gcclib %{_prefix}/lib/gcc-lib/%{target}/%{gccpreversion}
-%define gccarch %{_prefix}/lib/gcc-lib/%{target}
+%define		target		i386-mingw32
+%define		target_platform i386-pc-mingw32
+%define		_prefix		/usr
+%define		arch		%{_prefix}/%{target}
+%define		gccarch		%{_prefix}/lib/gcc-lib/%{target}
+%define		gcclib		%{_prefix}/lib/gcc-lib/%{target}/%{version}
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -62,52 +65,140 @@ the Mingw32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
-This package contains cross targeted gcc, g++, objc and libstdc++.
+This package contains cross targeted gcc.
+
+%package c++
+Summary:	Mingw32 GNU Binary Utility Development Utilities - g++
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
+Requires:	%{name} = %{version}
+
+%description c++
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the Mingw32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted g++ and (static) libstdc++.
+
+# does this even work?
+%package objc
+Summary:	Mingw32 GNU Binary Utility Development Utilities - objc
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
+Requires:	%{name} = %{version}
+
+%description objc
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the Mingw32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted objc.
+
+# does this even work?
+%package g77
+Summary:	Mingw32 GNU Binary Utility Development Utilities - g77
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
+Requires:	%{name} = %{version}
+
+%description g77
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the Mingw32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted g77.
+
+# does this even work?
+%package chill
+Summary:	Mingw32 GNU Binary Utility Development Utilities - chill
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
+Requires:	%{name} = %{version}
+
+%description chill
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the Mingw32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted chill.
+
+# does this even work?
+%package java
+Summary:	Mingw32 GNU Binary Utility Development Utilities - java
+Group:		Development/Languages
+Group(de):	Entwicklung/Sprachen
+Group(pl):	Programowanie/Jêzyki
+Requires:	%{name} = %{version}
+
+%description java
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the Mingw32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted java.
 
 %prep
-
-%setup -q -T -c -a0
-(cd gcc-%{gccversion}
+%setup -q -n gcc-%{gccversion}
 %patch0 -p1
-#%patch1 -p1
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
+%patch4 -p0
 %patch5 -p0
-%patch6 -p0
-%patch7 -p1
+#%patch6 -p1
+%patch7 -p0
 %patch8 -p0
-%patch9 -p0
+#%patch9 -p0
 %patch10 -p0
 %patch11 -p0
 %patch12 -p0
-%patch13 -p0
-%patch14 -p0
+%patch13 -p1
+#%ifarch arm
+#%patch14 -p0
+#%endif
+%ifarch m68k
 %patch15 -p0
-%patch16 -p1
-%patch17 -p1
-%patch18 -p0
+%endif
+%ifarch sparc sparc32
+%patch16 -p0
+%patch17 -p0
+%patch18 -p1
+%endif
+%ifarch ppc
 %patch19 -p0
 %patch20 -p0
-%patch21 -p0
-%patch22 -p0
-%patch23 -p0
+#%patch21 -p0
+%endif
+%ifarch alpha
+%patch22 -p1
+%endif
+#%patch23 -p0
 %patch24 -p0
-
-%patch25 -p1
-%patch26 -p1
-)
-
-# libstdc++ - libiberty patch
-(cd gcc-%{gccversion}
-%patch27 -p1
-cd libiberty
-autoconf
-)
+%patch25 -p0
+%patch26 -p0
+#%patch27 -p1
+#%patch28 -p1
+%patch29 -p1
+%patch30 -p1
+%patch31 -p1
 
 %build
-
-(cd gcc-%{gccversion}/gcc
+(cd libiberty ; autoconf)
+(cd gcc
 autoconf
 cd ..
 rm -rf obj-%{target_platform}
@@ -146,7 +237,6 @@ touch ../gcc/c-gperf.h
 #	DLLTOOL="%{target}-dlltool --as=%{target}-as" libobjc.dll
 
 # spec files for msvcrt*.dll configurations
-
 cd gcc
 for n in msvcrt msvcrt20 msvcrt40; do
 	sed "s/crtdll/$n/g" <specs | sed "s/crt1/crt2/g" >specs.$n
@@ -154,12 +244,11 @@ done
 )
 
 %install
-
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_bindir}
 install -d $RPM_BUILD_ROOT%{_datadir}
-(cd gcc-%{gccversion}/obj-%{target_platform}
+(cd obj-%{target_platform}
 
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
@@ -170,60 +259,89 @@ install -d $RPM_BUILD_ROOT%{_datadir}
 
 cd gcc
 install specs.msvcrt specs.msvcrt20 specs.msvcrt40 $RPM_BUILD_ROOT%{gcclib}
-mv -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-* $RPM_BUILD_ROOT%{_bindir}
-
-# c++filt is provided by binutils...
-rm -f $RPM_BUILD_ROOT%{_bindir}/i386-mingw32-c++filt
-
-# what's this there for???
-rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 )
 
-# libstdc++ is now provided by gcc...
+mv -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-* $RPM_BUILD_ROOT%{_bindir}
 
-#(cd gcc-%{gccversion}/libstdc++
-#mkdir %{target}
-#cd %{target}
-#CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ../configure \
-#	--prefix=%{prefix} \
-#	--target=%{target} \
-#	--exec-prefix=%{arch} \
-#	--with-gxx-include-dir=%{arch}/include/g++
-#
-#make
-#make install gxx_include_dir=$RPM_BUILD_ROOT%{arch}/include/g++
-#)
+# c++filt is provided by binutils
+rm -f $RPM_BUILD_ROOT%{_bindir}/i386-mingw32-c++filt
 
-# check if new rpm automation handles this properly:
-#gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/%{target}-*
-#strip $RPM_BUILD_ROOT%{_bindir}/%{target}-* || :
-#strip $RPM_BUILD_ROOT%{gcclib}/{cc1,cc1chill,cc1obj,cc1plus,cpp,f771,jc1,jvgenmain}
+# what is this there for???
+rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
+
+# the same... make hardlink
+ln -f $RPM_BUILD_ROOT%{arch}/bin/gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
 
 %clean
-
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/%{target}-*
-%attr(755,root,root) %{arch}/bin/*
-%{arch}/include/*
-%{arch}/lib/*
+%attr(755,root,root) %{_bindir}/%{target}-gcc
+%attr(755,root,root) %{_bindir}/%{target}-*protoize
+%dir %{arch}/bin
+%attr(755,root,root) %{arch}/bin/cpp
+%attr(755,root,root) %{arch}/bin/gcc
+%attr(755,root,root) %{arch}/bin/gcov
+%{arch}/include/_G_config.h
+%{arch}/lib/libiberty.a
 %dir %{gccarch}
 %dir %{gcclib}
-%{gcclib}/include
 %attr(755,root,root) %{gcclib}/cc1
-%attr(755,root,root) %{gcclib}/cc1chill
-%attr(755,root,root) %{gcclib}/cc1obj
-%attr(755,root,root) %{gcclib}/cc1plus
-%attr(755,root,root) %{gcclib}/cpp
-%attr(755,root,root) %{gcclib}/f771
-%attr(755,root,root) %{gcclib}/jc1
-%attr(755,root,root) %{gcclib}/jvgenmain
+%attr(755,root,root) %{gcclib}/cpp0
 %{gcclib}/SYSCALLS.c.X
+%{gcclib}/libgcc.a
+%{gcclib}/specs*
+%dir %{gcclib}/include
+%{gcclib}/include/float.h
+%{gcclib}/include/iso646.h
+%{gcclib}/include/limits.h
+%{gcclib}/include/proto.h
+%{gcclib}/include/stdarg.h
+%{gcclib}/include/stdbool.h
+%{gcclib}/include/stddef.h
+%{gcclib}/include/syslimits.h
+%{gcclib}/include/varargs.h
+%{gcclib}/include/va-*.h
+%{_mandir}/man1/%{target}-gcc.1*
+
+%files c++
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/%{target}-[cg]++
+%{arch}/include/g++
+%{arch}/lib/libstdc++.a
+%attr(755,root,root) %{gcclib}/cc1plus
+%{gcclib}/libstdc++*
+%{gcclib}/include/new.h
+%{gcclib}/include/exception
+%{gcclib}/include/new
+%{gcclib}/include/typeinfo
+%{_mandir}/man1/%{target}-g++.1*
+
+%files objc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gcclib}/cc1obj
+%{gcclib}/libobjc.a
+%{gcclib}/include/objc
+
+%files g77
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/%{target}-g77
+%attr(755,root,root) %{gcclib}/f771
+%{_mandir}/man1/%{target}-g77.1*
+
+%files chill
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/%{target}-chill
+%attr(755,root,root) %{gcclib}/cc1chill
 %{gcclib}/chillrt0.o
 %{gcclib}/libchill.a
-%{gcclib}/libgcc.a
-%{gcclib}/libobjc.a
-%{gcclib}/specs*
-%{_mandir}/man1/%{target}-*
+
+%files java
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/%{target}-gcj
+%attr(755,root,root) %{arch}/bin/gcjh
+%attr(755,root,root) %{arch}/bin/jcf-dump
+%attr(755,root,root) %{arch}/bin/jv-scan
+%attr(755,root,root) %{gcclib}/jc1
+%attr(755,root,root) %{gcclib}/jvgenmain
