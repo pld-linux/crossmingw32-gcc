@@ -26,6 +26,7 @@ Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
 # Source2-md5:	ecfd49e08f20a88b7ba11a755f2b53c2
 Patch0:		%{name}-noioctl.patch
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
 BuildRequires:	flex
@@ -178,6 +179,7 @@ tar xzf %{SOURCE2} -C winsup
 %patch -p1
 
 %build
+cp /usr/share/automake/config.sub .
 cd gcc-%{version}
 %if %{with bootstrap}
 for tool in as ar dlltool ld nm ranlib strip ; do
