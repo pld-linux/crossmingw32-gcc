@@ -1,6 +1,6 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.2.3
+%define		GCC_VERSION	3.3
 Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
@@ -11,6 +11,7 @@ License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
+Patch0:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils
@@ -148,6 +149,7 @@ Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 
 %prep
 %setup -q -n gcc-%{version}
+%patch -p1
 
 %build
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
@@ -161,7 +163,7 @@ TEXCONFIG=false \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
-	--enable-languages="c,c++,f77,gcov,java,objc" \
+	--enable-languages="c,c++,f77,java,objc" \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-gxx-include-dir=%{arch}/include/g++ \
@@ -206,9 +208,6 @@ cd ../..
 
 mv -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-* $RPM_BUILD_ROOT%{_bindir}
 
-# c++filt is provided by binutils
-rm -f $RPM_BUILD_ROOT%{_bindir}/i386-mingw32-c++filt
-
 # already in arch/lib, shouldn't be here
 rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
@@ -216,7 +215,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 # strip linux binaries
 strip -R .comment -R .note \
 	`echo $RPM_BUILD_ROOT{%{_bindir}/*,%{arch}/bin/*} | grep -v gccbug` \
-	$RPM_BUILD_ROOT%{gcclib}/{cc1*,cpp0,f771,jc1,jvgenmain,tradcpp0}
+	$RPM_BUILD_ROOT%{gcclib}/{cc1*,f771,jc1,jvgenmain}
 
 # strip mingw32 libraries
 %{target}-strip -g \
@@ -245,9 +244,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gccarch}
 %dir %{gcclib}
 %attr(755,root,root) %{gcclib}/cc1
-%attr(755,root,root) %{gcclib}/cpp0
-%attr(755,root,root) %{gcclib}/tradcpp0
-%{gcclib}/libgcc.a
 %{gcclib}/libgcc.a
 %{gcclib}/specs*
 %{gcclib}/include
