@@ -1,7 +1,7 @@
 %bcond_with     bootstrap
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.4.0
+%define		GCC_VERSION	3.4.1
 %define	apiver	2.5
 %define	apisrc	w32api-%{apiver}
 %define runver	3.3
@@ -19,7 +19,7 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	85c6fc83d51be0fbb4f8205accbaff59
+# Source0-md5:	31b459062499f9f68d451db9cbf3205c
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
 # Source1-md5:	be74d8925d1e273336ecb0d9225867f1
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
@@ -32,8 +32,8 @@ BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
 BuildRequires:	flex
 %if %{without bootstrap}
-BuildRequires:	crossmingw32-runtime >= 3.0
-BuildRequires:	crossmingw32-w32api >= 2.3
+BuildRequires:	crossmingw32-runtime >= 3.3
+BuildRequires:	crossmingw32-w32api >= 2.5
 %endif
 Requires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
