@@ -1,25 +1,36 @@
+%bcond_with     bootstrap 
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.3
+%define	apiver	2.3
+%define	apisrc	w32api-%{apiver}
+%define runver	3.0
+%define	runsrc	mingw-runtime-%{runver}
 Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	39147717455d8dba4d43d1b058ea46e2
+Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
+# Source1-md5:	31d5e495150e392ac0fe6b51011d3fa2
+Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
+# Source2-md5:	50f4158d5354633926e63fe95591694a
 Patch0:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	bison
-BuildRequires:	crossmingw32-binutils
-BuildRequires:	crossmingw32-w32api
+BuildRequires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
 BuildRequires:	flex
-Requires:	crossmingw32-binutils
-Requires:	crossmingw32-w32api
+%if %{without bootstrap}
+BuildRequires:	crossmingw32-runtime >= 3.0
+BuildRequires:	crossmingw32-w32api >= 2.3
+%endif
+Requires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -149,10 +160,26 @@ COFF.
 Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 
 %prep
-%setup -q -n gcc-%{version}
+%setup -q -c
+cd gcc-%{version}
+%if %{with bootstrap}
+mkdir winsup
+tar xzf %{SOURCE1} -C winsup
+tar xzf %{SOURCE2} -C winsup
+%endif
 %patch -p1
 
 %build
+cd gcc-%{version}
+%if %{with bootstrap}
+for tool in as ar dlltool ld nm ranlib strip ; do
+	ln -sf %{arch}/bin/$tool winsup/bin/$tool
+done
+build_tooldir=`pwd`/winsup
+%else
+build_tooldir=%{arch}
+%endif
+
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
 CFLAGS="%{rpmcflags}" \
@@ -164,25 +191,32 @@ TEXCONFIG=false \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
+	--includedir=%{arch}/include \
 	--enable-languages="c,c++,f77,java,objc" \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-gxx-include-dir=%{arch}/include/g++ \
 	--enable-threads \
+	--build=%{_target_platform} \
+	--host=%{_target_platform} \
 	--target=%{target}
 
 #touch ../gcc/c-gperf.h
 
 %{__make} \
 	LDFLAGS_FOR_TARGET="%{rpmldflags}" \
-	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE"
+	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE" \
+	build_tooldir="$build_tooldir" \
+	FLAGS_FOR_TARGET="-B${build_tooldir}/bin -B${build_tooldir}/lib -isystem ${build_tooldir}/include -nostdinc" \
+	CFLAGS_FOR_TARGET="-nostdinc" \
+	NM_FOR_TARGET="%{target}-nm" 
 
 # build libobjc.dll for Objective C
 # to trzeba wywo³ywaæ z katalogu obj-%{target_platform}/%{target}/libobjc
 # ale trzeba podaæ jeszcze GCC_FOR_TARGET - a mi siê nie chce.
 # BTW, ten dll jest do czego¶ potrzebny???
 #
-#make \
+#make -C %{target}/libobjc \
 #	LDFLAGS="%{rpmldflags}" \
 #	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE" \
 #	DLLTOOL="%{target}-dlltool --as=%{target}-as" libobjc.dll
@@ -195,6 +229,7 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
+cd gcc-%{version}
 
 install -d $RPM_BUILD_ROOT%{_bindir}
 install -d $RPM_BUILD_ROOT%{_datadir}
