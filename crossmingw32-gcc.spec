@@ -1,17 +1,21 @@
-%bcond_with     bootstrap
+#
+# Conditional build:
+%bcond_with	bootstrap
+#
+
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.4.3
-%define	apiver	3.1
-%define	apisrc	w32api-%{apiver}
-%define runver	3.5
-%define	runsrc	mingw-runtime-%{runver}
+%define		apiver		3.1
+%define		apisrc		w32api-%{apiver}
+%define		runver		3.5
+%define		runsrc		mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
 Summary(fr):	Utilitaires de développement binaire de GNU - Mingw32 gcc
 Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
 Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
-Summary(tr):    GNU geliþtirme araçlarý - Mingw32 gcc
+Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
 Release:	3
@@ -200,12 +204,12 @@ rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{t
 # note: alpha's -mieee and sparc's -mtune=* are not valid for target's g++
 CFLAGS="%{rpmcflags}" \
 %ifarch alpha
-CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`"  \
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`" \
 %else
 %ifarch sparc sparc64 sparcv9
 CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mtune[=0-9a-z]*//'`" \
 %else
-CXXFLAGS="%{rpmcflags}"  \
+CXXFLAGS="%{rpmcflags}" \
 %endif
 %endif
 LDFLAGS="%{rpmldflags}" \
