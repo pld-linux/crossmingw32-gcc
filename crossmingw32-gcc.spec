@@ -206,7 +206,7 @@ CFLAGS="%{rpmcflags}" CXXFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" \
 touch ../gcc/c-gperf.h
 
 %{__make} \
-	%{!?debug:LDFLAGS_FOR_TARGET="-s"}%{?debug:LDFLAGS_FOR_TARGET=""} \
+	LDFLAGS_FOR_TARGET="%{rpmldflags}" \
 	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE"
 
 # build libobjc.dll for Objective C
@@ -215,7 +215,7 @@ touch ../gcc/c-gperf.h
 # BTW, ten dll jest do czego¶ potrzebny???
 #
 #make \
-#	LDFLAGS="-s" \
+#	LDFLAGS="%{rpmldflags}" \
 #	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE" \
 #	DLLTOOL="%{target}-dlltool --as=%{target}-as" libobjc.dll
 
