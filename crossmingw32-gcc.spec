@@ -208,7 +208,7 @@ TEXCONFIG=false \
 	build_tooldir="$build_tooldir" \
 	FLAGS_FOR_TARGET="-B${build_tooldir}/bin -B${build_tooldir}/lib -isystem ${build_tooldir}/include -nostdinc" \
 	CFLAGS_FOR_TARGET="-nostdinc" \
-	NM_FOR_TARGET="%{target}-nm" 
+	NM_FOR_TARGET="%{target}-nm"
 
 # build libobjc.dll for Objective C
 # to trzeba wywo³ywaæ z katalogu obj-%{target_platform}/%{target}/libobjc
