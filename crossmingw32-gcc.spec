@@ -1,8 +1,8 @@
 Summary:	Mingw32 GNU Binary Utility Development Utilities - gcc
 Name:		crossmingw32-gcc
-%define gccversion 2.95.3.test2
+%define	gccversion	2.95.3.test3
 Version:	2.95.3
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
