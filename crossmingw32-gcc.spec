@@ -189,8 +189,7 @@ rm -rf obj-%{target_platform}
 install -d obj-%{target_platform}
 cd obj-%{target_platform}
 
-%{!?debug:CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"} \
-%{?debug:CFLAGS="-g -O0" CXXFLAGS="-g -O0" LDFLAGS=""} \
+CFLAGS="%{rpmcflags}" CXXFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" \
 ../configure \
 	--prefix=%{_prefix} \
 	--infodir=%{_infodir} \
