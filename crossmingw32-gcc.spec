@@ -1,8 +1,8 @@
 Summary:	Mingw32 GNU Binary Utility Development Utilities - gcc
 Name:		crossmingw32-gcc
-%define gccversion 2.95.3.test1
+%define gccversion 2.95.3.test2
 Version:	2.95.3
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
@@ -16,32 +16,24 @@ Patch2:		gcc-libstdc++.patch
 Patch3:		gcc-bootstrap.patch
 Patch4:		gcc-cpp-macro-doc.patch
 Patch5:		gcc-default-arch.patch
-#Patch6:	gcc-cvs-updates-20000826.patch.gz
-Patch7:		gcc-libstdc++-out-of-mem.patch
-Patch8:		gcc-libstdc++-wstring.patch
-#Patch9:	gcc-libstdc++-wall3.patch
-Patch10:	gcc-libstdc++-bastring.patch
-Patch11:	gcc-manpage.patch
-Patch12:	gcc-cpp-dos-newlines.patch
-Patch13:	gcc-gpc.patch
-#Patch14:	gcc-arm-config.patch
-Patch15:	gcc-m68k-pic.patch
-Patch16:	gcc-sparc32-rfi.patch
-Patch17:	gcc-builtin-apply.patch
-Patch18:	gcc-gcj-backport.patch
-Patch19:	gcc-ppc-ice.patch
-Patch20:	gcc-ppc-descriptions.patch
-#Patch21:	gcc-ppc-andrew-dwarf-eh.patch
-Patch22:	gcc-alpha-complex-float.patch
-#Patch23:	gcc-emit-rtl.patch
-Patch24:	gcc-gcj-vs-iconv.patch
-Patch25:	gcc-libobjc.patch
-Patch26:	gcc-pointer-arith.patch
-#Patch27:	gcc-glibc-2.2.patch
-#Patch28:	gcc-O2-bug.patch
-Patch29:	%{name}-libio.patch
-Patch30:	%{name}-includes.patch
-Patch31:	%{name}-libiberty.patch
+Patch6:		gcc-libstdc++-out-of-mem.patch
+Patch7:		gcc-libstdc++-wstring.patch
+Patch8:		gcc-libstdc++-bastring.patch
+Patch9:		gcc-manpage.patch
+Patch10:	gcc-cpp-dos-newlines.patch
+Patch11:	gcc-gpc.patch
+Patch12:	gcc-m68k-pic.patch
+Patch13:	gcc-sparc32-rfi.patch
+Patch14:	gcc-builtin-apply.patch
+Patch15:	gcc-ppc-ice.patch
+Patch16:	gcc-ppc-descriptions.patch
+Patch17:	gcc-alpha-complex-float.patch
+Patch18:	gcc-gcj-vs-iconv.patch
+Patch19:	gcc-libobjc.patch
+Patch20:	gcc-pointer-arith.patch
+Patch21:	%{name}-libio.patch
+Patch22:	%{name}-includes.patch
+Patch23:	%{name}-libiberty.patch
 BuildRequires:	crossmingw32-platform
 BuildRequires:	crossmingw32-binutils
 BuildRequires:	flex
@@ -159,42 +151,33 @@ This package contains cross targeted java.
 %patch3 -p1
 %patch4 -p0
 %patch5 -p0
-#%patch6 -p1
+%patch6 -p0
 %patch7 -p0
 %patch8 -p0
-#%patch9 -p0
+%patch9 -p0
 %patch10 -p0
-%patch11 -p0
-%patch12 -p0
-%patch13 -p1
-#%ifarch arm
-#%patch14 -p0
-#%endif
+%patch11 -p1
 %ifarch m68k
-%patch15 -p0
+%patch12 -p0
 %endif
 %ifarch sparc sparc32
-%patch16 -p0
-%patch17 -p0
-%patch18 -p1
+%patch13 -p0
+%patch14 -p0
 %endif
 %ifarch ppc
-%patch19 -p0
-%patch20 -p0
-#%patch21 -p0
+%patch15 -p0
+%patch16 -p0
 %endif
 %ifarch alpha
-%patch22 -p1
+%patch17 -p1
 %endif
-#%patch23 -p0
-%patch24 -p0
-%patch25 -p0
-%patch26 -p0
-#%patch27 -p1
-#%patch28 -p1
-%patch29 -p1
-%patch30 -p1
-%patch31 -p1
+%patch18 -p0
+%patch19 -p0
+%patch20 -p0
+
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
 
 %build
 (cd libiberty ; autoconf)
@@ -206,7 +189,7 @@ install -d obj-%{target_platform}
 cd obj-%{target_platform}
 
 %{!?debug:CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s"} \
-%{?debug:CFLAGS="-g -O" CXXFLAGS="-g -O" LDFLAGS=""} \
+%{?debug:CFLAGS="-g -O0" CXXFLAGS="-g -O0" LDFLAGS=""} \
 ../configure \
 	--prefix=%{_prefix} \
 	--infodir=%{_infodir} \
