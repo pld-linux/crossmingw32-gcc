@@ -7,7 +7,7 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
-Source0:	ftp://ftp.gnu.org/pub/gnu/gcc-%{version}.tar.gz
+Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 Patch0:		gcc-info.patch
 Patch1:		gcc-pld-linux.patch
 Patch2:		gcc-libstdc++.patch
