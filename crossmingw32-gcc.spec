@@ -2,9 +2,9 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.4.2
-%define	apiver	2.5
+%define	apiver	3.1
 %define	apisrc	w32api-%{apiver}
-%define runver	3.3
+%define runver	3.5
 %define	runsrc	mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
@@ -14,28 +14,28 @@ Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gc
 Summary(tr):    GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	2fada3a3effd2fd791df09df1f1534b3
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	be74d8925d1e273336ecb0d9225867f1
+# Source1-md5:	19901b69bf5392a4490af94e1bb71a40
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	49c4a72951cb34c86b7583970dc058e9
+# Source2-md5:	11ef00aed5cda7b7718c79c16f0241c5
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
-BuildRequires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
+BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
 BuildRequires:	flex
 %if %{without bootstrap}
-BuildRequires:	crossmingw32-runtime >= 3.3
-BuildRequires:	crossmingw32-w32api >= 2.5
+BuildRequires:	crossmingw32-runtime >= 3.5
+BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
-Requires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
+Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
