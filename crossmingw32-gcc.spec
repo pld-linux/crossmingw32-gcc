@@ -72,7 +72,7 @@ Ten pakiet zawiera gcc generuj±ce skro¶nie kod dla Win32.
 Summary:	Mingw32 binary utility development utilities - g++
 Summary(pl):	Zestaw narzêdzi mingw32 - g++
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description c++
 crossmingw32 is a complete cross-compiling development system for
@@ -98,7 +98,7 @@ libstdc++.
 Summary:	Mingw32 binary utility development utilities - objc
 Summary(pl):	Zestaw narzêdzi mingw32 - objc
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description objc
 crossmingw32 is a complete cross-compiling development system for
@@ -123,7 +123,7 @@ Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
 Summary:	Mingw32 binary utility development utilities - g77
 Summary(pl):	Zestaw narzêdzi mingw32 - g77
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description g77
 crossmingw32 is a complete cross-compiling development system for
@@ -148,7 +148,7 @@ Ten pakiet zawiera g77 generuj±cy kod pod Win32.
 Summary:	Mingw32 binary utility development utilities - java
 Summary(pl):	Zestaw narzêdzi mingw32 - java
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description java
 crossmingw32 is a complete cross-compiling development system for
