@@ -208,6 +208,7 @@ TEXCONFIG=false \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
+	--libdir=%{_libdir} \
 	--includedir=%{arch}/include \
 	--enable-languages="c,c++,f77,java,objc" \
 	--with-gnu-as \
