@@ -1,8 +1,8 @@
 %bcond_with     bootstrap
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.3.2
-%define	apiver	2.4
+%define		GCC_VERSION	3.3.3
+%define	apiver	2.5
 %define	apisrc	w32api-%{apiver}
 %define runver	3.2
 %define	runsrc	mingw-runtime-%{runver}
@@ -19,12 +19,13 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	65999f654102f5438ac8562d13a6eced
+# Source0-md5:	3c6cfd9fcd180481063b4058cf6faff2
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	9f9b9a7a7ef14e112924fea46b3360ce
+# Source1-md5:	be74d8925d1e273336ecb0d9225867f1
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
 # Source2-md5:	ecfd49e08f20a88b7ba11a755f2b53c2
-Patch0:		%{name}-noioctl.patch
+Patch0:		gcc-nodebug.patch
+Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -176,7 +177,8 @@ mkdir winsup
 tar xzf %{SOURCE1} -C winsup
 tar xzf %{SOURCE2} -C winsup
 %endif
-%patch -p1
+%{!?debug:%patch0 -p1}
+%patch1 -p1
 
 %build
 cd gcc-%{version}
