@@ -1,10 +1,10 @@
 %bcond_with     bootstrap
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.3.3
+%define		GCC_VERSION	3.4.0
 %define	apiver	2.5
 %define	apisrc	w32api-%{apiver}
-%define runver	3.2
+%define runver	3.3
 %define	runsrc	mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
@@ -19,11 +19,11 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	3c6cfd9fcd180481063b4058cf6faff2
+# Source0-md5:	85c6fc83d51be0fbb4f8205accbaff59
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
 # Source1-md5:	be74d8925d1e273336ecb0d9225867f1
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	ecfd49e08f20a88b7ba11a755f2b53c2
+# Source2-md5:	49c4a72951cb34c86b7583970dc058e9
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
@@ -43,8 +43,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		target		i386-mingw32
 %define		target_platform i386-pc-mingw32
 %define		arch		%{_prefix}/%{target}
-%define		gccarch		%{_libdir}/gcc-lib/%{target}
-%define		gcclib		%{_libdir}/gcc-lib/%{target}/%{version}
+%define		gccarch		%{_libdir}/gcc/%{target}
+%define		gcclib		%{_libdir}/gcc/%{target}/%{version}
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -215,6 +215,7 @@ TEXCONFIG=false \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
 	--libdir=%{_libdir} \
+	--libexecdir=%{_libexecdir} \
 	--includedir=%{arch}/include \
 	--enable-languages="c,c++,f77,java,objc" \
 	--with-gnu-as \
@@ -342,8 +343,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcjh
 %attr(755,root,root) %{_bindir}/%{target}-jcf-dump
 %attr(755,root,root) %{_bindir}/%{target}-jv-scan
-%attr(755,root,root) %{arch}/bin/grepjar
-%attr(755,root,root) %{arch}/bin/jar
+%attr(755,root,root) %{_bindir}/%{target}-grepjar
+%attr(755,root,root) %{_bindir}/%{target}-jar
+#%attr(755,root,root) %{arch}/bin/grepjar
+#%attr(755,root,root) %{arch}/bin/jar
 %attr(755,root,root) %{gcclib}/jc1
 %attr(755,root,root) %{gcclib}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
