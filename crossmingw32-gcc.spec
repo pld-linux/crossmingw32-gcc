@@ -179,7 +179,6 @@ tar xzf %{SOURCE2} -C winsup
 %patch -p1
 
 %build
-cp /usr/share/automake/config.sub .
 cd gcc-%{version}
 %if %{with bootstrap}
 for tool in as ar dlltool ld nm ranlib strip ; do
@@ -189,6 +188,9 @@ build_tooldir=`pwd`/winsup
 %else
 build_tooldir=%{arch}
 %endif
+
+cp /usr/share/automake/config.sub .
+cp /usr/share/automake/config.sub boehm-gc
 
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
