@@ -196,12 +196,16 @@ cp /usr/share/automake/config.sub boehm-gc
 
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
-# note: alpha's -mieee is not valid for target's g++
+# note: alpha's -mieee and sparc's -mtune=* are not valid for target's g++
 CFLAGS="%{rpmcflags}" \
 %ifarch alpha
 CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`"  \
 %else
+%ifarch sparc sparc64 sparcv9
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e s/ \?-mtune[=0-9a-z]*//'`" \
+%else
 CXXFLAGS="%{rpmcflags}"  \
+%endif
 %endif
 LDFLAGS="%{rpmldflags}" \
 TEXCONFIG=false \
@@ -232,9 +236,8 @@ TEXCONFIG=false \
 	NM_FOR_TARGET="%{target}-nm"
 
 # build libobjc.dll for Objective C
-# to trzeba wywo³ywaæ z katalogu obj-%{target_platform}/%{target}/libobjc
-# ale trzeba podaæ jeszcze GCC_FOR_TARGET - a mi siê nie chce.
-# BTW, ten dll jest do czego¶ potrzebny???
+# it must be called from obj-%{target_platform}/%{target}/libobjc, but
+# GCC_FOR_TARGET must be passed
 #
 #make -C %{target}/libobjc \
 #	LDFLAGS="%{rpmldflags}" \
