@@ -1,4 +1,5 @@
-Summary:	Mingw32 GNU Binary Utility Development Utilities - gcc
+Summary:	Mingw32 Binary Utility Development Utilities - gcc
+Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
 Version:	2.95.3
 Release:	6
@@ -59,8 +60,18 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted gcc.
 
+%description -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera gcc generuj±ce kod dla Win32.
+
 %package c++
-Summary:	Mingw32 GNU Binary Utility Development Utilities - g++
+Summary:	Mingw32 Binary Utility Development Utilities - g++
+Summary(pl):	Zestaw narzêdzi mingw32 - g++
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
@@ -75,9 +86,20 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted g++ and (static) libstdc++.
 
+%description c++ -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera g++ generuj±ce kod pod Win32 oraz bibliotekê
+libstdc++.
+
 # does this even work?
 %package objc
-Summary:	Mingw32 GNU Binary Utility Development Utilities - objc
+Summary:	Mingw32 Binary Utility Development Utilities - objc
+Summary(pl):	Zestaw narzêdzi mingw32 - objc 
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
@@ -92,9 +114,19 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted objc.
 
+%description objc -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
+
 # does this even work?
 %package g77
-Summary:	Mingw32 GNU Binary Utility Development Utilities - g77
+Summary:	Mingw32 Binary Utility Development Utilities - g77
+Summary(pl):	Zestaw narzêdzi mingw32 - g77
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
@@ -109,9 +141,19 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted g77.
 
+%description g77 -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera g77 generuj±cy kod pod Win32.
+
 # does this even work?
 %package chill
-Summary:	Mingw32 GNU Binary Utility Development Utilities - chill
+Summary:	Mingw32 Binary Utility Development Utilities - chill
+Summary(pl):	Zestaw narzêdzi mingw32 - chill
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
@@ -126,9 +168,19 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted chill.
 
+%description chill -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera kompilator chill generuj±cy kod pod Win32.
+
 # does this even work?
 %package java
-Summary:	Mingw32 GNU Binary Utility Development Utilities - java
+Summary:	Mingw32 Binary Utility Development Utilities - java
+Summary(pl):	Zestaw narzêdzi mingw32 - java
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
@@ -142,6 +194,15 @@ and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted java.
+
+%description java -l pl
+crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
+budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
+System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
+generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
+COFF.
+
+Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 
 %prep
 %setup -q -n gcc-%{version}
