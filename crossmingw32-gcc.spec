@@ -1,15 +1,14 @@
 Summary:	Mingw32 GNU Binary Utility Development Utilities - gcc
 Name:		crossmingw32-gcc
-%define	gccversion	2.95.3-test5
 Version:	2.95.3
-Release:	5
+Release:	6
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
 ExclusiveArch:	%{ix86}
-Source0:	ftp://ftp.gnu.org/pub/gnu/gcc-%{gccversion}.tar.gz
+Source0:	ftp://ftp.gnu.org/pub/gnu/gcc-%{version}.tar.gz
 Patch0:		gcc-info.patch
 Patch1:		gcc-pld-linux.patch
 Patch2:		gcc-libstdc++.patch
@@ -31,9 +30,10 @@ Patch17:	gcc-alpha-complex-float.patch
 Patch18:	gcc-gcj-vs-iconv.patch
 Patch19:	gcc-libobjc.patch
 Patch20:	gcc-pointer-arith.patch
-Patch21:	%{name}-libio.patch
-Patch22:	%{name}-includes.patch
-Patch23:	%{name}-libiberty.patch
+Patch21:	gcc-crtendS.patch
+Patch22:	%{name}-libio.patch
+Patch23:	%{name}-includes.patch
+Patch24:	%{name}-libiberty.patch
 BuildRequires:	crossmingw32-platform
 BuildRequires:	crossmingw32-binutils
 BuildRequires:	flex
@@ -144,7 +144,7 @@ with supporting Win32 libraries in 'coff' format from free sources.
 This package contains cross targeted java.
 
 %prep
-%setup -q -n gcc-%{gccversion}
+%setup -q -n gcc-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -174,10 +174,11 @@ This package contains cross targeted java.
 %patch18 -p0
 %patch19 -p0
 %patch20 -p0
-
 %patch21 -p1
+
 %patch22 -p1
 %patch23 -p1
+%patch24 -p1
 
 %build
 (cd libiberty ; autoconf)
