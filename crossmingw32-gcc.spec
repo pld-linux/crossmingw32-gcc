@@ -1,9 +1,9 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.1
+%define		GCC_VERSION	3.2.1
 %define		STDC_VERSION	4.0.0
 %define		OBJC_VERSION	1.0.0
-%define		GCJ_VERSION	3.1
+%define		GCJ_VERSION	3.2
 Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
