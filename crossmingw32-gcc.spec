@@ -6,8 +6,6 @@ Release:	7
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 ExclusiveArch:	%{ix86}
 Source0:	ftp://ftp.gnu.org/pub/gnu/gcc-%{version}.tar.gz
 Patch0:		gcc-info.patch
@@ -73,8 +71,6 @@ Ten pakiet zawiera gcc generuj±ce kod dla Win32.
 Summary:	Mingw32 Binary Utility Development Utilities - g++
 Summary(pl):	Zestaw narzêdzi mingw32 - g++
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 Requires:	%{name} = %{version}
 
 %description c++
@@ -101,8 +97,6 @@ libstdc++.
 Summary:	Mingw32 Binary Utility Development Utilities - objc
 Summary(pl):	Zestaw narzêdzi mingw32 - objc 
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 Requires:	%{name} = %{version}
 
 %description objc
@@ -128,8 +122,6 @@ Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
 Summary:	Mingw32 Binary Utility Development Utilities - g77
 Summary(pl):	Zestaw narzêdzi mingw32 - g77
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 Requires:	%{name} = %{version}
 
 %description g77
@@ -155,8 +147,6 @@ Ten pakiet zawiera g77 generuj±cy kod pod Win32.
 Summary:	Mingw32 Binary Utility Development Utilities - chill
 Summary(pl):	Zestaw narzêdzi mingw32 - chill
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 Requires:	%{name} = %{version}
 
 %description chill
@@ -182,8 +172,6 @@ Ten pakiet zawiera kompilator chill generuj±cy kod pod Win32.
 Summary:	Mingw32 Binary Utility Development Utilities - java
 Summary(pl):	Zestaw narzêdzi mingw32 - java
 Group:		Development/Languages
-Group(de):	Entwicklung/Sprachen
-Group(pl):	Programowanie/Jêzyki
 Requires:	%{name} = %{version}
 
 %description java
