@@ -6,8 +6,12 @@
 %define	apisrc	w32api-%{apiver}
 %define runver	3.0
 %define	runsrc	mingw-runtime-%{runver}
-Summary:	Mingw32 binary utility development utilities - gcc
-Summary(pl):	Zestaw narzêdzi mingw32 - gcc
+Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
+Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
+Summary(fr):	Utilitaires de développement binaire de GNU - Mingw32 gcc
+Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
+Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
+Summary(tr):    GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
 Release:	0.1
@@ -49,14 +53,18 @@ with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted gcc.
 
+%description -l de
+Dieses Paket enthält einen Cross-gcc, der es erlaubt, auf einem
+i386-Rechner Code für Win32 zu generieren.
+
 %description -l pl
 crossmingw32 jest kompletnym systemem do kompilacji skro¶nej,
 pozwalaj±cym budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c
-bibliotek mingw32. System sk³ada siê z binutils, gcc z g++ i objc,
+bibliotek Mingw32. System sk³ada siê z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generuj±ce kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
-Ten pakiet zawiera gcc generuj±ce kod dla Win32.
+Ten pakiet zawiera gcc generuj±ce skro¶nie kod dla Win32.
 
 %package c++
 Summary:	Mingw32 binary utility development utilities - g++
