@@ -305,10 +305,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gcclib}
 %attr(755,root,root) %{gcclib}/cc1
 %{gcclib}/libgcc.a
+%{gcclib}/libgcov.a
 %{gcclib}/specs*
 %{gcclib}/include
 
+%{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
+%{_mandir}/man1/%{target}-gcov.1*
 
 %files c++
 %defattr(644,root,root,755)
@@ -350,3 +353,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclib}/jc1
 %attr(755,root,root) %{gcclib}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
+%{_mandir}/man1/%{target}-gcjh.1*
+%{_mandir}/man1/%{target}-jcf-dump.1*
+%{_mandir}/man1/%{target}-jv-scan.1*
