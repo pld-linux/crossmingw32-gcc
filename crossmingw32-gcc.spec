@@ -1,6 +1,6 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.2.2
+%define		GCC_VERSION	3.2.3
 Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
@@ -11,7 +11,6 @@ License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-Patch0:		gcc-slibdir.patch
 BuildRequires:	autoconf
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils
@@ -149,7 +148,6 @@ Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 
 %prep
 %setup -q -n gcc-%{version}
-%patch0 -p1
 
 %build
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
