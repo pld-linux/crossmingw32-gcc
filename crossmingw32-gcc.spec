@@ -194,8 +194,13 @@ cp /usr/share/automake/config.sub boehm-gc
 
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
+# note: alpha's -mieee is not valid for target's g++
 CFLAGS="%{rpmcflags}" \
+%ifarch alpha
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`"  \
+%else
 CXXFLAGS="%{rpmcflags}"  \
+%endif
 LDFLAGS="%{rpmldflags}" \
 TEXCONFIG=false \
 ../configure \
