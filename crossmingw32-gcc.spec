@@ -1,38 +1,20 @@
+%define		DASHED_SNAP	%{nil}
+%define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
+%define		GCC_VERSION	3.1
+%define		STDC_VERSION	4.0.0
+%define		OBJC_VERSION	1.0.0
+%define		GCJ_VERSION	3.1
 Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
-Version:	2.95.3
-Release:	7
+Version:	%{GCC_VERSION}
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
-Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-Patch0:		gcc-info.patch
-Patch1:		gcc-pld-linux.patch
-Patch2:		gcc-libstdc++.patch
-Patch3:		gcc-bootstrap.patch
-Patch4:		gcc-cpp-macro-doc.patch
-Patch5:		gcc-default-arch.patch
-Patch6:		gcc-libstdc++-out-of-mem.patch
-Patch7:		gcc-libstdc++-wstring.patch
-Patch8:		gcc-libstdc++-bastring.patch
-Patch9:		gcc-manpage.patch
-Patch10:	gcc-cpp-dos-newlines.patch
-Patch11:	gcc-gpc.patch
-Patch12:	gcc-m68k-pic.patch
-Patch13:	gcc-sparc32-rfi.patch
-Patch14:	gcc-builtin-apply.patch
-Patch15:	gcc-ppc-ice.patch
-Patch16:	gcc-ppc-descriptions.patch
-Patch17:	gcc-alpha-complex-float.patch
-Patch18:	gcc-gcj-vs-iconv.patch
-Patch19:	gcc-libobjc.patch
-Patch20:	gcc-pointer-arith.patch
-Patch21:	gcc-crtendS.patch
-Patch22:	%{name}-libio.patch
-Patch23:	%{name}-includes.patch
-Patch24:	%{name}-libiberty.patch
+Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
+Patch0:		gcc-slibdir.patch
 BuildRequires:	crossmingw32-platform
 BuildRequires:	crossmingw32-binutils
 BuildRequires:	flex
@@ -42,6 +24,7 @@ Requires:	crossmingw32-binutils
 Requires:	crossmingw32-platform
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		no_install_post_strip	1
 %define		target		i386-mingw32
 %define		target_platform i386-pc-mingw32
 %define		_prefix		/usr
@@ -143,31 +126,6 @@ COFF.
 Ten pakiet zawiera g77 generuj±cy kod pod Win32.
 
 # does this even work?
-%package chill
-Summary:	Mingw32 Binary Utility Development Utilities - chill
-Summary(pl):	Zestaw narzêdzi mingw32 - chill
-Group:		Development/Languages
-Requires:	%{name} = %{version}
-
-%description chill
-crossmingw32 is a complete cross-compiling development system for
-building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
-and objc, and libstdc++, all cross targeted to i386-mingw32, along
-with supporting Win32 libraries in 'coff' format from free sources.
-
-This package contains cross targeted chill.
-
-%description chill -l pl
-crossmingw32 jest kompletnym systemem do kroskompilacji, pozwalaj±cym
-budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c bibliotek mingw32.
-System sk³ada siê z binutils, gcc z g++ i objc, libstdc++ - wszystkie
-generuj±ce kod dla platformy i386-mingw32, oraz z bibliotek w formacie
-COFF.
-
-Ten pakiet zawiera kompilator chill generuj±cy kod pod Win32.
-
-# does this even work?
 %package java
 Summary:	Mingw32 Binary Utility Development Utilities - java
 Summary(pl):	Zestaw narzêdzi mingw32 - java
@@ -195,53 +153,20 @@ Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 %prep
 %setup -q -n gcc-%{version}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p0
-%patch5 -p0
-%patch6 -p0
-%patch7 -p0
-%patch8 -p0
-%patch9 -p0
-%patch10 -p0
-%patch11 -p1
-%ifarch m68k
-%patch12 -p0
-%endif
-%ifarch sparc sparc32
-%patch13 -p0
-%patch14 -p0
-%endif
-%ifarch ppc
-%patch15 -p0
-%patch16 -p0
-%endif
-%ifarch alpha
-%patch17 -p1
-%endif
-%patch18 -p0
-%patch19 -p0
-%patch20 -p0
-%patch21 -p1
-
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
 
 %build
-#(cd libiberty ; autoconf)
-(cd gcc ; autoconf)
-rm -rf obj-%{target_platform}
-install -d obj-%{target_platform}
-cd obj-%{target_platform}
+rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
-CFLAGS="%{rpmcflags}" CXXFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" \
+CFLAGS="%{rpmcflags}" \
+CXXFLAGS="%{rpmcflags}"  \
+LDFLAGS="%{rpmldflags}" \
+TEXCONFIG=false \
 ../configure \
 	--prefix=%{_prefix} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
+	--enable-languages="c,c++,f77,gcov,java,objc" \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-gxx-include-dir=%{arch}/include/g++ \
@@ -250,7 +175,7 @@ CFLAGS="%{rpmcflags}" CXXFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" \
 # to nie dzia³a bo kto¶ ukrad³ gthr-win32.h i nie wiem co tam wpisaæ
 #	--enable-threads \
 
-touch ../gcc/c-gperf.h
+#touch ../gcc/c-gperf.h
 
 %{__make} \
 	LDFLAGS_FOR_TARGET="%{rpmldflags}" \
@@ -301,57 +226,41 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 # the same... make hardlink
 ln -f $RPM_BUILD_ROOT%{arch}/bin/gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
 
+%{target}-strip -g $RPM_BUILD_ROOT%{gcclib}/libgcc.a
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/%{target}-gcc
-%attr(755,root,root) %{_bindir}/%{target}-*protoize
+%attr(755,root,root) %{_bindir}/%{target}-gcc*
+%attr(755,root,root) %{_bindir}/%{target}-cpp
+%attr(755,root,root) %{_bindir}/%{target}-gcov
+
 %dir %{arch}/bin
-%attr(755,root,root) %{arch}/bin/cpp
 %attr(755,root,root) %{arch}/bin/gcc
-%attr(755,root,root) %{arch}/bin/gcov
-%{arch}/include/_G_config.h
-%{arch}/lib/libiberty.a
+
 %dir %{gccarch}
 %dir %{gcclib}
 %attr(755,root,root) %{gcclib}/cc1
 %attr(755,root,root) %{gcclib}/cpp0
-%{gcclib}/SYSCALLS.c.X
+%attr(755,root,root) %{gcclib}/tradcpp0
 %{gcclib}/libgcc.a
 %{gcclib}/specs*
-%dir %{gcclib}/include
-%{gcclib}/include/float.h
-%{gcclib}/include/iso646.h
-%{gcclib}/include/limits.h
-%{gcclib}/include/proto.h
-%{gcclib}/include/stdarg.h
-%{gcclib}/include/stdbool.h
-%{gcclib}/include/stddef.h
-%{gcclib}/include/syslimits.h
-%{gcclib}/include/varargs.h
-%{gcclib}/include/va-*.h
+%{gcclib}/include
+
 %{_mandir}/man1/%{target}-gcc.1*
 
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-[cg]++
-%{arch}/include/g++
-%{arch}/lib/libstdc++.a
+%attr(755,root,root) %{arch}/bin/[cg]++
 %attr(755,root,root) %{gcclib}/cc1plus
-%{gcclib}/libstdc++*
-%{gcclib}/include/new.h
-%{gcclib}/include/exception
-%{gcclib}/include/new
-%{gcclib}/include/typeinfo
 %{_mandir}/man1/%{target}-g++.1*
 
 %files objc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gcclib}/cc1obj
-%{gcclib}/libobjc.a
-%{gcclib}/include/objc
 
 %files g77
 %defattr(644,root,root,755)
@@ -359,18 +268,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclib}/f771
 %{_mandir}/man1/%{target}-g77.1*
 
-%files chill
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/%{target}-chill
-%attr(755,root,root) %{gcclib}/cc1chill
-%{gcclib}/chillrt0.o
-%{gcclib}/libchill.a
-
 %files java
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
-%attr(755,root,root) %{arch}/bin/gcjh
-%attr(755,root,root) %{arch}/bin/jcf-dump
-%attr(755,root,root) %{arch}/bin/jv-scan
+%attr(755,root,root) %{_bindir}/%{target}-gcjh
+%attr(755,root,root) %{_bindir}/%{target}-jcf-dump
+%attr(755,root,root) %{_bindir}/%{target}-jv-scan
+%attr(755,root,root) %{arch}/bin/grepjar
+%attr(755,root,root) %{arch}/bin/jar
 %attr(755,root,root) %{gcclib}/jc1
 %attr(755,root,root) %{gcclib}/jvgenmain
