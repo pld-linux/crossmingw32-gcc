@@ -1,7 +1,7 @@
 %bcond_with     bootstrap
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.4.1
+%define		GCC_VERSION	3.4.2
 %define	apiver	2.5
 %define	apisrc	w32api-%{apiver}
 %define runver	3.3
@@ -19,7 +19,7 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	31b459062499f9f68d451db9cbf3205c
+# Source0-md5:	2fada3a3effd2fd791df09df1f1534b3
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
 # Source1-md5:	be74d8925d1e273336ecb0d9225867f1
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
