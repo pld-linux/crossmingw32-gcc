@@ -18,7 +18,7 @@ Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gc
 Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
