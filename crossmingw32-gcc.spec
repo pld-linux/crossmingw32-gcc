@@ -2,7 +2,7 @@ Summary:	Mingw32 Binary Utility Development Utilities - gcc
 Summary(pl):	Zestaw narzêdzi mingw32 - gcc
 Name:		crossmingw32-gcc
 Version:	2.95.3
-Release:	6
+Release:	7
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
@@ -242,10 +242,8 @@ Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 %patch24 -p1
 
 %build
-(cd libiberty ; autoconf)
-(cd gcc
-autoconf
-cd ..
+#(cd libiberty ; autoconf)
+(cd gcc ; autoconf)
 rm -rf obj-%{target_platform}
 install -d obj-%{target_platform}
 cd obj-%{target_platform}
@@ -285,7 +283,6 @@ cd gcc
 for n in msvcrt msvcrt20 msvcrt40; do
 	sed "s/crtdll/$n/g" <specs | sed "s/crt1/crt2/g" >specs.$n
 done
-)
 
 %install
 rm -rf $RPM_BUILD_ROOT
