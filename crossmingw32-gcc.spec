@@ -1,40 +1,46 @@
-%bcond_with     bootstrap
+#
+# Conditional build:
+%bcond_with	bootstrap
+#
+
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.3.2
-%define	apiver	2.4
-%define	apisrc	w32api-%{apiver}
-%define runver	3.2
-%define	runsrc	mingw-runtime-%{runver}
+%define		GCC_VERSION	3.4.3
+%define		apiver		3.2
+%define		apisrc		w32api-%{apiver}
+%define		runver		3.7
+%define		runsrc		mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
 Summary(fr):	Utilitaires de développement binaire de GNU - Mingw32 gcc
 Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
 Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
-Summary(tr):    GNU geliþtirme araçlarý - Mingw32 gcc
+Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	1
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	65999f654102f5438ac8562d13a6eced
+# Source0-md5:	e744b30c834360fccac41eb7269a3011
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	9f9b9a7a7ef14e112924fea46b3360ce
+# Source1-md5:	ea357143f74f05a0ddccc0d2bebe9b03
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	ecfd49e08f20a88b7ba11a755f2b53c2
-Patch0:		%{name}-noioctl.patch
+# Source2-md5:	33db567db9a2034a44bf216762049df4
+Patch0:		gcc-nodebug.patch
+Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
-BuildRequires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
+BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
 BuildRequires:	flex
 %if %{without bootstrap}
-BuildRequires:	crossmingw32-runtime >= 3.0
-BuildRequires:	crossmingw32-w32api >= 2.3
+BuildRequires:	crossmingw32-runtime >= 3.5
+BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
-Requires:	crossmingw32-binutils >= 2.14.90.0.4.1-2
+Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
+Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -42,8 +48,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		target		i386-mingw32
 %define		target_platform i386-pc-mingw32
 %define		arch		%{_prefix}/%{target}
-%define		gccarch		%{_libdir}/gcc-lib/%{target}
-%define		gcclib		%{_libdir}/gcc-lib/%{target}/%{version}
+%define		gccarch		%{_libdir}/gcc/%{target}
+%define		gcclib		%{_libdir}/gcc/%{target}/%{version}
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -56,7 +62,7 @@ This package contains cross targeted gcc.
 
 %description -l de
 Dieses Paket enthält einen Cross-gcc, der es erlaubt, auf einem
-i386-Rechner Code für Win32 zu generieren.
+anderem Rechner Code für Win32 zu generieren.
 
 %description -l pl
 crossmingw32 jest kompletnym systemem do kompilacji skro¶nej,
@@ -71,7 +77,7 @@ Ten pakiet zawiera gcc generuj±ce skro¶nie kod dla Win32.
 Summary:	Mingw32 binary utility development utilities - g++
 Summary(pl):	Zestaw narzêdzi mingw32 - g++
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description c++
 crossmingw32 is a complete cross-compiling development system for
@@ -97,7 +103,7 @@ libstdc++.
 Summary:	Mingw32 binary utility development utilities - objc
 Summary(pl):	Zestaw narzêdzi mingw32 - objc
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description objc
 crossmingw32 is a complete cross-compiling development system for
@@ -122,7 +128,7 @@ Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
 Summary:	Mingw32 binary utility development utilities - g77
 Summary(pl):	Zestaw narzêdzi mingw32 - g77
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description g77
 crossmingw32 is a complete cross-compiling development system for
@@ -147,7 +153,7 @@ Ten pakiet zawiera g77 generuj±cy kod pod Win32.
 Summary:	Mingw32 binary utility development utilities - java
 Summary(pl):	Zestaw narzêdzi mingw32 - java
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description java
 crossmingw32 is a complete cross-compiling development system for
@@ -176,7 +182,8 @@ mkdir winsup
 tar xzf %{SOURCE1} -C winsup
 tar xzf %{SOURCE2} -C winsup
 %endif
-%patch -p1
+%{!?debug:%patch0 -p1}
+%patch1 -p1
 
 %build
 cd gcc-%{version}
@@ -194,12 +201,16 @@ cp /usr/share/automake/config.sub boehm-gc
 
 rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
 
-# note: alpha's -mieee is not valid for target's g++
+# note: alpha's -mieee and sparc's -mtune=* are not valid for target's g++
 CFLAGS="%{rpmcflags}" \
 %ifarch alpha
-CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`"  \
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`" \
 %else
-CXXFLAGS="%{rpmcflags}"  \
+%ifarch sparc sparc64 sparcv9
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mtune[=0-9a-z]*//'`" \
+%else
+CXXFLAGS="%{rpmcflags}" \
+%endif
 %endif
 LDFLAGS="%{rpmldflags}" \
 TEXCONFIG=false \
@@ -209,6 +220,7 @@ TEXCONFIG=false \
 	--mandir=%{_mandir} \
 	--bindir=%{arch}/bin \
 	--libdir=%{_libdir} \
+	--libexecdir=%{_libexecdir} \
 	--includedir=%{arch}/include \
 	--enable-languages="c,c++,f77,java,objc" \
 	--with-gnu-as \
@@ -230,9 +242,8 @@ TEXCONFIG=false \
 	NM_FOR_TARGET="%{target}-nm"
 
 # build libobjc.dll for Objective C
-# to trzeba wywo³ywaæ z katalogu obj-%{target_platform}/%{target}/libobjc
-# ale trzeba podaæ jeszcze GCC_FOR_TARGET - a mi siê nie chce.
-# BTW, ten dll jest do czego¶ potrzebny???
+# it must be called from obj-%{target_platform}/%{target}/libobjc, but
+# GCC_FOR_TARGET must be passed
 #
 #make -C %{target}/libobjc \
 #	LDFLAGS="%{rpmldflags}" \
@@ -299,10 +310,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gcclib}
 %attr(755,root,root) %{gcclib}/cc1
 %{gcclib}/libgcc.a
+%{gcclib}/libgcov.a
 %{gcclib}/specs*
 %{gcclib}/include
 
+%{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
+%{_mandir}/man1/%{target}-gcov.1*
 
 %files c++
 %defattr(644,root,root,755)
@@ -335,10 +349,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
 %attr(755,root,root) %{_bindir}/%{target}-gcjh
+%attr(755,root,root) %{_bindir}/%{target}-grepjar
+%attr(755,root,root) %{_bindir}/%{target}-jar
 %attr(755,root,root) %{_bindir}/%{target}-jcf-dump
 %attr(755,root,root) %{_bindir}/%{target}-jv-scan
-%attr(755,root,root) %{arch}/bin/grepjar
-%attr(755,root,root) %{arch}/bin/jar
+#%attr(755,root,root) %{arch}/bin/grepjar
+#%attr(755,root,root) %{arch}/bin/jar
 %attr(755,root,root) %{gcclib}/jc1
 %attr(755,root,root) %{gcclib}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
+%{_mandir}/man1/%{target}-gcjh.1*
+%{_mandir}/man1/%{target}-grepjar.1*
+%{_mandir}/man1/%{target}-jar.1*
+%{_mandir}/man1/%{target}-jcf-dump.1*
+%{_mandir}/man1/%{target}-jv-scan.1*
