@@ -14,7 +14,7 @@ Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gc
 Summary(tr):    GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	1
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
@@ -202,7 +202,7 @@ CFLAGS="%{rpmcflags}" \
 CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mieee\>//'`"  \
 %else
 %ifarch sparc sparc64 sparcv9
-CXXFLAGS="`echo '%{rpmcflags}' | sed -e s/ \?-mtune[=0-9a-z]*//'`" \
+CXXFLAGS="`echo '%{rpmcflags}' | sed -e 's/ \?-mtune[=0-9a-z]*//'`" \
 %else
 CXXFLAGS="%{rpmcflags}"  \
 %endif
