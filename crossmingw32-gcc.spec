@@ -1,4 +1,4 @@
-%bcond_with     bootstrap 
+%bcond_with     bootstrap
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.3.1
