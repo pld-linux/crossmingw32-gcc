@@ -25,9 +25,9 @@ Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	e744b30c834360fccac41eb7269a3011
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	c9204f46e6b6deeb1c182bc75ad4d88f
+# Source1-md5:	ea357143f74f05a0ddccc0d2bebe9b03
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	d5bb1d754e3315a768fe69056b3ee8d3
+# Source2-md5:	33db567db9a2034a44bf216762049df4
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
