@@ -95,7 +95,7 @@ libstdc++.
 # does this even work?
 %package objc
 Summary:	Mingw32 Binary Utility Development Utilities - objc
-Summary(pl):	Zestaw narzêdzi mingw32 - objc 
+Summary(pl):	Zestaw narzêdzi mingw32 - objc
 Group:		Development/Languages
 Requires:	%{name} = %{version}
 
