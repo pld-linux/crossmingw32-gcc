@@ -344,15 +344,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
 %attr(755,root,root) %{_bindir}/%{target}-gcjh
-%attr(755,root,root) %{_bindir}/%{target}-jcf-dump
-%attr(755,root,root) %{_bindir}/%{target}-jv-scan
 %attr(755,root,root) %{_bindir}/%{target}-grepjar
 %attr(755,root,root) %{_bindir}/%{target}-jar
+%attr(755,root,root) %{_bindir}/%{target}-jcf-dump
+%attr(755,root,root) %{_bindir}/%{target}-jv-scan
 #%attr(755,root,root) %{arch}/bin/grepjar
 #%attr(755,root,root) %{arch}/bin/jar
 %attr(755,root,root) %{gcclib}/jc1
 %attr(755,root,root) %{gcclib}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
 %{_mandir}/man1/%{target}-gcjh.1*
+%{_mandir}/man1/%{target}-grepjar.1*
+%{_mandir}/man1/%{target}-jar.1*
 %{_mandir}/man1/%{target}-jcf-dump.1*
 %{_mandir}/man1/%{target}-jv-scan.1*
