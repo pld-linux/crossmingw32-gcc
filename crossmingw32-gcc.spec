@@ -6,9 +6,9 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.4.3
-%define		apiver		3.1
+%define		apiver		3.2
 %define		apisrc		w32api-%{apiver}
-%define		runver		3.5
+%define		runver		3.7
 %define		runsrc		mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
@@ -25,9 +25,9 @@ Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	e744b30c834360fccac41eb7269a3011
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	19901b69bf5392a4490af94e1bb71a40
+# Source1-md5:	c9204f46e6b6deeb1c182bc75ad4d88f
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	11ef00aed5cda7b7718c79c16f0241c5
+# Source2-md5:	d5bb1d754e3315a768fe69056b3ee8d3
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
