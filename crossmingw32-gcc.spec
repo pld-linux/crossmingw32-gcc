@@ -11,6 +11,7 @@ License:	GPL
 Group:		Development/Languages
 ExclusiveArch:	%{ix86}
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
+# Source0-md5:	39147717455d8dba4d43d1b058ea46e2
 Patch0:		%{name}-noioctl.patch
 BuildRequires:	autoconf
 BuildRequires:	bison
