@@ -42,8 +42,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		target		i386-mingw32
 %define		target_platform i386-pc-mingw32
 %define		arch		%{_prefix}/%{target}
-%define		gccarch		%{_prefix}/lib/gcc-lib/%{target}
-%define		gcclib		%{_prefix}/lib/gcc-lib/%{target}/%{version}
+%define		gccarch		%{_libdir}/gcc-lib/%{target}
+%define		gcclib		%{_libdir}/gcc-lib/%{target}/%{version}
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -273,7 +273,7 @@ strip -R .comment -R .note \
 # strip mingw32 libraries
 %{target}-strip -g \
 	$RPM_BUILD_ROOT%{gcclib}/libgcc.a \
-	$RPM_BUILD_ROOT%{arch}/lib/lib*.a
+	$RPM_BUILD_ROOT%{arch}/%{_lib}/lib*.a
 %endif
 
 # restore hardlinks
@@ -292,7 +292,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-cpp
 %attr(755,root,root) %{_bindir}/%{target}-gcov
 %attr(755,root,root) %{arch}/bin/gcc
-%{arch}/lib/libiberty.a
+%{arch}/%{_lib}/libiberty.a
 
 %dir %{gccarch}
 %dir %{gcclib}
@@ -308,26 +308,26 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-[cg]++
 %attr(755,root,root) %{arch}/bin/[cg]++
 %attr(755,root,root) %{gcclib}/cc1plus
-%{arch}/lib/libstdc++.a
-%{arch}/lib/libstdc++.la
-%{arch}/lib/libsupc++.a
-%{arch}/lib/libsupc++.la
+%{arch}/%{_lib}/libstdc++.a
+%{arch}/%{_lib}/libstdc++.la
+%{arch}/%{_lib}/libsupc++.a
+%{arch}/%{_lib}/libsupc++.la
 %{arch}/include/g++
 %{_mandir}/man1/%{target}-g++.1*
 
 %files objc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gcclib}/cc1obj
-%{arch}/lib/libobjc.a
-%{arch}/lib/libobjc.la
+%{arch}/%{_lib}/libobjc.a
+%{arch}/%{_lib}/libobjc.la
 
 %files g77
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-g77
 %attr(755,root,root) %{gcclib}/f771
-%{arch}/lib/libfrtbegin.a
-%{arch}/lib/libg2c.a
-%{arch}/lib/libg2c.la
+%{arch}/%{_lib}/libfrtbegin.a
+%{arch}/%{_lib}/libg2c.a
+%{arch}/%{_lib}/libg2c.la
 %{_mandir}/man1/%{target}-g77.1*
 
 %files java
