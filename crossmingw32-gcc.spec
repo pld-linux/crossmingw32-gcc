@@ -1,14 +1,13 @@
 #
 # Conditional build:
-%bcond_with	bootstrap
+%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingw)
 #
-
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.4.3
-%define		apiver		3.2
+%define		apiver		3.5
 %define		apisrc		w32api-%{apiver}
-%define		runver		3.7
+%define		runver		3.9
 %define		runsrc		mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
@@ -25,9 +24,9 @@ Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	e744b30c834360fccac41eb7269a3011
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	ea357143f74f05a0ddccc0d2bebe9b03
+# Source1-md5:	2529dffea94118865cdc06c1f7ead697
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
-# Source2-md5:	33db567db9a2034a44bf216762049df4
+# Source2-md5:	0cb66b1071da224ea2174f960c593e2e
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
