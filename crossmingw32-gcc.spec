@@ -5,7 +5,7 @@
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
 %define		GCC_VERSION	3.4.3
-%define		apiver		3.5
+%define		apiver		3.6
 %define		apisrc		w32api-%{apiver}
 %define		runver		3.9
 %define		runsrc		mingw-runtime-%{runver}
@@ -24,7 +24,7 @@ Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
 # Source0-md5:	e744b30c834360fccac41eb7269a3011
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	2529dffea94118865cdc06c1f7ead697
+# Source1-md5:	2f86ec42cafd774ec82162fbc6e6808d
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
 # Source2-md5:	0cb66b1071da224ea2174f960c593e2e
 Patch0:		gcc-nodebug.patch
