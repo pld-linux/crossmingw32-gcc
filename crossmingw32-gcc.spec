@@ -22,7 +22,7 @@ Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	d41d8cd98f00b204e9800998ecf8427e
+# Source0-md5:	4a21ac777d4b5617283ce488b808da7b
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
 # Source1-md5:	0b3a6d08136581c93b3a3207588acea9
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
