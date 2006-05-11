@@ -4,8 +4,8 @@
 #
 %define		DASHED_SNAP	%{nil}
 %define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.4.3
-%define		apiver		3.6
+%define		GCC_VERSION	3.4.6
+%define		apiver		3.7
 %define		apisrc		w32api-%{apiver}
 %define		runver		3.9
 %define		runsrc		mingw-runtime-%{runver}
@@ -17,14 +17,14 @@ Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gc
 Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	%{GCC_VERSION}
-Release:	4
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
-# Source0-md5:	e744b30c834360fccac41eb7269a3011
+# Source0-md5:	d41d8cd98f00b204e9800998ecf8427e
 Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
-# Source1-md5:	2f86ec42cafd774ec82162fbc6e6808d
+# Source1-md5:	0b3a6d08136581c93b3a3207588acea9
 Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
 # Source2-md5:	0cb66b1071da224ea2174f960c593e2e
 Patch0:		gcc-nodebug.patch
@@ -181,7 +181,7 @@ mkdir winsup
 tar xzf %{SOURCE1} -C winsup
 tar xzf %{SOURCE2} -C winsup
 %endif
-%{!?debug:%patch0 -p1}
+#{!?debug:%patch0 -p1}
 %patch1 -p1
 
 %build
@@ -221,11 +221,16 @@ TEXCONFIG=false \
 	--libdir=%{_libdir} \
 	--libexecdir=%{_libexecdir} \
 	--includedir=%{arch}/include \
+	--disable-shared \
+	--enable-threads \
 	--enable-languages="c,c++,f77,java,objc" \
+	--enable-c99 \
+	--enable-long-long \
+	--disable-nls \
 	--with-gnu-as \
 	--with-gnu-ld \
+	--with-mangler-in-ld \
 	--with-gxx-include-dir=%{arch}/include/g++ \
-	--enable-threads \
 	--build=%{_target_platform} \
 	--host=%{_target_platform} \
 	--target=%{target}
