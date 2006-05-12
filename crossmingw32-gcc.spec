@@ -2,13 +2,6 @@
 # Conditional build:
 %bcond_with	bootstrap	# bootstrap build (using binary w32api/mingw)
 #
-%define		DASHED_SNAP	%{nil}
-%define		SNAP		%(echo %{DASHED_SNAP} | sed -e "s#-##g")
-%define		GCC_VERSION	3.4.6
-%define		apiver		3.7
-%define		apisrc		w32api-%{apiver}
-%define		runver		3.9
-%define		runsrc		mingw-runtime-%{runver}
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
 Summary(fr):	Utilitaires de développement binaire de GNU - Mingw32 gcc
@@ -16,16 +9,18 @@ Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
 Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
 Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
-Version:	%{GCC_VERSION}
+Version:	3.4.6
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
-Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{GCC_VERSION}/gcc-%{GCC_VERSION}.tar.bz2
+Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 # Source0-md5:	4a21ac777d4b5617283ce488b808da7b
-Source1:	http://dl.sourceforge.net/mingw/%{apisrc}.tar.gz
+%define		apiver	3.7
+Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
 # Source1-md5:	0b3a6d08136581c93b3a3207588acea9
-Source2:	http://dl.sourceforge.net/mingw/%{runsrc}.tar.gz
+%define		runver	3.9
+Source2:	http://dl.sourceforge.net/mingw/mingw-runtime-%{runver}.tar.gz
 # Source2-md5:	0cb66b1071da224ea2174f960c593e2e
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
@@ -42,13 +37,13 @@ Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
 Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		no_install_post_strip	1
-
 %define		target		i386-mingw32
 %define		target_platform i386-pc-mingw32
 %define		arch		%{_prefix}/%{target}
 %define		gccarch		%{_libdir}/gcc/%{target}
-%define		gcclib		%{_libdir}/gcc/%{target}/%{version}
+%define		gcclib		%{gccarch}/%{version}
+
+%define		_noautostrip	.*/lib.*\\.a	
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -174,8 +169,7 @@ z bibliotek w formacie COFF.
 Ten pakiet zawiera kompilator Javy generuj±cy kod pod Win32.
 
 %prep
-%setup -q -c
-cd gcc-%{version}
+%setup -q -n gcc-%{version}
 %if %{with bootstrap}
 mkdir winsup
 tar xzf %{SOURCE1} -C winsup
@@ -185,7 +179,6 @@ tar xzf %{SOURCE2} -C winsup
 %patch1 -p1
 
 %build
-cd gcc-%{version}
 %if %{with bootstrap}
 for tool in as ar dlltool ld nm ranlib strip ; do
 	ln -sf %{arch}/bin/$tool winsup/bin/$tool
@@ -198,7 +191,9 @@ build_tooldir=%{arch}
 cp /usr/share/automake/config.sub .
 cp /usr/share/automake/config.sub boehm-gc
 
-rm -rf obj-%{target_platform} && install -d obj-%{target_platform} && cd obj-%{target_platform}
+rm -rf obj-%{target_platform}
+install -d obj-%{target_platform}
+cd obj-%{target_platform}
 
 # note: alpha's -mieee and sparc's -mtune=* are not valid for target's g++
 CFLAGS="%{rpmcflags}" \
@@ -235,24 +230,7 @@ TEXCONFIG=false \
 	--host=%{_target_platform} \
 	--target=%{target}
 
-#touch ../gcc/c-gperf.h
-
-%{__make} \
-	LDFLAGS_FOR_TARGET="%{rpmldflags}" \
-	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE" \
-	build_tooldir="$build_tooldir" \
-	FLAGS_FOR_TARGET="-B${build_tooldir}/bin -B${build_tooldir}/lib -isystem ${build_tooldir}/include -nostdinc" \
-	CFLAGS_FOR_TARGET="-nostdinc" \
-	NM_FOR_TARGET="%{target}-nm"
-
-# build libobjc.dll for Objective C
-# it must be called from obj-%{target_platform}/%{target}/libobjc, but
-# GCC_FOR_TARGET must be passed
-#
-#make -C %{target}/libobjc \
-#	LDFLAGS="%{rpmldflags}" \
-#	TARGET_LIBGCC2_CFLAGS="-UCROSS_COMPILE" \
-#	DLLTOOL="%{target}-dlltool --as=%{target}-as" libobjc.dll
+%{__make} all
 
 # spec files for msvcrt*.dll configurations
 cd gcc
@@ -262,10 +240,8 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd gcc-%{version}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}}
 
-install -d $RPM_BUILD_ROOT%{_bindir}
-install -d $RPM_BUILD_ROOT%{_datadir}
 cd obj-%{target_platform}
 
 %{__make} install \
@@ -280,16 +256,23 @@ mv -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-* $RPM_BUILD_ROOT%{_bindir}
 # already in arch/lib, shouldn't be here
 rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
-%if 0%{!?debug:1}
-# strip linux binaries
-strip -R .comment -R .note \
-	`echo $RPM_BUILD_ROOT{%{_bindir}/*,%{arch}/bin/*} | grep -v gccbug` \
-	$RPM_BUILD_ROOT%{gcclib}/{cc1*,f771,jc1,jvgenmain}
+# include/ contains install-tools/include/* and headers that were fixed up
+# by fixincludes, we don't want former
+exit 1
+gccdir=$RPM_BUILD_ROOT%{gcclib}
+mkdir	$gccdir/tmp
+# we have to save these however
+mv -f	$gccdir/include/syslimits.h $gccdir/tmp
+rm -rf	$gccdir/include
+mv -f	$gccdir/tmp $gccdir/include
+cp -f	$gccdir/install-tools/include/*.h $gccdir/include
+# but we don't want anything more from install-tools
+rm -rf	$gccdir/install-tools
 
-# strip mingw32 libraries
-%{target}-strip -g \
-	$RPM_BUILD_ROOT%{gcclib}/libgcc.a \
-	$RPM_BUILD_ROOT%{arch}/lib/lib*.a
+%if 0%{!?debug:1}
+%{target}-strip -g -R.note -R.comment $RPM_BUILD_ROOT%{gcclib}/libgcc.a
+%{target}-strip -g -R.note -R.comment $RPM_BUILD_ROOT%{gcclib}/libgcov.a
+%{target}-strip -g -R.note -R.comment $RPM_BUILD_ROOT%{arch}/lib/lib*.a
 %endif
 
 # restore hardlinks
