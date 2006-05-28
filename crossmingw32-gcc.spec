@@ -9,13 +9,13 @@ Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
 Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
 Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
-Version:	3.4.6
-Release:	0.1
+Version:	4.1.1
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	4a21ac777d4b5617283ce488b808da7b
+# Source0-md5:	ad9f97a4d04982ccf4fd67cb464879f3
 %define		apiver	3.7
 Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
 # Source1-md5:	0b3a6d08136581c93b3a3207588acea9
@@ -118,29 +118,30 @@ z bibliotek w formacie COFF.
 Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
 
 # does this even work?
-%package g77
-Summary:	Mingw32 binary utility development utilities - g77
-Summary(pl):	Zestaw narzêdzi mingw32 - g77
+%package fortran
+Summary:	Mingw32 binary utility development utilities - fortran
+Summary(pl):	Zestaw narzêdzi mingw32 - fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Obsoletes:	%{name}-g77
 
-%description g77
+%description fortran
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
 the Mingw32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
-This package contains cross targeted g77.
+This package contains cross targeted fortran.
 
-%description g77 -l pl
+%description fortran -l pl
 crossmingw32 jest kompletnym systemem do kompilacji skro¶nej,
 pozwalaj±cym budowaæ aplikacje MS Windows pod Linuksem u¿ywaj±c
 bibliotek mingw32. System sk³ada siê z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generuj±ce kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
-Ten pakiet zawiera g77 generuj±cy kod pod Win32.
+Ten pakiet zawiera fortran generuj±cy kod pod Win32.
 
 # does this even work?
 %package java
@@ -218,7 +219,7 @@ TEXCONFIG=false \
 	--includedir=%{arch}/include \
 	--disable-shared \
 	--enable-threads \
-	--enable-languages="c,c++,f77,java,objc" \
+	--enable-languages="c,c++,fortran,java,objc" \
 	--enable-c99 \
 	--enable-long-long \
 	--disable-nls \
@@ -258,7 +259,6 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
 # include/ contains install-tools/include/* and headers that were fixed up
 # by fixincludes, we don't want former
-exit 1
 gccdir=$RPM_BUILD_ROOT%{gcclib}
 mkdir	$gccdir/tmp
 # we have to save these however
@@ -296,6 +296,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gccarch}
 %dir %{gcclib}
 %attr(755,root,root) %{gcclib}/cc1
+%attr(755,root,root) %{gcclib}/collect2
 %{gcclib}/libgcc.a
 %{gcclib}/libgcov.a
 %{gcclib}/specs*
@@ -304,6 +305,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
 %{_mandir}/man1/%{target}-gcov.1*
+
+%{arch}/lib/libssp.a
+%{arch}/lib/libssp.la
+%{arch}/lib/libssp_nonshared.a
+%{arch}/lib/libssp_nonshared.la
 
 %files c++
 %defattr(644,root,root,755)
@@ -323,21 +329,23 @@ rm -rf $RPM_BUILD_ROOT
 %{arch}/lib/libobjc.a
 %{arch}/lib/libobjc.la
 
-%files g77
+%files fortran
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/%{target}-g77
-%attr(755,root,root) %{gcclib}/f771
-%{arch}/lib/libfrtbegin.a
-%{arch}/lib/libg2c.a
-%{arch}/lib/libg2c.la
-%{_mandir}/man1/%{target}-g77.1*
+%attr(755,root,root) %{_bindir}/%{target}-gfortran
+%attr(755,root,root) %{arch}/bin/gfortran
+%attr(755,root,root) %{gcclib}/f951
+%{arch}/lib/libgfortran.a
+%{arch}/lib/libgfortran.la
+%{arch}/lib/libgfortranbegin.a
+%{arch}/lib/libgfortranbegin.la
+%{_mandir}/man1/%{target}-gfortran.1*
 
 %files java
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
 %attr(755,root,root) %{_bindir}/%{target}-gcjh
 %attr(755,root,root) %{_bindir}/%{target}-grepjar
-%attr(755,root,root) %{_bindir}/%{target}-jar
+%attr(755,root,root) %{_bindir}/%{target}-fastjar
 %attr(755,root,root) %{_bindir}/%{target}-jcf-dump
 %attr(755,root,root) %{_bindir}/%{target}-jv-scan
 #%attr(755,root,root) %{arch}/bin/grepjar
@@ -347,6 +355,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/%{target}-gcj.1*
 %{_mandir}/man1/%{target}-gcjh.1*
 %{_mandir}/man1/%{target}-grepjar.1*
-%{_mandir}/man1/%{target}-jar.1*
+%{_mandir}/man1/%{target}-fastjar.1*
 %{_mandir}/man1/%{target}-jcf-dump.1*
 %{_mandir}/man1/%{target}-jv-scan.1*
