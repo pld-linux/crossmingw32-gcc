@@ -106,7 +106,7 @@ the Mingw32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
-This package contains cross targeted objc.
+This package contains cross targeted objc compiler.
 
 %description objc -l pl
 crossmingw32 jest kompletnym systemem do kompilacji skro¶nej,
@@ -119,11 +119,11 @@ Ten pakiet zawiera kompilator objc generuj±cy kod pod Win32.
 
 # does this even work?
 %package fortran
-Summary:	Mingw32 binary utility development utilities - fortran
-Summary(pl):	Zestaw narzêdzi mingw32 - fortran
+Summary:	Mingw32 binary utility development utilities - Fortran
+Summary(pl):	Zestaw narzêdzi mingw32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Obsoletes:	%{name}-g77
+Obsoletes:	crossmingw32-gcc-g77
 
 %description fortran
 crossmingw32 is a complete cross-compiling development system for
@@ -132,7 +132,7 @@ the Mingw32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
-This package contains cross targeted fortran.
+This package contains cross targeted Fortran compiler.
 
 %description fortran -l pl
 crossmingw32 jest kompletnym systemem do kompilacji skro¶nej,
@@ -141,12 +141,12 @@ bibliotek mingw32. System sk³ada siê z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generuj±ce kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
-Ten pakiet zawiera fortran generuj±cy kod pod Win32.
+Ten pakiet zawiera kompilator Fortranu generuj±cy kod pod Win32.
 
 # does this even work?
 %package java
-Summary:	Mingw32 binary utility development utilities - java
-Summary(pl):	Zestaw narzêdzi mingw32 - java
+Summary:	Mingw32 binary utility development utilities - Java
+Summary(pl):	Zestaw narzêdzi mingw32 - Java
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -157,7 +157,7 @@ the Mingw32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
-This package contains cross targeted java.
+This package contains cross targeted Java compiler.
 
 %description java -l pl
 
