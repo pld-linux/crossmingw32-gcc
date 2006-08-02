@@ -33,6 +33,7 @@ BuildRequires:	flex
 BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
+BuildRequires:	mpfr-devel
 Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
 Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
