@@ -29,7 +29,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
 BuildRequires:	flex
-%if %{without bootstrap}
+%if !%{with bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
