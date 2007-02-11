@@ -6,7 +6,6 @@ Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
 Summary(es):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
 Summary(fr):	Utilitaires de développement binaire de GNU - Mingw32 gcc
 Summary(pl):	Skro¶ne narzêdzia programistyczne GNU dla Mingw32 - gcc
-Summary(pt_BR): Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
 Summary(tr):	GNU geliþtirme araçlarý - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	4.1.1
