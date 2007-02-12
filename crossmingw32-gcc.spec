@@ -3,11 +3,11 @@
 %bcond_with	bootstrap	# bootstrap build (using binary w32api/mingw)
 #
 Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
-Summary(es.UTF-8):   Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
-Summary(fr.UTF-8):   Utilitaires de développement binaire de GNU - Mingw32 gcc
-Summary(pl.UTF-8):   Skrośne narzędzia programistyczne GNU dla Mingw32 - gcc
-Summary(pt_BR.UTF-8):   Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
-Summary(tr.UTF-8):   GNU geliştirme araçları - Mingw32 gcc
+Summary(es.UTF-8):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
+Summary(fr.UTF-8):	Utilitaires de développement binaire de GNU - Mingw32 gcc
+Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla Mingw32 - gcc
+Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
+Summary(tr.UTF-8):	GNU geliştirme araçları - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	4.1.1
 Release:	2
@@ -70,7 +70,7 @@ Ten pakiet zawiera gcc generujące skrośnie kod dla Win32.
 
 %package c++
 Summary:	Mingw32 binary utility development utilities - g++
-Summary(pl.UTF-8):   Zestaw narzędzi mingw32 - g++
+Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - g++
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -96,7 +96,7 @@ libstdc++.
 # does this even work?
 %package objc
 Summary:	Mingw32 binary utility development utilities - objc
-Summary(pl.UTF-8):   Zestaw narzędzi mingw32 - objc
+Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - objc
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -121,7 +121,7 @@ Ten pakiet zawiera kompilator objc generujący kod pod Win32.
 # does this even work?
 %package fortran
 Summary:	Mingw32 binary utility development utilities - Fortran
-Summary(pl.UTF-8):   Zestaw narzędzi mingw32 - Fortran
+Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Obsoletes:	crossmingw32-gcc-g77
@@ -147,7 +147,7 @@ Ten pakiet zawiera kompilator Fortranu generujący kod pod Win32.
 # does this even work?
 %package java
 Summary:	Mingw32 binary utility development utilities - Java
-Summary(pl.UTF-8):   Zestaw narzędzi mingw32 - Java
+Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - Java
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
