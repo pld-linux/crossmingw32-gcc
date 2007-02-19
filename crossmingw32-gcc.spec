@@ -9,19 +9,19 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla Mingw32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - Mingw32 gcc
 Name:		crossmingw32-gcc
-Version:	4.1.1
-Release:	2
+Version:	4.1.2
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	ad9f97a4d04982ccf4fd67cb464879f3
-%define		apiver	3.7
+# Source0-md5:	a4a3eb15c96030906d8494959eeda23c
+%define		apiver	3.8
 Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
-# Source1-md5:	0b3a6d08136581c93b3a3207588acea9
-%define		runver	3.10
+# Source1-md5:	b53fdf670f33d2e901749f4792e659f2
+%define		runver	3.11
 Source2:	http://dl.sourceforge.net/mingw/mingw-runtime-%{runver}.tar.gz
-# Source2-md5:	7fa2638d23136fd84d5d627bef3b408a
+# Source2-md5:	e1c21f8c4ece49d8bd9fef9e1b0e44a7
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
