@@ -29,7 +29,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
 BuildRequires:	flex
-%if !%{with bootstrap}
+%if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
@@ -44,7 +44,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		gccarch		%{_libdir}/gcc/%{target}
 %define		gcclib		%{gccarch}/%{version}
 
-%define		_noautostrip	.*/lib.*\\.a	
+%define		_noautostrip	.*/lib.*\\.a
 
 %description
 crossmingw32 is a complete cross-compiling development system for
