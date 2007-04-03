@@ -16,12 +16,12 @@ License:	GPL
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 # Source0-md5:	a4a3eb15c96030906d8494959eeda23c
-%define		apiver	3.8
+%define		apiver	3.9
 Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
-# Source1-md5:	b53fdf670f33d2e901749f4792e659f2
-%define		runver	3.11
+# Source1-md5:	6df787f64fdeac6a209c98346dc1611c
+%define		runver	3.12
 Source2:	http://dl.sourceforge.net/mingw/mingw-runtime-%{runver}.tar.gz
-# Source2-md5:	e1c21f8c4ece49d8bd9fef9e1b0e44a7
+# Source2-md5:	530fe503fced8bc7f7b7be0aa6e00c5c
 Patch0:		gcc-nodebug.patch
 Patch1:		%{name}-noioctl.patch
 BuildRequires:	autoconf
