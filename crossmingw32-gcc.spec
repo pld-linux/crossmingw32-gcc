@@ -10,20 +10,22 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - Mingw32 gcc
 Name:		crossmingw32-gcc
 Version:	4.1.2
-Release:	1
+Release:	2
 Epoch:		1
-License:	GPL
+License:	GPL v2+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 # Source0-md5:	a4a3eb15c96030906d8494959eeda23c
-%define		apiver	3.9
+%define		apiver	3.10
 Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
-# Source1-md5:	6df787f64fdeac6a209c98346dc1611c
-%define		runver	3.12
+# Source1-md5:	7067a6b3ac9d94bb753f9f6f37e2033c
+%define		runver	3.13
 Source2:	http://dl.sourceforge.net/mingw/mingw-runtime-%{runver}.tar.gz
-# Source2-md5:	530fe503fced8bc7f7b7be0aa6e00c5c
-Patch0:		gcc-nodebug.patch
+# Source2-md5:	22179021f41d5eee76447b78fb94a3fb
+Patch0:		gcc-4.1-nodebug.patch
 Patch1:		%{name}-noioctl.patch
+Patch2:		gcc-4.1-texinfo.patch
+Patch3:		gcc-4.1-pr29826.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -34,6 +36,7 @@ BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
 BuildRequires:	mpfr-devel
+BuildRequires:	texinfo >= 4.2
 Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
 Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -177,8 +180,11 @@ mkdir winsup
 tar xzf %{SOURCE1} -C winsup
 tar xzf %{SOURCE2} -C winsup
 %endif
-#{!?debug:%patch0 -p1}
+%{!?debug:%patch0 -p1}
 %patch1 -p1
+%patch2 -p1
+cd gcc
+%patch3 -p0
 
 %build
 %if %{with bootstrap}
@@ -192,6 +198,7 @@ build_tooldir=%{arch}
 
 cp /usr/share/automake/config.sub .
 cp /usr/share/automake/config.sub boehm-gc
+# avoid autoconf call, breaks build
 
 rm -rf obj-%{target_platform}
 install -d obj-%{target_platform}
