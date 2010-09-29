@@ -1,0 +1,81 @@
+--- gcc/libgcc/Makefile.in.org	2010-04-29 23:43:30.179106889 +0200
++++ gcc/libgcc/Makefile.in	2010-04-29 23:43:41.993233119 +0200
+@@ -64,7 +64,7 @@
+ AR = @AR@
+ AR_FLAGS = rc
+ 
+-CC = @CC@
++override CC = @CC@
+ CFLAGS = @CFLAGS@
+ RANLIB = @RANLIB@
+ LN_S = @LN_S@
+--- gcc/libgcc/configure.org	2010-09-29 01:36:46.047000017 +0200
++++ gcc/libgcc/configure	2010-09-29 01:40:00.929000003 +0200
+@@ -2687,6 +2687,7 @@
+ set dummy ${ac_tool_prefix}gcc; ac_word=$2
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+ $as_echo_n "checking for $ac_word... " >&6; }
++CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
+ if test "${ac_cv_prog_CC+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+--- gcc/libiberty/Makefile.in.org	2010-04-29 23:53:50.429231967 +0200
++++ gcc/libiberty/Makefile.in	2010-04-29 23:54:00.206482863 +0200
+@@ -53,7 +53,7 @@
+ AR = @AR@
+ AR_FLAGS = rc
+ 
+-CC = @CC@
++override CC = @CC@
+ CFLAGS = @CFLAGS@
+ CPPFLAGS = @CPPFLAGS@
+ RANLIB = @RANLIB@
+--- gcc/libiberty/configure.org	2010-09-29 01:46:07.266000013 +0200
++++ gcc/libiberty/configure	2010-09-29 01:46:35.758000014 +0200
+@@ -2789,6 +2789,7 @@
+ set dummy ${ac_tool_prefix}gcc; ac_word=$2
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+ $as_echo_n "checking for $ac_word... " >&6; }
++CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
+ if test "${ac_cv_prog_CC+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else
+--- gcc/libstdc++-v3/Makefile.in.org	2010-04-29 23:58:03.243106668 +0200
++++ gcc/libstdc++-v3/Makefile.in	2010-04-29 23:57:34.857355967 +0200
+@@ -115,7 +115,7 @@
+ AWK = @AWK@
+ BASIC_FILE_CC = @BASIC_FILE_CC@
+ BASIC_FILE_H = @BASIC_FILE_H@
+-CC = @CC@
++override CC = @CC@
+ CCODECVT_CC = @CCODECVT_CC@
+ CCOLLATE_CC = @CCOLLATE_CC@
+ CCTYPE_CC = @CCTYPE_CC@
+@@ -133,7 +133,7 @@
+ CSTDIO_H = @CSTDIO_H@
+ CTIME_CC = @CTIME_CC@
+ CTIME_H = @CTIME_H@
+-CXX = @CXX@
++override CXX = @CXX@
+ CXXCPP = @CXXCPP@
+ CXXFLAGS = @CXXFLAGS@
+ CYGPATH_W = @CYGPATH_W@
+--- gcc/libstdc++-v3/configure.org	2010-09-29 01:48:10.661000013 +0200
++++ gcc/libstdc++-v3/configure	2010-09-29 01:51:34.583000014 +0200
+@@ -3498,6 +3498,7 @@
+ save_CXXFLAGS="$CXXFLAGS"
+ CXXFLAGS="$CXXFLAGS -fno-builtin"
+ ac_ext=c
++CPP=$CXXCPP
+ ac_cpp='$CPP $CPPFLAGS'
+ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+@@ -3507,6 +3508,8 @@
+ set dummy ${ac_tool_prefix}gcc; ac_word=$2
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+ $as_echo_n "checking for $ac_word... " >&6; }
++CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
++CXX="$CXX -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
+ if test "${ac_cv_prog_CC+set}" = set; then :
+   $as_echo_n "(cached) " >&6
+ else

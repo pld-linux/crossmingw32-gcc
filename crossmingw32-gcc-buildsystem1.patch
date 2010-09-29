@@ -1,0 +1,20 @@
+--- gcc/configure.org	2010-04-29 22:25:12.838231797 +0200
++++ gcc/configure	2010-04-29 22:28:10.261481922 +0200
+@@ -5571,7 +5571,7 @@
+     exit 1
+   fi
+   if test x"${with_headers}" != xyes ; then
+-    x=${gcc_cv_tool_prefix}
++    x=sysroot
+     copy_dirs="${copy_dirs} ${with_headers} $x/${target_noncanonical}/sys-include"
+   fi
+ fi
+@@ -5587,7 +5587,7 @@
+   if test x"${with_libs}" != xyes ; then
+     # Copy the libraries in reverse order, so that files in the first named
+     # library override files in subsequent libraries.
+-    x=${gcc_cv_tool_prefix}
++    x=sysroot
+     for l in ${with_libs}; do
+       copy_dirs="$l $x/${target_noncanonical}/lib ${copy_dirs}"
+     done
