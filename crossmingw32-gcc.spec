@@ -16,7 +16,7 @@ Name:		crossmingw32-gcc
 Version:	4.5.1
 Release:	1
 Epoch:		1
-License:	GPL v2+
+License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 # Source0-md5:	48231a8e33ed6e058a341c53b819de1a
