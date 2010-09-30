@@ -4,14 +4,14 @@
 # - openmp
 #
 # Conditional build:
-%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingw)
+%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt)
 #
-Summary:	Cross Mingw32 GNU binary utility development utilities - gcc
-Summary(es.UTF-8):	Utilitarios para desarrollo de binarios de la GNU - Mingw32 gcc
-Summary(fr.UTF-8):	Utilitaires de développement binaire de GNU - Mingw32 gcc
-Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla Mingw32 - gcc
-Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mingw32 gcc
-Summary(tr.UTF-8):	GNU geliştirme araçları - Mingw32 gcc
+Summary:	Cross MinGW32 GNU binary utility development utilities - gcc
+Summary(es.UTF-8):	Utilitarios para desarrollo de binarios de la GNU - MinGW32 gcc
+Summary(fr.UTF-8):	Utilitaires de développement binaire de GNU - MinGW32 gcc
+Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
+Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
+Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.5.1
 Release:	1
@@ -59,7 +59,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
+the MinGW32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
@@ -72,22 +72,22 @@ anderem Rechner Code für Win32 zu generieren.
 %description -l pl.UTF-8
 crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
 pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek Mingw32. System składa się z binutils, gcc z g++ i objc,
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
 Ten pakiet zawiera gcc generujące skrośnie kod dla Win32.
 
 %package c++
-Summary:	Mingw32 binary utility development utilities - g++
-Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - g++
+Summary:	MinGW32 binary utility development utilities - g++
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - g++
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description c++
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
+the MinGW32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
@@ -96,7 +96,7 @@ This package contains cross targeted g++ and (static) libstdc++.
 %description c++ -l pl.UTF-8
 crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
 pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek mingw32. System składa się z binutils, gcc z g++ i objc,
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
@@ -107,15 +107,15 @@ libstdc++.
 %if 0
 # does this even work?
 %package objc
-Summary:	Mingw32 binary utility development utilities - objc
-Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - objc
+Summary:	MinGW32 binary utility development utilities - objc
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - objc
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description objc
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
+the MinGW32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
@@ -124,7 +124,7 @@ This package contains cross targeted objc compiler.
 %description objc -l pl.UTF-8
 crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
 pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek mingw32. System składa się z binutils, gcc z g++ i objc,
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
@@ -132,8 +132,8 @@ Ten pakiet zawiera kompilator objc generujący kod pod Win32.
 
 # does this even work?
 %package fortran
-Summary:	Mingw32 binary utility development utilities - Fortran
-Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - Fortran
+Summary:	MinGW32 binary utility development utilities - Fortran
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Obsoletes:	crossmingw32-gcc-g77
@@ -141,7 +141,7 @@ Obsoletes:	crossmingw32-gcc-g77
 %description fortran
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
+the MinGW32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
@@ -150,7 +150,7 @@ This package contains cross targeted Fortran compiler.
 %description fortran -l pl.UTF-8
 crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
 pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek mingw32. System składa się z binutils, gcc z g++ i objc,
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
@@ -158,25 +158,24 @@ Ten pakiet zawiera kompilator Fortranu generujący kod pod Win32.
 
 # does this even work?
 %package java
-Summary:	Mingw32 binary utility development utilities - Java
-Summary(pl.UTF-8):	Zestaw narzędzi mingw32 - Java
+Summary:	MinGW32 binary utility development utilities - Java
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Java
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description java
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
-the Mingw32 build libraries. This includes a binutils, gcc with g++
+the MinGW32 build libraries. This includes a binutils, gcc with g++
 and objc, and libstdc++, all cross targeted to i386-mingw32, along
 with supporting Win32 libraries in 'coff' format from free sources.
 
 This package contains cross targeted Java compiler.
 
 %description java -l pl.UTF-8
-
 crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
 pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek mingw32. System składa się z binutils, gcc z g++ i objc,
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
 libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
@@ -276,6 +275,7 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/cc1plus $RPM_BUILD_ROOT
 mv -f $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/collect2 $RPM_BUILD_ROOT%{arch}/bin/collect2
 
 install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{arch}/bin
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
