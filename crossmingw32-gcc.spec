@@ -1,6 +1,6 @@
 #
 # TODO:
-# - restore languages other than c, c++
+# - restore fortran
 # - openmp
 #
 # Conditional build:
@@ -195,7 +195,6 @@ libobjc DLL library for Windows.
 %description -n crossmingw32-libobjc-dll -l pl.UTF-8
 Biblioteka DLL libobjc dla Windows.
 
-# does this even work?
 %package fortran
 Summary:	MinGW32 binary utility development utilities - Fortran
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
@@ -221,7 +220,6 @@ z bibliotek w formacie COFF.
 
 Ten pakiet zawiera kompilator Fortranu generujący kod pod Win32.
 
-# does this even work?
 %package java
 Summary:	MinGW32 binary utility development utilities - Java
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Java
@@ -267,7 +265,6 @@ echo "release" > gcc/DEV-PHASE
 rm -rf builddir && install -d builddir && cd builddir
 %if %{with bootstrap}
 install -d %{target}/winsup
-# sysroot/%{target}/lib
 ln -sf ../../../winsup/mingw/lib %{target}/winsup/mingw
 ln -sf ../../../winsup/w32api %{target}/winsup/w32api
 WINSUPDIR=$(cd ..; pwd)/winsup
@@ -294,7 +291,7 @@ TEXCONFIG=false \
 	--with-mangler-in-ld \
 	--with-long-double-128 \
 	--enable-threads \
-	--enable-languages="c,c++,objc" \
+	--enable-languages="c,c++,java,objc" \
 	--enable-c99 \
 	--enable-long-long \
 	--enable-fully-dynamic-string \
@@ -308,7 +305,7 @@ TEXCONFIG=false \
 	--disable-multilib \
 	--disable-libssp \
 	--target=%{target}
-# ,fortran,java
+# ,fortran
 
 cd ..
 %{__make} -C builddir all-host
@@ -329,11 +326,13 @@ mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROO
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
-# restore hardlinks
+# make links in host bindir
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
+ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
+ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
@@ -353,6 +352,8 @@ fi
 %{__rm} -r $RPM_BUILD_ROOT%{_infodir}
 # common FSF man pages
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man7/{fsf-funding,gfdl,gpl}.7
+# programs not packaged
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/%{target}-{aot-compile,gc-analyze,gcj-dbtool,gij,grmic,jv-convert,rebuild-gcj-db}.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -414,7 +415,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libstdc++-6.dll
 
-# no obj-c, fortran, java for the moment
 %files objc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gcclibdir}/cc1obj
@@ -430,36 +430,27 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libobjc-2.dll
 
+# no fortran for the moment
 %if 0
 %files fortran
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
 %attr(755,root,root) %{arch}/bin/gfortran
-%attr(755,root,root) %{gcclib}/f951
+%attr(755,root,root) %{gcclibdir}/f951
 %{arch}/lib/libgfortran.a
 %{arch}/lib/libgfortran.la
 %{arch}/lib/libgfortranbegin.a
 %{arch}/lib/libgfortranbegin.la
 %{_mandir}/man1/%{target}-gfortran.1*
+%endif
 
 %files java
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
-%attr(755,root,root) %{_bindir}/%{target}-gcjh
-%attr(755,root,root) %{_bindir}/%{target}-gjnih
-%attr(755,root,root) %{_bindir}/%{target}-grepjar
-%attr(755,root,root) %{_bindir}/%{target}-fastjar
 %attr(755,root,root) %{_bindir}/%{target}-jcf-dump
-%attr(755,root,root) %{_bindir}/%{target}-jv-scan
-#%attr(755,root,root) %{arch}/bin/grepjar
-#%attr(755,root,root) %{arch}/bin/jar
-%attr(755,root,root) %{gcclib}/jc1
-%attr(755,root,root) %{gcclib}/jvgenmain
+%attr(755,root,root) %{arch}/bin/%{target}-gcj
+%attr(755,root,root) %{arch}/bin/%{target}-jcf-dump
+%attr(755,root,root) %{gcclibdir}/jc1
+%attr(755,root,root) %{gcclibdir}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
-%{_mandir}/man1/%{target}-gcjh.1*
-%{_mandir}/man1/%{target}-gjnih.1*
-%{_mandir}/man1/%{target}-grepjar.1*
-%{_mandir}/man1/%{target}-fastjar.1*
 %{_mandir}/man1/%{target}-jcf-dump.1*
-%{_mandir}/man1/%{target}-jv-scan.1*
-%endif
