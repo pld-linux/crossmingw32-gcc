@@ -1,6 +1,5 @@
 #
 # TODO:
-# - restore fortran
 # - openmp
 #
 # Conditional build:
@@ -220,6 +219,30 @@ z bibliotek w formacie COFF.
 
 Ten pakiet zawiera kompilator Fortranu generujący kod pod Win32.
 
+%package -n crossmingw32-libgfortran-static
+Summary:	Static Fortran library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka Fortrana - wersja skrośna MinGW32
+Group:		Development/Libraries
+Requires:	%{name}-fortran = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libgfortran-static
+Static Fortran library - cross MinGW32 version.
+
+%description -n crossmingw32-libgfortran-static -l pl.UTF-8
+Statyczna biblioteka Fortrana - wersja skrośna MinGW32.
+
+%package -n crossmingw32-libgfortran-dll
+Summary:	libgfortran DLL library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL libgfortran dla Windows
+Group:		Applications/Emulators
+Requires:	wine
+
+%description -n crossmingw32-libgfortran-dll
+libgfortran DLL library for Windows.
+
+%description -n crossmingw32-libgfortran-dll -l pl.UTF-8
+Biblioteka DLL libgfortran dla Windows.
+
 %package java
 Summary:	MinGW32 binary utility development utilities - Java
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Java
@@ -291,7 +314,7 @@ TEXCONFIG=false \
 	--with-mangler-in-ld \
 	--with-long-double-128 \
 	--enable-threads \
-	--enable-languages="c,c++,java,objc" \
+	--enable-languages="c,c++,fortran,java,objc" \
 	--enable-c99 \
 	--enable-long-long \
 	--enable-fully-dynamic-string \
@@ -305,7 +328,6 @@ TEXCONFIG=false \
 	--disable-multilib \
 	--disable-libssp \
 	--target=%{target}
-# ,fortran
 
 cd ..
 %{__make} -C builddir all-host
@@ -333,6 +355,7 @@ ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{targe
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
+ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
@@ -430,19 +453,26 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libobjc-2.dll
 
-# no fortran for the moment
-%if 0
 %files fortran
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
+%attr(755,root,root) %{arch}/bin/%{target}-gfortran
 %attr(755,root,root) %{arch}/bin/gfortran
 %attr(755,root,root) %{gcclibdir}/f951
-%{arch}/lib/libgfortran.a
-%{arch}/lib/libgfortran.la
-%{arch}/lib/libgfortranbegin.a
-%{arch}/lib/libgfortranbegin.la
+%{gcclibdir}/finclude
+%{gcclibdir}/libgfortran.dll.a
+%{gcclibdir}/libgfortran.la
+%{gcclibdir}/libgfortranbegin.a
+%{gcclibdir}/libgfortranbegin.la
 %{_mandir}/man1/%{target}-gfortran.1*
-%endif
+
+%files -n crossmingw32-libgfortran-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libgfortran.a
+
+%files -n crossmingw32-libgfortran-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libgfortran-3.dll
 
 %files java
 %defattr(644,root,root,755)
