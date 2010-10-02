@@ -20,12 +20,12 @@ License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
 # Source0-md5:	48231a8e33ed6e058a341c53b819de1a
-%define		apiver	3.10
-Source1:	http://dl.sourceforge.net/mingw/w32api-%{apiver}.tar.gz
-# Source1-md5:	7067a6b3ac9d94bb753f9f6f37e2033c
-%define		runver	3.13
-Source2:	http://dl.sourceforge.net/mingw/mingw-runtime-%{runver}.tar.gz
-# Source2-md5:	22179021f41d5eee76447b78fb94a3fb
+%define		apiver	3.15
+Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-1-mingw32-dev.tar.lzma
+# Source1-md5:	efcbcadd0299a6413d95b9ce919ede9f
+%define		runver	3.18
+Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-mingw32-dev.tar.gz
+# Source2-md5:	e49803d8c14b1ffa6e24e5b5fee31a3d
 # svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_5_1_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_5-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
@@ -43,14 +43,19 @@ BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
 BuildRequires:	mpfr-devel
 BuildRequires:	texinfo >= 4.2
+%if %{with booststrap}
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
+%endif
 Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
 Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		i386-mingw32
 %define		arch		%{_prefix}/%{target}
-%define		gccarch		%{_libdir}/gcc/%{target}
-%define		gcclib		%{gccarch}/%{version}
+%define		gccarchdir	%{_libdir}/gcc/%{target}
+%define		gcclibdir	%{gccarchdir}/%{version}
+%define		_dlldir		/usr/share/wine/windows/system
 
 %define		_noautostrip	.*/lib.*\\.a
 
@@ -78,6 +83,18 @@ z bibliotek w formacie COFF.
 
 Ten pakiet zawiera gcc generujące skrośnie kod dla Win32.
 
+%package -n crossmingw32-libgcc-dll
+Summary:	libgcc DLL library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL libgcc dla Windows
+Group:		Applications/Emulators
+Requires:	wine
+
+%description -n crossmingw32-libgcc-dll
+libgcc DLL library for Windows.
+
+%description -n crossmingw32-libgcc-dll -l pl.UTF-8
+Biblioteka DLL libgcc dla Windows.
+
 %package c++
 Summary:	MinGW32 binary utility development utilities - g++
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - g++
@@ -103,8 +120,31 @@ z bibliotek w formacie COFF.
 Ten pakiet zawiera g++ generujące kod pod Win32 oraz bibliotekę
 libstdc++.
 
-# no obj-c, fortran, java for the moment
-%if 0
+%package -n crossmingw32-libstdc++-static
+Summary:	Static standard C++ library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka standardowa C++ - wersja skrośna MinGW32
+Group:		Development/Libraries
+Requires:	%{name}-c++ = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libstdc++-static
+Static standard C++ library - cross MinGW32 version.
+
+%description -n crossmingw32-libstdc++-static -l pl.UTF-8
+Statyczna biblioteka standardowa C++ - wersja skrośna MinGW32.
+
+%package -n crossmingw32-libstdc++-dll
+Summary:	libstdc++ DLL library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL libstdc++ dla Windows
+Group:		Applications/Emulators
+Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
+Requires:	wine
+
+%description -n crossmingw32-libstdc++-dll
+libstdc++ DLL library for Windows.
+
+%description -n crossmingw32-libstdc++-dll -l pl.UTF-8
+Biblioteka DLL libstdc++ dla Windows.
+
 # does this even work?
 %package objc
 Summary:	MinGW32 binary utility development utilities - objc
@@ -180,7 +220,6 @@ libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
 Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
-%endif
 
 %prep
 %setup -q -n gcc-%{version}
@@ -189,9 +228,10 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch2 -p1
 
 %if %{with bootstrap}
-mkdir winsup
-tar xzf %{SOURCE1} -C winsup
-tar xzf %{SOURCE2} -C winsup
+# note: "winsup" dirs below are special, handled by gcc's configure
+install -d winsup/{mingw,w32api}
+tar xf %{SOURCE1} -C winsup/w32api
+tar xf %{SOURCE2} -C winsup/mingw
 %endif
 
 # override snapshot version.
@@ -199,13 +239,14 @@ echo %{version} > gcc/BASE-VER
 echo "release" > gcc/DEV-PHASE
 
 %build
-%if %{with bootstrap}
-for tool in as ar dlltool ld nm ranlib strip ; do
-	ln -sf %{arch}/bin/$tool winsup/bin/$tool
-done
-%endif
-
 rm -rf builddir && install -d builddir && cd builddir
+%if %{with bootstrap}
+install -d %{target}/winsup
+# sysroot/%{target}/lib
+ln -sf ../../../winsup/mingw/lib %{target}/winsup/mingw
+ln -sf ../../../winsup/w32api %{target}/winsup/w32api
+WINSUPDIR=$(cd ..; pwd)/winsup
+%endif
 
 CC="%{__cc}" \
 CFLAGS="%{rpmcflags}" \
@@ -213,10 +254,12 @@ CXXFLAGS="%{rpmcxxflags}" \
 TEXCONFIG=false \
 ../configure \
 	--prefix=%{arch} \
+	--libdir=%{_libdir} \
+	--libexecdir=%{_libdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
-	--with-headers=%{arch}/include \
-	--with-libs=%{arch}/lib \
+	%{!?with_bootstrap:--with-headers=%{arch}/include} \
+	--with-libs=%{!?with_bootstrap:%{arch}/lib}%{?with_bootstrap:${WINSUPDIR}/mingw/lib} \
 	--with-build-time-tools=%{arch}/bin \
 	--with-dwarf2 \
 	--with-gnu-as \
@@ -238,6 +281,7 @@ TEXCONFIG=false \
 	--disable-multilib \
 	--disable-libssp \
 	--target=%{target}
+# ,fortran,java,objc
 
 cd ..
 %{__make} -C builddir all-host
@@ -246,14 +290,21 @@ patch -p1 <%{PATCH1}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}}
+install -d $RPM_BUILD_ROOT%{_bindir}
 
 %{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%if 0%{!?debug:1}
-%{target}-strip -g -R.note -R.comment $RPM_BUILD_ROOT%{arch}/lib/lib*.a
-%endif
+# host (ELF) library
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libiberty.a
+
+# cross library - strange path
+install -d $RPM_BUILD_ROOT%{arch}/lib
+mv -f $RPM_BUILD_ROOT%{arch}/%{target}/lib/libiberty.a $RPM_BUILD_ROOT%{arch}/lib
+
+mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
+%{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
+%{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
 # restore hardlinks
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
@@ -261,20 +312,21 @@ ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{targe
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
 
-install -d $RPM_BUILD_ROOT%{_libdir}
-install -d $RPM_BUILD_ROOT%{_libdir}/gcc
+# DLLs
+install -d $RPM_BUILD_ROOT%{_dlldir}
+mv -f $RPM_BUILD_ROOT%{arch}/bin/libstdc++-6.dll $RPM_BUILD_ROOT%{_dlldir}
+install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
 
-cp -r $RPM_BUILD_ROOT%{arch}/libexec/gcc/%{target} $RPM_BUILD_ROOT%{_libdir}/gcc
-cp -r $RPM_BUILD_ROOT%{arch}/lib/gcc/%{target} $RPM_BUILD_ROOT%{_libdir}/gcc
-rm -rf $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/install-tools
-rm -rf $RPM_BUILD_ROOT%{arch}/libexec
-rm -rf $RPM_BUILD_ROOT%{arch}/lib/gcc
+%if 0%{!?debug:1}
+%{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
+%{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{gcclibdir}/lib*.a \
+	$RPM_BUILD_ROOT%{arch}/lib/lib*.a
+%endif
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/cc1 $RPM_BUILD_ROOT%{arch}/bin/cc1
-mv -f $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/cc1plus $RPM_BUILD_ROOT%{arch}/bin/cc1plus
-mv -f $RPM_BUILD_ROOT%{_libdir}/gcc/%{target}/%{version}/collect2 $RPM_BUILD_ROOT%{arch}/bin/collect2
-
-install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{arch}/bin
+# already in native gcc
+%{__rm} -r $RPM_BUILD_ROOT%{_infodir}
+# common FSF man pages
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man7/{fsf-funding,gfdl,gpl}.7
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -284,28 +336,54 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcc
 %attr(755,root,root) %{_bindir}/%{target}-cpp
 %attr(755,root,root) %{_bindir}/%{target}-gcov
-%attr(755,root,root) %{arch}/bin/%{target}-gcc*
+%attr(755,root,root) %{arch}/bin/%{target}-gcc
+%attr(755,root,root) %{arch}/bin/%{target}-gcc-%{version}
+%attr(755,root,root) %{arch}/bin/%{target}-gccbug
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
-%attr(755,root,root) %{arch}/bin/cc1
-%attr(755,root,root) %{arch}/bin/collect2
-%{arch}/bin/*.dll
-
-%{_libdir}/gcc/%{target}
-%{arch}/%{_lib}/libiberty.a
-
+%{arch}/lib/libiberty.a
+%dir %{gccarchdir}
+%dir %{gcclibdir}
+%attr(755,root,root) %{gcclibdir}/cc1
+%attr(755,root,root) %{gcclibdir}/collect2
+%attr(755,root,root) %{gcclibdir}/lto-wrapper
+%{gcclibdir}/libgcc.a
+%{gcclibdir}/libgcc_eh.a
+%{gcclibdir}/libgcc_s.a
+%{gcclibdir}/libgcov.a
+%dir %{gcclibdir}/include
+%{gcclibdir}/include/*.h
 %{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
 %{_mandir}/man1/%{target}-gcov.1*
+
+%files -n crossmingw32-libgcc-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libgcc_s_dw2-1.dll
 
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-g++
 %attr(755,root,root) %{arch}/bin/%{target}-c++
 %attr(755,root,root) %{arch}/bin/%{target}-g++
-%attr(755,root,root) %{arch}/bin/cc1plus
-
+%attr(755,root,root) %{gcclibdir}/cc1plus
+%{gcclibdir}/libstdc++.dll.a
+%{gcclibdir}/libstdc++.la
+%{gcclibdir}/libsupc++.la
+%{gcclibdir}/libsupc++.a
+%{gcclibdir}/crtbegin.o
+%{gcclibdir}/crtend.o
+%{gcclibdir}/crtfastmath.o
+%{gcclibdir}/include/c++
 %{_mandir}/man1/%{target}-g++.1*
+
+%files -n crossmingw32-libstdc++-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libstdc++.a
+
+%files -n crossmingw32-libstdc++-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libstdc++-6.dll
 
 # no obj-c, fortran, java for the moment
 %if 0
