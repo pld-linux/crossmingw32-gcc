@@ -52,7 +52,8 @@ Requires:	gcc-dirs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		i386-mingw32
-%define		arch		%{_prefix}/%{target}
+%define		sysprefix	/usr
+%define		arch		%{sysprefix}/%{target}
 %define		gccarchdir	%{_libdir}/gcc/%{target}
 %define		gcclibdir	%{gccarchdir}/%{version}
 %define		_dlldir		/usr/share/wine/windows/system
@@ -145,7 +146,6 @@ libstdc++ DLL library for Windows.
 %description -n crossmingw32-libstdc++-dll -l pl.UTF-8
 Biblioteka DLL libstdc++ dla Windows.
 
-# does this even work?
 %package objc
 Summary:	MinGW32 binary utility development utilities - objc
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - objc
@@ -169,6 +169,31 @@ libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
 Ten pakiet zawiera kompilator objc generujący kod pod Win32.
+
+%package -n crossmingw32-libobjc-static
+Summary:	Static Objective C library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka Objective C - wersja skrośna MinGW32
+Group:		Development/Libraries
+Requires:	%{name}-objc = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libobjc-static
+Static Objective C library - cross MinGW32 version.
+
+%description -n crossmingw32-libobjc-static -l pl.UTF-8
+Statyczna biblioteka Objective C - wersja skrośna MinGW32.
+
+%package -n crossmingw32-libobjc-dll
+Summary:	libobjc DLL library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL libobjc dla Windows
+Group:		Applications/Emulators
+Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
+Requires:	wine
+
+%description -n crossmingw32-libobjc-dll
+libobjc DLL library for Windows.
+
+%description -n crossmingw32-libobjc-dll -l pl.UTF-8
+Biblioteka DLL libobjc dla Windows.
 
 # does this even work?
 %package fortran
@@ -253,8 +278,10 @@ CFLAGS="%{rpmcflags}" \
 CXXFLAGS="%{rpmcxxflags}" \
 TEXCONFIG=false \
 ../configure \
-	--prefix=%{arch} \
+	--prefix=%{sysprefix} \
+	--bindir=%{arch}/bin \
 	--libdir=%{_libdir} \
+	--includedir=%{arch}/include \
 	--libexecdir=%{_libdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
@@ -267,7 +294,7 @@ TEXCONFIG=false \
 	--with-mangler-in-ld \
 	--with-long-double-128 \
 	--enable-threads \
-	--enable-languages="c,c++" \
+	--enable-languages="c,c++,objc" \
 	--enable-c99 \
 	--enable-long-long \
 	--enable-fully-dynamic-string \
@@ -281,7 +308,7 @@ TEXCONFIG=false \
 	--disable-multilib \
 	--disable-libssp \
 	--target=%{target}
-# ,fortran,java,objc
+# ,fortran,java
 
 cd ..
 %{__make} -C builddir all-host
@@ -298,10 +325,6 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 # host (ELF) library
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libiberty.a
 
-# cross library - strange path
-install -d $RPM_BUILD_ROOT%{arch}/lib
-mv -f $RPM_BUILD_ROOT%{arch}/%{target}/lib/libiberty.a $RPM_BUILD_ROOT%{arch}/lib
-
 mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
@@ -314,8 +337,11 @@ ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{targ
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
-mv -f $RPM_BUILD_ROOT%{arch}/bin/libstdc++-6.dll $RPM_BUILD_ROOT%{_dlldir}
-install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
+mv -f $RPM_BUILD_ROOT%{arch}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
+if [ ! -f $RPM_BUILD_ROOT%{_dlldir}/libgcc_s_dw2-1.dll ]; then
+	echo "libgcc DLL not installed?"
+	install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
+fi
 
 %if 0%{!?debug:1}
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
@@ -341,6 +367,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/%{target}-gccbug
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
+%attr(755,root,root) %{arch}/bin/gcc
 %{arch}/lib/libiberty.a
 %dir %{gccarchdir}
 %dir %{gcclibdir}
@@ -366,6 +393,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-g++
 %attr(755,root,root) %{arch}/bin/%{target}-c++
 %attr(755,root,root) %{arch}/bin/%{target}-g++
+%attr(755,root,root) %{arch}/bin/c++
+%attr(755,root,root) %{arch}/bin/g++
 %attr(755,root,root) %{gcclibdir}/cc1plus
 %{gcclibdir}/libstdc++.dll.a
 %{gcclibdir}/libstdc++.la
@@ -386,13 +415,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_dlldir}/libstdc++-6.dll
 
 # no obj-c, fortran, java for the moment
-%if 0
 %files objc
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gcclib}/cc1obj
-%{arch}/lib/libobjc.a
-%{arch}/lib/libobjc.la
+%attr(755,root,root) %{gcclibdir}/cc1obj
+%{gcclibdir}/libobjc.dll.a
+%{gcclibdir}/libobjc.la
+%{gcclibdir}/include/objc
 
+%files -n crossmingw32-libobjc-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libobjc.a
+
+%files -n crossmingw32-libobjc-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libobjc-2.dll
+
+%if 0
 %files fortran
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
