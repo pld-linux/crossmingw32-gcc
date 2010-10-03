@@ -348,14 +348,14 @@ mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROO
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
-# make links in host bindir
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
-ln -f $RPM_BUILD_ROOT%{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
+# these must be symlinks: gcclibdir is calculated relatively to real binary path
+ln -sf %{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
+ln -sf %{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
+ln -sf %{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
+ln -sf %{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
+ln -sf %{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
+ln -sf %{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
+ln -sf %{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
