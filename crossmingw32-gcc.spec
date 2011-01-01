@@ -12,20 +12,20 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.5.1
-Release:	2
+Version:	4.5.2
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	48231a8e33ed6e058a341c53b819de1a
+# Source0-md5:	d6559145853fbaaa0fd7556ed93bce9a
 %define		apiver	3.15
 Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-1-mingw32-dev.tar.lzma
 # Source1-md5:	efcbcadd0299a6413d95b9ce919ede9f
 %define		runver	3.18
 Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-mingw32-dev.tar.gz
 # Source2-md5:	e49803d8c14b1ffa6e24e5b5fee31a3d
-# svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_5_1_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_5-branch > gcc-branch.diff
+# svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_5_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_5-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
