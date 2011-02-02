@@ -41,6 +41,7 @@ BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
 BuildRequires:	mpfr-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	texinfo >= 4.2
 %if %{with booststrap}
 BuildRequires:	tar >= 1:1.22
