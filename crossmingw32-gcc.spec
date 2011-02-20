@@ -13,7 +13,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.5.2
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -403,6 +403,9 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/libgcc_eh.a
 %{gcclibdir}/libgcc_s.a
 %{gcclibdir}/libgcov.a
+%{gcclibdir}/crtbegin.o
+%{gcclibdir}/crtend.o
+%{gcclibdir}/crtfastmath.o
 %dir %{gcclibdir}/include
 %{gcclibdir}/include/*.h
 %{_mandir}/man1/%{target}-cpp.1*
@@ -425,9 +428,6 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/libstdc++.la
 %{gcclibdir}/libsupc++.la
 %{gcclibdir}/libsupc++.a
-%{gcclibdir}/crtbegin.o
-%{gcclibdir}/crtend.o
-%{gcclibdir}/crtfastmath.o
 %{gcclibdir}/include/c++
 %{_mandir}/man1/%{target}-g++.1*
 
