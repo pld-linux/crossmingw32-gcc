@@ -421,8 +421,8 @@ fi
 # for pretty-printers see native gcc
 %{__rm} $RPM_BUILD_ROOT%{gcclibdir}/libstdc++.dll.a-gdb.py
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/gcc-%{version}/python/libstdcxx
-# plugin infrastructure has no use yet for mingw32
-%{__rm} $RPM_BUILD_ROOT%{gcclibdir}/{liblto_plugin.*,lto1}
+# no plugin development for mingw32 (at least for now)
+%{__rm} $RPM_BUILD_ROOT%{gcclibdir}/liblto_plugin.la
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/plugin
 # already in native gcc
 %{__rm} -r $RPM_BUILD_ROOT%{_infodir}
@@ -450,6 +450,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclibdir}/cc1
 %attr(755,root,root) %{gcclibdir}/collect2
 %attr(755,root,root) %{gcclibdir}/lto-wrapper
+%attr(755,root,root) %{gcclibdir}/lto1
+%attr(755,root,root) %{gcclibdir}/liblto_plugin.so*
 %{gcclibdir}/libgcc.a
 %{gcclibdir}/libgcc_eh.a
 %{gcclibdir}/libgcc_s.a
