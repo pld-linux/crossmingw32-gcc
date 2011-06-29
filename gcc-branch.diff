@@ -1,399 +1,396 @@
-Index: libgomp/configure.tgt
+Index: gcc/reorg.c
 ===================================================================
---- libgomp/configure.tgt	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libgomp/configure.tgt	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -125,6 +125,10 @@
- 	config_path="bsd posix"
- 	;;
+--- gcc/reorg.c	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/reorg.c	(.../branches/gcc-4_6-branch)	(wersja 175536)
+@@ -2152,7 +2152,7 @@
+ 	      /* This must be an INSN or CALL_INSN.  */
+ 	      pat = PATTERN (trial);
  
-+  mips-sgi-irix6*)
-+	# Need to link with -lpthread so libgomp.so is self-contained.
-+	XLDFLAGS="${XLDFLAGS} -lpthread"
-+	;;
-   *)
- 	;;
+-	      /* USE and CLOBBER at this level was just for flow; ignore it.  */
++	      /* Stand-alone USE and CLOBBER are just for flow.  */
+ 	      if (GET_CODE (pat) == USE || GET_CODE (pat) == CLOBBER)
+ 		continue;
  
-Index: libgomp/ChangeLog
-===================================================================
---- libgomp/ChangeLog	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libgomp/ChangeLog	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1,3 +1,10 @@
-+2010-12-17  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	Backport from mainline:
-+	2010-12-01  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	* configure.tgt (mips-sgi-irix6*): Add -lpthread to XLDFLAGS.
-+
- 2010-12-16  Release Manager
+@@ -2271,15 +2271,12 @@
+ 	    }
  
- 	* GCC 4.5.2 released.
-Index: gcc/DATESTAMP
-===================================================================
---- gcc/DATESTAMP	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/DATESTAMP	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1 +1 @@
--20101216
-+20101218
+ 	  if (target == 0)
+-	    for (trial = next_nonnote_insn (insn); trial; trial = next_trial)
++	    for (trial = next_nonnote_insn (insn); !stop_search_p (trial, 1);
++		 trial = next_trial)
+ 	      {
+ 		next_trial = next_nonnote_insn (trial);
+ 
+-		if (LABEL_P (trial)
+-		    || BARRIER_P (trial))
+-		  break;
+-
+-		/* We must have an INSN, JUMP_INSN, or CALL_INSN.  */
++		/* This must be an INSN or CALL_INSN.  */
+ 		pat = PATTERN (trial);
+ 
+ 		/* Stand-alone USE and CLOBBER are just for flow.  */
+@@ -2293,7 +2290,7 @@
+ 		else
+ 		  trial_delay = trial;
+ 
+-		/* Stop our search when seeing an unconditional jump.  */
++		/* Stop our search when seeing a jump.  */
+ 		if (JUMP_P (trial_delay))
+ 		  break;
+ 
 Index: gcc/DEV-PHASE
 ===================================================================
---- gcc/DEV-PHASE	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/DEV-PHASE	(.../branches/gcc-4_5-branch)	(wersja 168030)
+--- gcc/DEV-PHASE	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/DEV-PHASE	(.../branches/gcc-4_6-branch)	(wersja 175536)
 @@ -0,0 +1 @@
 +prerelease
-Index: gcc/tree-ssa-sccvn.c
-===================================================================
---- gcc/tree-ssa-sccvn.c	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/tree-ssa-sccvn.c	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1063,6 +1063,7 @@
-       size2 = TREE_INT_CST_LOW (gimple_call_arg (def_stmt, 2)) * 8;
-       if ((unsigned HOST_WIDE_INT)size2 / 8
- 	  == TREE_INT_CST_LOW (gimple_call_arg (def_stmt, 2))
-+	  && maxsize2 != -1
- 	  && operand_equal_p (base, base2, 0)
- 	  && offset2 <= offset
- 	  && offset2 + size2 >= offset + maxsize)
-@@ -1086,7 +1087,8 @@
-       HOST_WIDE_INT offset2, size2, maxsize2;
-       base2 = get_ref_base_and_extent (gimple_assign_lhs (def_stmt),
- 				       &offset2, &size2, &maxsize2);
--      if (operand_equal_p (base, base2, 0)
-+      if (maxsize2 != -1
-+	  && operand_equal_p (base, base2, 0)
- 	  && offset2 <= offset
- 	  && offset2 + size2 >= offset + maxsize)
- 	{
-@@ -1116,7 +1118,8 @@
-       /* See if the assignment kills REF.  */
-       base2 = get_ref_base_and_extent (gimple_assign_lhs (def_stmt),
- 				       &offset2, &size2, &maxsize2);
--      if (!operand_equal_p (base, base2, 0)
-+      if (maxsize2 == -1
-+	  || !operand_equal_p (base, base2, 0)
- 	  || offset2 > offset
- 	  || offset2 + size2 < offset + maxsize)
- 	return (void *)-1;
 Index: gcc/ChangeLog
 ===================================================================
---- gcc/ChangeLog	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/ChangeLog	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1,3 +1,23 @@
-+2010-12-18  Alexandre Oliva  <aoliva@redhat.com>
+--- gcc/ChangeLog	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/ChangeLog	(.../branches/gcc-4_6-branch)	(wersja 175536)
+@@ -1,3 +1,13 @@
++2011-06-27  Eric Botcazou  <ebotcazou@adacore.com>
 +
-+	PR debug/46756
-+	* jump.c (mark_all_labels): Skip debug insns.
++	* reorg.c (fill_simple_delay_slots): Use stop_search_p to stop the
++	forward scan as well.
 +
-+2010-12-18  Alexandre Oliva  <aoliva@redhat.com>
++2011-06-27  Jakub Jelinek  <jakub@redhat.com>
 +
-+	PR debug/46782
-+	* cfgcleanup.c (try_forward_edges): Skip debug insns.
++	* BASE-VER: Set to 4.6.2.
++	* DEV-PHASE: Set to prerelease.
 +
-+2010-12-16  Eric Botcazou  <ebotcazou@adacore.com>
-+
-+	* tree-ssa-sccvn.c (vn_reference_lookup_3): Always punt if the call to
-+	get_ref_base_and_extent returns -1 as the max size.
-+
-+2010-12-16  Richard Guenther  <rguenther@suse.de>
-+
-+	* DEV-PHASE: Set back to prerelease.
-+	* BASE-VER: Bump to 4.5.3.
-+
- 2010-12-16  Release Manager
+ 2011-06-27  Release Manager
  
- 	* GCC 4.5.2 released.
-Index: gcc/testsuite/gnat.dg/opt13.adb
-===================================================================
---- gcc/testsuite/gnat.dg/opt13.adb	(.../tags/gcc_4_5_2_release)	(wersja 0)
-+++ gcc/testsuite/gnat.dg/opt13.adb	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -0,0 +1,13 @@
-+-- { dg-do run }
-+-- { dg-options "-O" }
-+
-+with Opt13_Pkg; use Opt13_Pkg;
-+
-+procedure Opt13 is
-+  T : My_Type;
-+begin
-+  Allocate (T);
-+  if N /= 1 then
-+    raise Program_Error;
-+  end if;
-+end;
-Index: gcc/testsuite/gnat.dg/opt13_pkg.adb
-===================================================================
---- gcc/testsuite/gnat.dg/opt13_pkg.adb	(.../tags/gcc_4_5_2_release)	(wersja 0)
-+++ gcc/testsuite/gnat.dg/opt13_pkg.adb	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -0,0 +1,31 @@
-+package body Opt13_Pkg is
-+
-+  subtype Index_Type is Natural range 0 .. 16;
-+
-+  type Arr is array (Index_Type range <>) of Integer;
-+
-+  type Rec is record
-+    F1, F2, F3 : Float;
-+    N : Natural;
-+    B1, B2 : Boolean;
-+    F4 : Float;
-+  end record;
-+
-+  type Data (D : Index_Type) is record
-+    A : Arr (1 .. D);
-+    R : Rec;
-+  end record;
-+
-+  Zero : constant Rec := (0.0, 0.0, 0.0, 0, False, False, 0.0);
-+
-+  procedure Allocate (T : out My_Type) is
-+  begin
-+    T := new Data (Index_Type'last);
-+    T.R := Zero;
-+
-+    for I in 1 .. T.A'last loop
-+      N := 1;
-+    end loop;
-+  end;
-+
-+end Opt13_Pkg;
-Index: gcc/testsuite/gnat.dg/opt13_pkg.ads
-===================================================================
---- gcc/testsuite/gnat.dg/opt13_pkg.ads	(.../tags/gcc_4_5_2_release)	(wersja 0)
-+++ gcc/testsuite/gnat.dg/opt13_pkg.ads	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -0,0 +1,15 @@
-+package Opt13_Pkg is
-+
-+    N : Natural := 0;
-+
-+    type My_Type is private;
-+
-+    procedure Allocate (T : out My_Type);
-+
-+private
-+
-+    type Data;
-+
-+    type My_Type is access Data;
-+
-+end Opt13_Pkg;
-Index: gcc/testsuite/gcc.dg/debug/pr46782.c
-===================================================================
---- gcc/testsuite/gcc.dg/debug/pr46782.c	(.../tags/gcc_4_5_2_release)	(wersja 0)
-+++ gcc/testsuite/gcc.dg/debug/pr46782.c	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -0,0 +1,11 @@
-+/* PR debug/46782 */
-+/* { dg-do compile } */
-+/* { dg-options "-w -O0 -fvar-tracking -fcompare-debug" } */
-+
-+void foo (int i)
-+{
-+  if (i)
-+    i++;
-+  while (i)
-+    ;
-+}
-Index: gcc/testsuite/ChangeLog
-===================================================================
---- gcc/testsuite/ChangeLog	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/testsuite/ChangeLog	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1,3 +1,23 @@
-+2010-12-18  Alexandre Oliva  <aoliva@redhat.com>
-+
-+	PR debug/46756
-+	* gfortran.dg/debug/pr46756.f: New.
-+
-+2010-12-18  Alexandre Oliva  <aoliva@redhat.com>
-+
-+	PR debug/46782
-+	* gcc.dg/debug/pr46782.c: New.
-+
-+2010-12-17  Daniel Kraft  <d@domob.eu>
-+
-+	PR fortran/46794
-+	* gfortran.dg/power2.f90: Initialize variables.
-+
-+2010-12-16  Eric Botcazou  <ebotcazou@adacore.com>
-+
-+	* gnat.dg/opt13.adb: New test.
-+	* gnat.dg/opt13_pkg.ad[sb]: New helper.
-+
- 2010-12-16  Release Manager
- 
- 	* GCC 4.5.2 released.
-Index: gcc/testsuite/gfortran.dg/debug/pr46756.f
-===================================================================
---- gcc/testsuite/gfortran.dg/debug/pr46756.f	(.../tags/gcc_4_5_2_release)	(wersja 0)
-+++ gcc/testsuite/gfortran.dg/debug/pr46756.f	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -0,0 +1,29 @@
-+C PR debug/46756, reduced from ../20010519-1.f
-+C { dg-do compile }
-+C { dg-options "-O -fcompare-debug" }
-+      LOGICAL QDISK,QDW,QCMPCT
-+      LOGICAL LNOMA,LRAISE,LSCI,LBIG
-+      ASSIGN 801 TO I800 ! { dg-warning "Deleted feature: ASSIGN" "Deleted feature: ASSIGN" }
-+      GOTO 800
-+ 801  CONTINUE
-+      ASSIGN 761 TO I760 ! { dg-warning "Deleted feature: ASSIGN" "Deleted feature: ASSIGN" }
-+ 761  CONTINUE
-+      IF(LSCI) THEN
-+         DO I=1,LENCM
-+         ENDDO
-+      ENDIF
-+      DO WHILE((CVGMX.GT.TOLDIM).AND.(ITER.LT.ITMX))
-+         IF(.NOT.QDW) THEN
-+            ASSIGN 641 to I640 ! { dg-warning "Deleted feature: ASSIGN" "Deleted feature: ASSIGN" }
-+            GOTO 640
-+ 641        CONTINUE
-+         ENDIF
-+      ENDDO
-+      GOTO 700
-+ 640  CONTINUE
-+      GOTO I640 ! { dg-warning "Deleted feature: Assigned" "Assigned GO TO" }
-+ 700  CONTINUE
-+      GOTO I760 ! { dg-warning "Deleted feature: Assigned" "Assigned GO TO" }
-+ 800  CONTINUE
-+      GOTO I800 ! { dg-warning "Deleted feature: Assigned" "Assigned GO TO" }
-+      END
-Index: gcc/testsuite/gfortran.dg/power2.f90
-===================================================================
---- gcc/testsuite/gfortran.dg/power2.f90	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/testsuite/gfortran.dg/power2.f90	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -13,6 +13,9 @@
-   INTEGER(KIND=1) :: k1
-   INTEGER(KIND=2) :: k2
- 
-+  k1 = 1_1
-+  k2 = 1_2
-+
-   k1 = 1_1 + 1_1**k1
-   k2 = 1_2 + 1_2**k2
- 
-Index: gcc/jump.c
-===================================================================
---- gcc/jump.c	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/jump.c	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -194,7 +194,7 @@
-   rtx prev_nonjump_insn = NULL;
- 
-   for (insn = f; insn; insn = NEXT_INSN (insn))
--    if (INSN_P (insn))
-+    if (NONDEBUG_INSN_P (insn))
-       {
- 	mark_jump_label (PATTERN (insn), insn, 0);
- 
+ 	* GCC 4.6.1 released.
 Index: gcc/BASE-VER
 ===================================================================
---- gcc/BASE-VER	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/BASE-VER	(.../branches/gcc-4_5-branch)	(wersja 168030)
+--- gcc/BASE-VER	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/BASE-VER	(.../branches/gcc-4_6-branch)	(wersja 175536)
 @@ -1 +1 @@
--4.5.2
-+4.5.3
-Index: gcc/cfgcleanup.c
+-4.6.1
++4.6.2
+Index: gcc/po/ChangeLog
 ===================================================================
---- gcc/cfgcleanup.c	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ gcc/cfgcleanup.c	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -482,15 +482,20 @@
- 		  /* When not optimizing, ensure that edges or forwarder
- 		     blocks with different locus are not optimized out.  */
- 		  int locus = single_succ_edge (target)->goto_locus;
-+		  rtx last ;
- 
- 		  if (locus && goto_locus && !locator_eq (locus, goto_locus))
- 		    counter = n_basic_blocks;
- 		  else if (locus)
- 		    goto_locus = locus;
- 
--		  if (INSN_P (BB_END (target)))
-+		  last = BB_END (target);
-+		  if (DEBUG_INSN_P (last))
-+		    last = prev_nondebug_insn (last);
+--- gcc/po/ChangeLog	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/po/ChangeLog	(.../branches/gcc-4_6-branch)	(wersja 175536)
+@@ -1,3 +1,7 @@
++2011-06-27  Joseph Myers  <joseph@codesourcery.com>
 +
-+		  if (last && INSN_P (last))
- 		    {
--		      locus = INSN_LOCATOR (BB_END (target));
-+		      locus = INSN_LOCATOR (last);
++	* de.po: Update.
++
+ 2011-06-27  Release Manager
  
- 		      if (locus && goto_locus
- 			  && !locator_eq (locus, goto_locus))
-Index: libstdc++-v3/ChangeLog
+ 	* GCC 4.6.1 released.
+Index: gcc/po/de.po
 ===================================================================
---- libstdc++-v3/ChangeLog	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libstdc++-v3/ChangeLog	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1,3 +1,11 @@
-+2010-12-17  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	Backport from mainline:
-+	2010-12-10  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	* testsuite/lib/libstdc++.exp (v3-build_support): Delete
-+	libtestc++.a before creation.
-+
- 2010-12-16  Release Manager
+--- gcc/po/de.po	(.../tags/gcc_4_6_1_release)	(wersja 175536)
++++ gcc/po/de.po	(.../branches/gcc-4_6-branch)	(wersja 175536)
+@@ -9,7 +9,7 @@
+ "Project-Id-Version: gcc 4.6.0\n"
+ "Report-Msgid-Bugs-To: http://gcc.gnu.org/bugs.html\n"
+ "POT-Creation-Date: 2011-03-24 16:45+0000\n"
+-"PO-Revision-Date: 2011-06-24 13:27+0100\n"
++"PO-Revision-Date: 2011-06-26 15:01+0100\n"
+ "Last-Translator: Roland Stigge <stigge@antcom.de>\n"
+ "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
+ "Language: de\n"
+@@ -25274,227 +25274,227 @@
+ #: cp/cvt.c:965
+ #, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in second operand of conditional expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in zweitem Operanden des bedingten Ausdrucks zu"
  
- 	* GCC 4.5.2 released.
-Index: libstdc++-v3/testsuite/lib/libstdc++.exp
-===================================================================
---- libstdc++-v3/testsuite/lib/libstdc++.exp	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libstdc++-v3/testsuite/lib/libstdc++.exp	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -586,6 +586,15 @@
-     }
+ #: cp/cvt.c:970
+ #, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in third operand of conditional expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in drittem Operanden des bedingten Ausdrucks zu"
  
-     # Collect into libtestc++.a
-+    # Delete libtestc++.a first.  Mixed 32 and 64-bit archives cannot be
-+    # linked on IRIX 6.
-+    # Use same procedure as gcc-dg.exp (remove-build-file).
-+    if [is_remote host] {
-+	# Ensure the host knows the file is gone by deleting there
-+	# first.
-+	remote_file host delete "./libtestc++.a"
-+	}
-+    remote_file build delete "./libtestc++.a"
-     if  [info exists env(AR)] {
- 	set ar $env(AR)
-     } else {
-Index: libffi/ChangeLog
-===================================================================
---- libffi/ChangeLog	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libffi/ChangeLog	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -1,3 +1,11 @@
-+2010-12-17  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	Backport from mainline:
-+	2010-12-01  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
-+
-+	* testsuite/libffi.call/ffitest.h [__sgi] (PRId64, PRIu64): Define.
-+	(PRIuPTR): Define.
-+
- 2010-12-16  Release Manager
+ #: cp/cvt.c:975
+ #, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in right operand of comma operator"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in rechtem Operanden des Kommaoperators zu"
  
- 	* GCC 4.5.2 released.
-Index: libffi/testsuite/libffi.call/ffitest.h
-===================================================================
---- libffi/testsuite/libffi.call/ffitest.h	(.../tags/gcc_4_5_2_release)	(wersja 168030)
-+++ libffi/testsuite/libffi.call/ffitest.h	(.../branches/gcc-4_5-branch)	(wersja 168030)
-@@ -77,6 +77,26 @@
- #define PRIuPTR "lu"
- #endif
+ #: cp/cvt.c:980
+ #, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in left operand of comma operator"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in linkem Operanden des Kommaoperators zu"
  
-+/* IRIX kludge.  */
-+#if defined(__sgi)
-+/* IRIX 6.5 <inttypes.h> provides all definitions, but only for C99
-+   compilations.  */
-+#if (_MIPS_SZLONG == 32)
-+#define PRId64 "lld"
-+#define PRIu64 "llu"
-+#endif
-+/* This doesn't match <inttypes.h>, which always has "lld" here, but the
-+   arguments are uint64_t, int64_t, which are unsigned long, long for
-+   64-bit in <sgidefs.h>.  */
-+#if (_MIPS_SZLONG == 64)
-+#define PRId64 "ld"
-+#define PRIu64 "lu"
-+#endif
-+/* This doesn't match <inttypes.h>, which has "u" here, but the arguments
-+   are uintptr_t, which is always unsigned long.  */
-+#define PRIuPTR "lu"
-+#endif
-+
- /* Solaris < 10 kludge.  */
- #if defined(__sun__) && defined(__svr4__) && !defined(PRIuPTR)
- #if defined(__arch64__) || defined (__x86_64__)
+ #: cp/cvt.c:985
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in statement"
+-msgstr "Ungültige Anwendung von %qs auf unvollständigen Typen %qT"
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in Anweisung zu"
+ 
+ #: cp/cvt.c:989
+ #, gcc-internal-format
+ msgid "indirection will not access object of incomplete type %qT in for increment expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt unvollständigen Typs %qT in Erhöhungsausdruck zu"
+ 
+ #: cp/cvt.c:1005
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "conversion to void will not access object of type %qT"
+-msgstr "Konvertierung in unvollständigen Typen"
++msgstr "Umwandlung in void greift nicht auf Objekt des Typs %qT zu"
+ 
+ #: cp/cvt.c:1009
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in second operand of conditional expression"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in zweitem Operanden des bedingten Ausdrucks zu"
+ 
+ #: cp/cvt.c:1014
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in third operand of conditional expression"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in drittem Operanden des bedingten Ausdrucks zu"
+ 
+ #: cp/cvt.c:1019
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in right operand of comma operator"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in rechtem Operanden des Kommaoperators zu"
+ 
+ #: cp/cvt.c:1024
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in left operand of comma operator"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in linkem Operanden des Kommaoperators zu"
+ 
+ #: cp/cvt.c:1029
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in statement"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in Anweisung zu"
+ 
+ #: cp/cvt.c:1033
+ #, gcc-internal-format
+ msgid "implicit dereference will not access object of type %qT in for increment expression"
+-msgstr ""
++msgstr "implizite Dereferenzierung greift nicht auf Objekt des Typs %qT in Erhöhungsausdruck zu"
+ 
+ #: cp/cvt.c:1047
+ #, gcc-internal-format
+ msgid "conversion to void will not access object of non-trivially-copyable type %qT"
+-msgstr ""
++msgstr "Umwandlung in void greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT zu"
+ 
+ #: cp/cvt.c:1052
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in second operand of conditional expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT im zweiten Operanden des bedingten Ausdrucks zu"
+ 
+ #: cp/cvt.c:1057
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in third operand of conditional expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT im dritten Operanden des bedingten Ausdrucks zu"
+ 
+ #: cp/cvt.c:1062
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in right operand of comma operator"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT im rechten Operanden des Kommaoperators zu"
+ 
+ #: cp/cvt.c:1067
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in left operand of comma operator"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT im linken Operanden des Kommaoperators zu"
+ 
+ #: cp/cvt.c:1072
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in statement"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT in Anweisung zu"
+ 
+ #: cp/cvt.c:1077
+ #, gcc-internal-format
+ msgid "indirection will not access object of non-trivially-copyable type %qT in for increment expression"
+-msgstr ""
++msgstr "Indirektion greift nicht auf Objekt des nicht trivial kopierbaren Typs %qT in Erhöhungsausdruck zu"
+ 
+ #: cp/cvt.c:1115
+ #, gcc-internal-format
+ msgid "conversion to void will not access object %qE of incomplete type %qT"
+-msgstr ""
++msgstr "Umwandlung in void greift nicht auf Objekt %qE des unvollständigen Typs %qT zu"
+ 
+ #: cp/cvt.c:1119
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in second operand of conditional expression"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird nicht im zweiten Operanden des bedingten Ausdrucks zugegriffen"
+ 
+ #: cp/cvt.c:1124
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in third operand of conditional expression"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird nicht im dritten Operanden des bedingten Ausdrucks zugegriffen"
+ 
+ #: cp/cvt.c:1129
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in right operand of comma operator"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird nicht im rechten Operanden des Kommaoperators zugegriffen"
+ 
+ #: cp/cvt.c:1134
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in left operand of comma operator"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird nicht im linken Operanden des Kommaoperators zugegriffen"
+ 
+ #: cp/cvt.c:1139
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in statement"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird in Anweisung nicht zugegriffen"
+ 
+ #: cp/cvt.c:1143
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "variable %qE of incomplete type %qT will not be accessed in for increment expression"
+-msgstr "auf Objekt %qE des unvollständigen Typs %qT wird in %s nicht zugegriffen"
++msgstr "auf Variable %qE des unvollständigen Typs %qT wird in Erhöhungsausdruck nicht zugegriffen"
+ 
+ #: cp/cvt.c:1192
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "conversion to void cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "Umwandlung in void kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1196
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "second operand of conditional expression cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "zweiter Operand des bedingten Ausdrucks kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1200
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "third operand of conditional expression cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "dritter Operand des bedingten Ausdrucks kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1204
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "right operand of comma operator cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "rechter Operand des Komma-Operators kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1208
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "left operand of comma operator cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "linker Operand des Komma-Operators kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1212
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "statement cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "Anweisung kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1216
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "for increment expression cannot resolve address of overloaded function"
+-msgstr "%s kann die Adresse der überladenen Funktion nicht auflösen"
++msgstr "Erhöhungsausdruck kann die Adresse der überladenen Funktion nicht auflösen"
+ 
+ #: cp/cvt.c:1232
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "second operand of conditional expression is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "zweiter Operand des bedingten Ausdrucks ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1237
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "third operand of conditional expression is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "dritter Operand des bedingten Ausdrucks ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1242
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "right operand of comma operator is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "rechter Operand des Komma-Operators ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1247
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "left operand of comma operator is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "linker Operand des Komma-Operators ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1252
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "statement is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "Anweisung ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1257
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "for increment expression is a reference, not call, to function %qE"
+-msgstr "%s ist eine Referenz, kein Aufruf, zur Funktion %qE"
++msgstr "Erhöhungsausdruck ist eine Referenz, kein Aufruf, zur Funktion %qE"
+ 
+ #: cp/cvt.c:1284
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "second operand of conditional expression has no effect"
+-msgstr "linker Operand des Komma-Ausdrucks hat keinen Effekt"
++msgstr "zweiter Operand des bedingten Ausdrucks hat keinen Effekt"
+ 
+ #: cp/cvt.c:1288
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "third operand of conditional expression has no effect"
+-msgstr "linker Operand des Komma-Ausdrucks hat keinen Effekt"
++msgstr "dritter Operand des bedingten Ausdrucks hat keinen Effekt"
+ 
+ #: cp/cvt.c:1292
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "right operand of comma operator has no effect"
+-msgstr "linker Operand des Komma-Ausdrucks hat keinen Effekt"
++msgstr "rechter Operand des Komma-Operators hat keinen Effekt"
+ 
+ #: cp/cvt.c:1296
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "left operand of comma operator has no effect"
+-msgstr "linker Operand des Komma-Ausdrucks hat keinen Effekt"
++msgstr "linker Operand des Komma-Operators hat keinen Effekt"
+ 
+ #: cp/cvt.c:1300
+-#, fuzzy, gcc-internal-format
++#, gcc-internal-format
+ msgid "statement has no effect"
+-msgstr "Anweisung ohne Effekt"
++msgstr "Anweisung hat keinen Effekt"
+ 
+ #: cp/cvt.c:1304
+ #, fuzzy, gcc-internal-format

@@ -12,20 +12,20 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.5.2
-Release:	2
+Version:	4.6.1
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	d6559145853fbaaa0fd7556ed93bce9a
-%define		apiver	3.15
-Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-1-mingw32-dev.tar.lzma
-# Source1-md5:	efcbcadd0299a6413d95b9ce919ede9f
+# Source0-md5:	c57a9170c677bf795bdc04ed796ca491
+%define		apiver	3.17
+Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-2-mingw32-dev.tar.lzma
+# Source1-md5:	c3a86ffa6b8c21de868df54e4e38f05e
 %define		runver	3.18
 Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-mingw32-dev.tar.gz
 # Source2-md5:	e49803d8c14b1ffa6e24e5b5fee31a3d
-# svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_5_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_5-branch > gcc-branch.diff
+# svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_6_1_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_6-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
@@ -200,6 +200,7 @@ Summary:	MinGW32 binary utility development utilities - Fortran
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	crossmingw32-libquadmath-devel = %{epoch}:%{version}-%{release}
 Obsoletes:	crossmingw32-gcc-g77
 
 %description fortran
@@ -236,13 +237,57 @@ Statyczna biblioteka Fortrana - wersja skrośna MinGW32.
 Summary:	libgfortran DLL library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL libgfortran dla Windows
 Group:		Applications/Emulators
-Requires:	wine
+Requires:	crossmingw32-libquadmath-dll
 
 %description -n crossmingw32-libgfortran-dll
 libgfortran DLL library for Windows.
 
 %description -n crossmingw32-libgfortran-dll -l pl.UTF-8
 Biblioteka DLL libgfortran dla Windows.
+
+%package -n crossmingw32-libquadmath
+Summary:	GCC __float128 support library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka do obsługi typu __float128 - wersja skrośna MinGW32
+License:	GPL v2+ with linking exception
+Group:		Development/Libraries
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libquadmath
+This package contains cross MinGW32 version of GCC support library
+which is needed for __float128 math support and for Fortran REAL*16
+support.
+
+%description -n crossmingw32-libquadmath -l pl.UTF-8
+Ten pakiet zawiera wersję skrośną MinGW32 biblioteki GCC do obsługi
+operacji matematycznych na zmiennych typu __float128 oraz typu REAL*16
+w Fortranie.
+
+%package -n crossmingw32-libquadmath-static
+Summary:	Static GCC __float128 support library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka statyczna GCC do obsługi typu __float128 - wersja skrośna MinGW32
+License:	GPL v2+ with linking exception
+Group:		Development/Libraries
+Requires:	crossmingw32-libquadmath = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libquadmath-static
+Static GCC __float128 support library - cross MinGW32 version.
+
+%description -n crossmingw32-libquadmath-static -l pl.UTF-8
+Biblioteka statyczna GCC do obsługi typu __float128 - wersja skrośna
+MinGW32.
+
+%package -n crossmingw32-libquadmath-dll
+Summary:	DLL GCC __float128 support library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL GCC do obsługi typu __float128 dla Windows
+License:	GPL v2+ with linking exception
+Group:		Applications/Emulators
+Requires:	wine
+
+%description -n crossmingw32-libquadmath-dll
+DLL GCC __float128 support library for Windows.
+
+%description -n crossmingw32-libquadmath-dll -l pl.UTF-8
+Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 
 %package java
 Summary:	MinGW32 binary utility development utilities - Java
@@ -360,7 +405,8 @@ ln -sf %{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortr
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
-mv -f $RPM_BUILD_ROOT%{arch}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
+mv -f $RPM_BUILD_ROOT%{gccarchdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
+mv -f $RPM_BUILD_ROOT%{gcclibdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
 if [ ! -f $RPM_BUILD_ROOT%{_dlldir}/libgcc_s_dw2-1.dll ]; then
 	echo "libgcc DLL not installed?"
 	install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
@@ -372,6 +418,12 @@ fi
 	$RPM_BUILD_ROOT%{arch}/lib/lib*.a
 %endif
 
+# for pretty-printers see native gcc
+%{__rm} $RPM_BUILD_ROOT%{gcclibdir}/libstdc++.dll.a-gdb.py
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/gcc-%{version}/python/libstdcxx
+# plugin infrastructure has no use yet for mingw32
+%{__rm} $RPM_BUILD_ROOT%{gcclibdir}/{liblto_plugin.*,lto1}
+%{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/plugin
 # already in native gcc
 %{__rm} -r $RPM_BUILD_ROOT%{_infodir}
 # common FSF man pages
@@ -389,7 +441,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcov
 %attr(755,root,root) %{arch}/bin/%{target}-gcc
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-%{version}
-%attr(755,root,root) %{arch}/bin/%{target}-gccbug
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
 %attr(755,root,root) %{arch}/bin/gcc
@@ -452,7 +503,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libobjc-dll
 %defattr(644,root,root,755)
-%{_dlldir}/libobjc-2.dll
+%{_dlldir}/libobjc-3.dll
 
 %files fortran
 %defattr(644,root,root,755)
@@ -463,6 +514,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/finclude
 %{gcclibdir}/libgfortran.dll.a
 %{gcclibdir}/libgfortran.la
+%{gcclibdir}/libgfortran.spec
 %{gcclibdir}/libgfortranbegin.a
 %{gcclibdir}/libgfortranbegin.la
 %{_mandir}/man1/%{target}-gfortran.1*
@@ -474,6 +526,19 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libgfortran-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libgfortran-3.dll
+
+%files -n crossmingw32-libquadmath
+%defattr(644,root,root,755)
+%{gcclibdir}/libquadmath.dll.a
+%{gcclibdir}/libquadmath.la
+
+%files -n crossmingw32-libquadmath-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libquadmath.a
+
+%files -n crossmingw32-libquadmath-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libquadmath-0.dll
 
 %files java
 %defattr(644,root,root,755)
