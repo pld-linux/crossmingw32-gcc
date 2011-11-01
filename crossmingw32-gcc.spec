@@ -12,19 +12,19 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.6.1
+Version:	4.6.2
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	c57a9170c677bf795bdc04ed796ca491
+# Source0-md5:	028115c4fbfb6cfd75d6369f4a90d87e
 %define		apiver	3.17
 Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-2-mingw32-dev.tar.lzma
 # Source1-md5:	c3a86ffa6b8c21de868df54e4e38f05e
-%define		runver	3.18
+%define		runver	3.20
 Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-mingw32-dev.tar.gz
-# Source2-md5:	e49803d8c14b1ffa6e24e5b5fee31a3d
+# Source2-md5:	2d2f5c8165ff9c29661a5be96336a4f7
 # svn diff -x --ignore-eol-style svn://gcc.gnu.org/svn/gcc/tags/gcc_4_6_1_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_6-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
@@ -414,8 +414,7 @@ fi
 
 %if 0%{!?debug:1}
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
-%{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{gcclibdir}/lib*.a \
-	$RPM_BUILD_ROOT%{arch}/lib/lib*.a
+%{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{gcclibdir}/lib*.a
 %endif
 
 # for pretty-printers see native gcc
@@ -444,7 +443,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
 %attr(755,root,root) %{arch}/bin/gcc
-%{arch}/lib/libiberty.a
 %dir %{gccarchdir}
 %dir %{gcclibdir}
 %attr(755,root,root) %{gcclibdir}/cc1
