@@ -13,7 +13,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.6.3
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -200,7 +200,7 @@ Summary:	MinGW32 binary utility development utilities - Fortran
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	crossmingw32-libquadmath-devel = %{epoch}:%{version}-%{release}
+Requires:	crossmingw32-libquadmath = %{epoch}:%{version}-%{release}
 Obsoletes:	crossmingw32-gcc-g77
 
 %description fortran
