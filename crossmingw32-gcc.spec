@@ -30,6 +30,7 @@ Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
+Patch3:		format-security.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -318,6 +319,7 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch100 -p0
 %patch0 -p1
 %patch2 -p1
+%patch3 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs below are special, handled by gcc's configure
