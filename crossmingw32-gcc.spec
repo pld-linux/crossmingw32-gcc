@@ -13,7 +13,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.6.3
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -30,7 +30,6 @@ Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
-Patch3:		format-security.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -62,6 +61,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_noautostrip	.*/lib.*\\.a
 
 %define		_enable_debug_packages 0
+
+# functions with printf format attribute but with special parser and also
+# receiving non constant format strings
+%define		Werror_cflags	%{nil}
 
 %description
 crossmingw32 is a complete cross-compiling development system for
@@ -319,7 +322,6 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch100 -p0
 %patch0 -p1
 %patch2 -p1
-%patch3 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs below are special, handled by gcc's configure
