@@ -66,6 +66,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # receiving non constant format strings
 %define		Werror_cflags	%{nil}
 
+%define		_ssp_cflags	%{nil}
+
 %description
 crossmingw32 is a complete cross-compiling development system for
 building stand-alone Microsoft Windows applications under Linux using
