@@ -229,7 +229,7 @@ Ten pakiet zawiera kompilator Fortranu generujący kod pod Win32.
 
 %package -n crossmingw32-libgfortran-static
 Summary:	Static Fortran library - cross MinGW32 version
-Summary(pl.UTF-8):	Statyczna biblioteka Fortrana - wersja skrośna MinGW32
+Summary(pl.UTF-8):	Statyczna biblioteka Fortranu - wersja skrośna MinGW32
 Group:		Development/Libraries
 Requires:	%{name}-fortran = %{epoch}:%{version}-%{release}
 
@@ -237,7 +237,7 @@ Requires:	%{name}-fortran = %{epoch}:%{version}-%{release}
 Static Fortran library - cross MinGW32 version.
 
 %description -n crossmingw32-libgfortran-static -l pl.UTF-8
-Statyczna biblioteka Fortrana - wersja skrośna MinGW32.
+Statyczna biblioteka Fortranu - wersja skrośna MinGW32.
 
 %package -n crossmingw32-libgfortran-dll
 Summary:	libgfortran DLL library for Windows
