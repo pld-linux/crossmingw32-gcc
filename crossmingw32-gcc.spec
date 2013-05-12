@@ -43,6 +43,7 @@ BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
 BuildRequires:	mpfr-devel
 BuildRequires:	perl-tools-pod
+BuildRequires:	ppl-devel >= 0.11
 BuildRequires:	texinfo >= 4.2
 %if %{with booststrap}
 BuildRequires:	tar >= 1:1.22
@@ -366,6 +367,8 @@ TEXCONFIG=false \
 	--with-gnu-ld \
 	--with-mangler-in-ld \
 	--with-long-double-128 \
+	--with-ppl \
+	--disable-ppl-version-check \
 	--enable-threads \
 	--enable-languages="c,c++,fortran,java,objc" \
 	--enable-c99 \
