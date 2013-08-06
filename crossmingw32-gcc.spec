@@ -23,8 +23,8 @@ Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz
 Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-2-mingw32-dev.tar.lzma
 # Source1-md5:	c3a86ffa6b8c21de868df54e4e38f05e
 %define		runver	3.20
-Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-mingw32-dev.tar.gz
-# Source2-md5:	2d2f5c8165ff9c29661a5be96336a4f7
+Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-2-mingw32-dev.tar.lzma
+# Source2-md5:	1da321aa03a810616de1c59c516b9f9c
 # svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_7_3_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_7-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
 # Patch100-md5:	ed71b602ecff35de8f4678e27dd9c2ef
