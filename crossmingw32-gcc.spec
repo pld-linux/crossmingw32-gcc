@@ -12,22 +12,19 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.7.3
-Release:	2
+Version:	4.8.2
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	86f428a30379bdee0224e353ee2f999e
-%define		apiver	3.17
-Source1:	http://downloads.sourceforge.net/mingw/w32api-%{apiver}-2-mingw32-dev.tar.lzma
-# Source1-md5:	c3a86ffa6b8c21de868df54e4e38f05e
-%define		runver	3.20
-Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{runver}-2-mingw32-dev.tar.lzma
-# Source2-md5:	1da321aa03a810616de1c59c516b9f9c
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_7_3_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_7-branch > gcc-branch.diff
+# Source0-md5:	a3d7d63b9cb6b6ea049469a0c4a43c9d
+%define		mingw32_ver	4.0.3
+Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
+# Source1-md5:	c2c9aa82e0cb47abac01760525684858
+# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_8_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_8-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	ed71b602ecff35de8f4678e27dd9c2ef
+# Patch100-md5:	d63540a52bfd83b772e310fde995ad65
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -328,10 +325,9 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch2 -p1
 
 %if %{with bootstrap}
-# note: "winsup" dirs below are special, handled by gcc's configure
-install -d winsup/{mingw,w32api}
-tar xf %{SOURCE1} -C winsup/w32api
-tar xf %{SOURCE2} -C winsup/mingw
+# note: "winsup" dir is special, handled by gcc's configure
+install -d winsup/mingw
+tar xf %{SOURCE1} -C winsup/mingw
 %endif
 
 # override snapshot version.
@@ -343,7 +339,7 @@ rm -rf builddir && install -d builddir && cd builddir
 %if %{with bootstrap}
 install -d %{target}/winsup
 ln -sf ../../../winsup/mingw/lib %{target}/winsup/mingw
-ln -sf ../../../winsup/w32api %{target}/winsup/w32api
+ln -sf ../../../winsup/mingw/include %{target}/winsup/w32api
 WINSUPDIR=$(cd ..; pwd)/winsup
 %endif
 
