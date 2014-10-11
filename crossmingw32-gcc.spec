@@ -13,7 +13,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.8.2
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
