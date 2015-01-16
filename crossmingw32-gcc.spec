@@ -12,19 +12,19 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.8.2
-Release:	2
+Version:	4.9.2
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
-Source0:	ftp://gcc.gnu.org/pub/gcc/releases/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	a3d7d63b9cb6b6ea049469a0c4a43c9d
+Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
+# Source0-md5:	4df8ee253b7f3863ad0b86359cd39c43
 %define		mingw32_ver	4.0.3
 Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
 # Source1-md5:	c2c9aa82e0cb47abac01760525684858
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_8_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_8-branch > gcc-branch.diff
+# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_9_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_9-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	d63540a52bfd83b772e310fde995ad65
+# Patch100-md5:	1f1a11566ddf413cca96fbb04fd790d4
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -32,7 +32,11 @@ BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.9.3
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
+BuildRequires:	cloog-isl-devel >= 0.17.0
+BuildRequires:	cloog-isl-devel < 0.19
 BuildRequires:	flex
+BuildRequires:	gmp-devel >= 4.1
+BuildRequires:	isl-devel >= 0.13
 BuildRequires:	libmpc-devel
 %if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
@@ -393,9 +397,6 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 %{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# host (ELF) library
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libiberty.a
-
 mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
@@ -451,7 +452,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-ranlib
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
-%attr(755,root,root) %{arch}/bin/gcc
 %dir %{gccarchdir}
 %dir %{gcclibdir}
 %attr(755,root,root) %{gcclibdir}/cc1
@@ -481,8 +481,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-g++
 %attr(755,root,root) %{arch}/bin/%{target}-c++
 %attr(755,root,root) %{arch}/bin/%{target}-g++
-%attr(755,root,root) %{arch}/bin/c++
-%attr(755,root,root) %{arch}/bin/g++
 %attr(755,root,root) %{gcclibdir}/cc1plus
 %{gcclibdir}/libstdc++.dll.a
 %{gcclibdir}/libstdc++.la
@@ -518,7 +516,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
 %attr(755,root,root) %{arch}/bin/%{target}-gfortran
-%attr(755,root,root) %{arch}/bin/gfortran
 %attr(755,root,root) %{gcclibdir}/f951
 %{gcclibdir}/finclude
 %{gcclibdir}/libcaf_single.a
