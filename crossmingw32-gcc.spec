@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.9.3
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -50,7 +50,6 @@ BuildRequires:	isl-devel >= 0.13
 BuildRequires:	libmpc-devel
 BuildRequires:	mpfr-devel
 BuildRequires:	perl-tools-pod
-BuildRequires:	ppl-devel >= 0.11
 BuildRequires:	texinfo >= 4.2
 %if %{with booststrap}
 BuildRequires:	tar >= 1:1.22
@@ -74,8 +73,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # functions with printf format attribute but with special parser and also
 # receiving non constant format strings
 %define		Werror_cflags	%{nil}
-
 %define		_ssp_cflags	%{nil}
+# -fPIC is not valid for target platform
+%define		filterout_c	-fPIC
 
 %description
 crossmingw32 is a complete cross-compiling development system for
