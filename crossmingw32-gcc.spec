@@ -1,10 +1,11 @@
 #
-# TODO:
-# - openmp
-#
 # Conditional build:
-%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt)
+%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt, no gomp)
+%bcond_without	gomp		# OpenMP libraries
 #
+%if %{with bootstrap}
+%undefine	with_gomp
+%endif
 Summary:	Cross MinGW32 GNU binary utility development utilities - gcc
 Summary(es.UTF-8):	Utilitarios para desarrollo de binarios de la GNU - MinGW32 gcc
 Summary(fr.UTF-8):	Utilitaires de développement binaire de GNU - MinGW32 gcc
@@ -12,36 +13,41 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.9.2
-Release:	2
+Version:	4.9.3
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	4df8ee253b7f3863ad0b86359cd39c43
+# Source0-md5:	6f831b4d251872736e8e9cc09746f327
 %define		mingw32_ver	4.0.3
 Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
 # Source1-md5:	c2c9aa82e0cb47abac01760525684858
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_9_2_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_9-branch > gcc-branch.diff
+Source2:	gcc-optimize-la.pl
+# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_9_3_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_9-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	1f1a11566ddf413cca96fbb04fd790d4
+# Patch100-md5:	253cbf4cc2f71d9c9362f4a3be25bb17
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
+Patch12:	gcc-isl0.15-1.patch
+Patch13:	gcc-isl0.15-2.patch
+URL:		http://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.9.3
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
+%{?with_gomp:BuildRequires:	crossmingw32-pthreads-w32}
+%if %{without bootstrap}
+BuildRequires:	crossmingw32-runtime >= 3.5
+BuildRequires:	crossmingw32-w32api >= 3.1
+%endif
 BuildRequires:	cloog-isl-devel >= 0.17.0
 BuildRequires:	cloog-isl-devel < 0.19
 BuildRequires:	flex
 BuildRequires:	gmp-devel >= 4.1
 BuildRequires:	isl-devel >= 0.13
 BuildRequires:	libmpc-devel
-%if %{without bootstrap}
-BuildRequires:	crossmingw32-runtime >= 3.5
-BuildRequires:	crossmingw32-w32api >= 3.1
-%endif
 BuildRequires:	mpfr-devel
 BuildRequires:	perl-tools-pod
 BuildRequires:	ppl-devel >= 0.11
@@ -104,6 +110,46 @@ libgcc DLL library for Windows.
 
 %description -n crossmingw32-libgcc-dll -l pl.UTF-8
 Biblioteka DLL libgcc dla Windows.
+
+%package -n crossmingw32-libgomp
+Summary:	GNU OpenMP library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka GNU OpenMP - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libgomp
+This package contains cross MinGW32 version of GNU OpenMP library.
+
+%description -n crossmingw32-libgomp -l pl.UTF-8
+Ten pakiet zawiera wersję skrośną MinGW32 biblioteki GNU OpenMP.
+
+%package -n crossmingw32-libgomp-static
+Summary:	Static GNU OpenMP library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka GNU OpenMP - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+Requires:	crossmingw32-libgomp = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libgomp-static
+Static GNU OpenMP library - cross MinGW32 version.
+
+%description -n crossmingw32-libgomp-static -l pl.UTF-8
+Statyczna biblioteka GNU OpenMP - wersja skrośna MinGW32.
+
+%package -n crossmingw32-libgomp-dll
+Summary:	DLL GNU OpenMP library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL GNU OpenMP dla Windows
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
+Requires:	crossmingw32-pthreads-dll
+
+%description -n crossmingw32-libgomp-dll
+DLL GNU OpenMP library for Windows.
+
+%description -n crossmingw32-libgomp-dll -l pl.UTF-8
+Biblioteka DLL GNU OpenMP dla Windows.
 
 %package c++
 Summary:	MinGW32 binary utility development utilities - g++
@@ -327,6 +373,8 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch100 -p0
 %patch0 -p1
 %patch2 -p1
+%patch12 -p1
+%patch13 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dir is special, handled by gcc's configure
@@ -359,30 +407,32 @@ TEXCONFIG=false \
 	--libexecdir=%{_libdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
+	--with-build-time-tools=%{arch}/bin \
 	%{!?with_bootstrap:--with-headers=%{arch}/include} \
 	--with-libs=%{!?with_bootstrap:%{arch}/lib}%{?with_bootstrap:${WINSUPDIR}/mingw/lib} \
-	--with-build-time-tools=%{arch}/bin \
 	--with-dwarf2 \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-mangler-in-ld \
 	--with-long-double-128 \
+	--with-cloog \
 	--with-ppl \
-	--disable-ppl-version-check \
+	--disable-isl-version-check \
+	--enable-shared \
 	--enable-threads \
 	--enable-languages="c,c++,fortran,java,objc" \
 	--enable-c99 \
-	--enable-long-long \
 	--enable-fully-dynamic-string \
+	--enable-libgomp \
 	--enable-libstdcxx-allocator=new \
+	--enable-long-long \
 	--enable-version-specific-runtime-libs \
-	--enable-shared \
-	--disable-nls \
-	--disable-symvers \
-	--disable-sjlj-exceptions \
-	--disable-win32-registry \
-	--disable-multilib \
 	--disable-libssp \
+	--disable-multilib \
+	--disable-nls \
+	--disable-sjlj-exceptions \
+	--disable-symvers \
+	--disable-win32-registry \
 	--target=%{target}
 
 cd ..
@@ -423,6 +473,13 @@ fi
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
 %{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{gcclibdir}/lib*.a
 %endif
+
+# avoid -L poisoning in *.la
+for f in libcaf_single.la libgfortran.la libgfortranbegin.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
+	file="$RPM_BUILD_ROOT%{gcclibdir}/$f"
+	%{__perl} %{SOURCE2} "$file" %{gcclibdir} >"${file}.fixed"
+	%{__mv} "${file}.fixed" "$file"
+done
 
 # for pretty-printers see native gcc
 %{__rm} $RPM_BUILD_ROOT%{gcclibdir}/libstdc++.dll.a-gdb.py
@@ -475,6 +532,22 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libgcc-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libgcc_s_dw2-1.dll
+
+%if %{with gomp}
+%files -n crossmingw32-libgomp
+%defattr(644,root,root,755)
+%{gcclibdir}/libgomp.dll.a
+%{gcclibdir}/libgomp.la
+%{gcclibdir}/libgomp.spec
+
+%files -n crossmingw32-libgomp-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libgomp.a
+
+%files -n crossmingw32-libgomp-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libgomp-1.dll
+%endif
 
 %files c++
 %defattr(644,root,root,755)
