@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	4.9.3
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -143,7 +143,7 @@ Summary(pl.UTF-8):	Biblioteka DLL GNU OpenMP dla Windows
 License:	GPL v3+ with GCC Runtime Library Exception v3.1
 Group:		Development/Libraries
 Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
-Requires:	crossmingw32-pthreads-dll
+Requires:	crossmingw32-pthreads-w32-dll
 
 %description -n crossmingw32-libgomp-dll
 DLL GNU OpenMP library for Windows.
