@@ -1,0 +1,12 @@
+--- gcc-5.4.0/libgfortran/intrinsics/chmod.c.orig	2016-12-18 10:38:13.034904609 +0100
++++ gcc-5.4.0/libgfortran/intrinsics/chmod.c	2016-12-18 10:38:15.398237920 +0100
+@@ -30,6 +30,9 @@
+ #include <string.h>	/* For memcpy. */
+ #include <stdlib.h>	/* For free.  */
+ #include <sys/stat.h>	/* For stat, chmod and umask.  */
++#ifdef __MINGW32__
++#include <io.h>
++#endif
+ 
+ 
+ /* INTEGER FUNCTION CHMOD (NAME, MODE)

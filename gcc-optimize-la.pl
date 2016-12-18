@@ -18,7 +18,7 @@ foreach (@lines)
 {
     if (/(^dependency_libs='(.*)')[\ \t]*$/)
     {
-        my $trimmed = trim($2);
+	my $trimmed = trim($2);
 	$trimmed =~ y/'//d;
 	@libs = split(/[\ \t\n]+/, $trimmed);
 	@L = grep(/^-L.*gcc\/.*\/\d\.\d\.\d(\/(32|64|x32|nof))*$/, @libs);

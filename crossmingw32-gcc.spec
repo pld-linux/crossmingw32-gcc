@@ -13,50 +13,54 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	4.9.3
-Release:	3
+Version:	5.4.0
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	6f831b4d251872736e8e9cc09746f327
+# Source0-md5:	4c626ac2a83ef30dfb9260e6f59c2b30
 %define		mingw32_ver	4.0.3
 Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
 # Source1-md5:	c2c9aa82e0cb47abac01760525684858
 Source2:	gcc-optimize-la.pl
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_4_9_3_release svn://gcc.gnu.org/svn/gcc/branches/gcc-4_9-branch > gcc-branch.diff
+# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_5_4_0_release svn://gcc.gnu.org/svn/gcc/branches/gcc-5-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	253cbf4cc2f71d9c9362f4a3be25bb17
+# Patch100-md5:	8211f0f6f0a2179e51b4ac42f91bd44d
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
-Patch12:	gcc-isl0.15-1.patch
-Patch13:	gcc-isl0.15-2.patch
+Patch3:		gcc-mingw32.patch
 URL:		http://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
-BuildRequires:	automake >= 1:1.9.3
+BuildRequires:	automake >= 1:1.11.1
 BuildRequires:	bison
-BuildRequires:	crossmingw32-binutils >= 2.15.91.0.2-2
+BuildRequires:	crossmingw32-binutils >= 2.23
 %{?with_gomp:BuildRequires:	crossmingw32-pthreads-w32}
 %if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
 %endif
-BuildRequires:	cloog-isl-devel >= 0.17.0
-BuildRequires:	cloog-isl-devel < 0.19
-BuildRequires:	flex
-BuildRequires:	gmp-devel >= 4.1
-BuildRequires:	isl-devel >= 0.13
-BuildRequires:	libmpc-devel
-BuildRequires:	mpfr-devel
+BuildRequires:	flex >= 2.5.4
+BuildRequires:	gettext-tools >= 0.14.5
+BuildRequires:	gmp-devel >= 4.3.2
+BuildRequires:	isl-devel >= 0.14
+BuildRequires:	libmpc-devel >= 0.8.1
+BuildRequires:	mpfr-devel >= 2.4.2
 BuildRequires:	perl-tools-pod
-BuildRequires:	texinfo >= 4.2
+BuildRequires:	texinfo >= 4.7
+BuildRequires:	zlib-devel
 %if %{with booststrap}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 %endif
-Requires:	crossmingw32-binutils >= 2.15.91.0.2-2
+BuildConflicts:	pdksh < 5.2.14-50
+Requires:	crossmingw32-binutils >= 2.23
 Requires:	gcc-dirs
+Requires:	gmp >= 4.3.2
+Requires:	isl >= 0.14
+Requires:	libmpc >= 0.8.1
+Requires:	mpfr >= 2.4.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		i386-mingw32
@@ -111,6 +115,49 @@ libgcc DLL library for Windows.
 %description -n crossmingw32-libgcc-dll -l pl.UTF-8
 Biblioteka DLL libgcc dla Windows.
 
+%package -n crossmingw32-libatomic
+Summary:	The GNU Atomic library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka GNU Atomic - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libatomic
+This package contains cross MinGW32 version of the GNU Atomic library
+which is a GCC support library for atomic operations not supported by
+hardware.
+
+%description -n crossmingw32-libatomic -l pl.UTF-8
+Ten pakiet zawiera wersję skrośną MinGW32 biblioteki GNU Atomic,
+będącej biblioteką GCC, wspierającej operacje atomowe na sprzęcie ich
+nie obsługującym.
+
+%package -n crossmingw32-libatomic-static
+Summary:	The GNU Atomic static library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka GNU Atomic - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+Requires:	crossmingw32-libatomic = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libatomic-static
+The GNU Atomic static library - cross MinGW32 version.
+
+%description -n crossmingw32-libatomic-static
+Statyczna biblioteka GNU Atomic - wersja skrośna MinGW32.
+
+%package -n crossmingw32-libatomic-dll
+Summary:	DLL GNU Atomic library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL GNU Atomic dla Windows
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Applications/Emulators
+Requires:	wine
+
+%description -n crossmingw32-libatomic-dll
+DLL GNU Atomic library for Windows.
+
+%description -n crossmingw32-libatomic-dll -l pl.UTF-8
+Biblioteka DLL GNU Atomic dla Windows.
+
 %package -n crossmingw32-libgomp
 Summary:	GNU OpenMP library - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka GNU OpenMP - wersja skrośna MinGW32
@@ -141,7 +188,7 @@ Statyczna biblioteka GNU OpenMP - wersja skrośna MinGW32.
 Summary:	DLL GNU OpenMP library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL GNU OpenMP dla Windows
 License:	GPL v3+ with GCC Runtime Library Exception v3.1
-Group:		Development/Libraries
+Group:		Applications/Emulators
 Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
 Requires:	crossmingw32-pthreads-w32-dll
 
@@ -150,6 +197,53 @@ DLL GNU OpenMP library for Windows.
 
 %description -n crossmingw32-libgomp-dll -l pl.UTF-8
 Biblioteka DLL GNU OpenMP dla Windows.
+
+%package -n crossmingw32-libvtv
+Summary:	The Virtual Table Verification library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka Virtual Table Verification do weryfikacji tablicy wirtualnej - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+URL:		https://gcc.gnu.org/wiki/vtv
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libvtv
+This package contains cross MinGW32 version of the Virtual Table
+Verification library which is used for -fvtable-verify=...
+instrumented programs.
+
+%description -n crossmingw32-libvtv -l pl.UTF-8
+Ten pakiet zawiera wersję skrośną MinGW32 biblioteki Virtual Table
+Verification, służącej do weryfikacji tablicy wirtualnej w programach
+kompilowanych z opcją -fvtable-verify=....
+
+%package -n crossmingw32-libvtv-static
+Summary:	The Virtual Table Verification static library - cross MinGW32 version
+Summary(pl.UTF-8):	Statyczna biblioteka Virtual Table Verification - wersja skrośna MinGW32
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Development/Libraries
+URL:		https://gcc.gnu.org/wiki/vtv
+Requires:	crossmingw32-libvtv = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libvtv-static
+The Virtual Table Verification static library - cross MinGW32 version.
+
+%description -n crossmingw32-libvtv-static -l pl.UTF-8
+Statyczna biblioteka Virtual Table Verification - wersja skrośna
+MinGW32.
+
+%package -n crossmingw32-libvtv-dll
+Summary:	DLL Virtual Table Verification libraries for Windows
+Summary(pl.UTF-8):	Biblioteki DLL Virtual Table Verification dla Windows
+License:	GPL v3+ with GCC Runtime Library Exception v3.1
+Group:		Applications/Emulators
+URL:		https://gcc.gnu.org/wiki/vtv
+Requires:	crossmingw32-libgcc-dll = %{epoch}:%{version}-%{release}
+
+%description -n crossmingw32-libvtv-dll
+DLL Virtual Table Verification libraries for Windows.
+
+%description -n crossmingw32-libvtv-dll -l pl.UTF-8
+Biblioteki DLL Virtual Table Verification dla Windows.
 
 %package c++
 Summary:	MinGW32 binary utility development utilities - g++
@@ -224,6 +318,30 @@ libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
 z bibliotek w formacie COFF.
 
 Ten pakiet zawiera kompilator objc generujący kod pod Win32.
+
+%package objc++
+Summary:	MinGW32 binary utility development utilities - objc++
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - objc++
+Group:		Development/Languages
+Requires:	%{name}-objc = %{epoch}:%{version}-%{release}
+
+%description objc++
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the MinGW32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains Objective C++ support.
+
+%description objc++ -l pl.UTF-8
+crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
+pozwalającym budować aplikacje MS Windows pod Linuksem używając
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
+libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
+z bibliotek w formacie COFF.
+
+Ten pakiet zawiera obsługę języka Objective C++.
 
 %package -n crossmingw32-libobjc-static
 Summary:	Static Objective C library - cross MinGW32 version
@@ -373,8 +491,7 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch100 -p0
 %patch0 -p1
 %patch2 -p1
-%patch12 -p1
-%patch13 -p1
+%patch3 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dir is special, handled by gcc's configure
@@ -410,28 +527,30 @@ TEXCONFIG=false \
 	--with-build-time-tools=%{arch}/bin \
 	%{!?with_bootstrap:--with-headers=%{arch}/include} \
 	--with-libs=%{!?with_bootstrap:%{arch}/lib}%{?with_bootstrap:${WINSUPDIR}/mingw/lib} \
+	--with-demangler-in-ld \
 	--with-dwarf2 \
 	--with-gnu-as \
 	--with-gnu-ld \
-	--with-mangler-in-ld \
 	--with-long-double-128 \
-	--with-cloog \
-	--with-ppl \
-	--disable-isl-version-check \
-	--enable-shared \
-	--enable-threads \
-	--enable-languages="c,c++,fortran,java,objc" \
 	--enable-c99 \
 	--enable-fully-dynamic-string \
-	--enable-libgomp \
-	--enable-libstdcxx-allocator=new \
-	--enable-long-long \
-	--enable-version-specific-runtime-libs \
+	--disable-isl-version-check \
+	--enable-languages="c,c++,fortran,java,objc,obj-c++" \
+	--enable-shared \
+	--enable-threads \
+	--disable-libcc1 \
+	--enable-libgomp%{!?with_gomp:=no} \
 	--disable-libssp \
+	--enable-libstdcxx-allocator=new \
+	--enable-linker-build-id \
+	--enable-long-long \
+	--enable-lto \
 	--disable-multilib \
 	--disable-nls \
 	--disable-sjlj-exceptions \
 	--disable-symvers \
+	--enable-version-specific-runtime-libs \
+	--disable-werror \
 	--disable-win32-registry \
 	--target=%{target}
 
@@ -447,7 +566,7 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 %{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
+%{__mv} $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
@@ -456,14 +575,15 @@ ln -sf %{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
 ln -sf %{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
 ln -sf %{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -sf %{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
+ln -sf %{arch}/bin/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
 ln -sf %{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
 ln -sf %{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
 ln -sf %{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
-mv -f $RPM_BUILD_ROOT%{gccarchdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
-mv -f $RPM_BUILD_ROOT%{gcclibdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
+%{__mv} $RPM_BUILD_ROOT%{gccarchdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
+%{__mv} $RPM_BUILD_ROOT%{gcclibdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
 if [ ! -f $RPM_BUILD_ROOT%{_dlldir}/libgcc_s_dw2-1.dll ]; then
 	echo "libgcc DLL not installed?"
 	install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
@@ -502,6 +622,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcc
 %attr(755,root,root) %{_bindir}/%{target}-cpp
 %attr(755,root,root) %{_bindir}/%{target}-gcov
+%attr(755,root,root) %{_bindir}/%{target}-gcov-tool
 %attr(755,root,root) %{arch}/bin/%{target}-gcc
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-%{version}
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-ar
@@ -509,6 +630,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-ranlib
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
+%attr(755,root,root) %{arch}/bin/%{target}-gcov-tool
 %dir %{gccarchdir}
 %dir %{gcclibdir}
 %attr(755,root,root) %{gcclibdir}/cc1
@@ -533,11 +655,26 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libgcc_s_dw2-1.dll
 
+%files -n crossmingw32-libatomic
+%defattr(644,root,root,755)
+%{gcclibdir}/libatomic.dll.a
+%{gcclibdir}/libatomic.la
+
+%files -n crossmingw32-libatomic-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libatomic.a
+
+%files -n crossmingw32-libatomic-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libatomic-1.dll
+
 %if %{with gomp}
 %files -n crossmingw32-libgomp
 %defattr(644,root,root,755)
 %{gcclibdir}/libgomp.dll.a
 %{gcclibdir}/libgomp.la
+%{gcclibdir}/libgomp-plugin-host_nonshm.dll.a
+%{gcclibdir}/libgomp-plugin-host_nonshm.la
 %{gcclibdir}/libgomp.spec
 
 %files -n crossmingw32-libgomp-static
@@ -547,7 +684,25 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libgomp-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libgomp-1.dll
+%{_dlldir}/libgomp-plugin-host_nonshm-1.dll
 %endif
+
+%files -n crossmingw32-libvtv
+%defattr(644,root,root,755)
+%{gcclibdir}/libvtv.dll.a
+%{gcclibdir}/libvtv.la
+%{gcclibdir}/libvtv_stubs.dll.a
+%{gcclibdir}/libvtv_stubs.la
+
+%files -n crossmingw32-libvtv-static
+%defattr(644,root,root,755)
+%{gcclibdir}/libvtv.a
+%{gcclibdir}/libvtv_stubs.a
+
+%files -n crossmingw32-libvtv-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libvtv-0.dll
+%{_dlldir}/libvtv_stubs-0.dll
 
 %files c++
 %defattr(644,root,root,755)
@@ -572,10 +727,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files objc
 %defattr(644,root,root,755)
+%doc libobjc/README
 %attr(755,root,root) %{gcclibdir}/cc1obj
 %{gcclibdir}/libobjc.dll.a
 %{gcclibdir}/libobjc.la
 %{gcclibdir}/include/objc
+
+%files objc++
+%defattr(644,root,root,755)
+%doc gcc/objcp/ChangeLog
+%attr(755,root,root) %{gcclibdir}/cc1objplus
 
 %files -n crossmingw32-libobjc-static
 %defattr(644,root,root,755)
