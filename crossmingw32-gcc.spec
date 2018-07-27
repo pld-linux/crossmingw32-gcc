@@ -13,24 +13,25 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	5.4.0
+Version:	6.4.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
-Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
-# Source0-md5:	4c626ac2a83ef30dfb9260e6f59c2b30
+Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+# Source0-md5:	11ba51a0cfb8471927f387c8895fe232
 %define		mingw32_ver	4.0.3
 Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
 # Source1-md5:	c2c9aa82e0cb47abac01760525684858
 Source2:	gcc-optimize-la.pl
 # svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_5_4_0_release svn://gcc.gnu.org/svn/gcc/branches/gcc-5-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	8211f0f6f0a2179e51b4ac42f91bd44d
+# Patch100-md5:	1d4bc26154e47de7d727d6767215e776
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
 Patch3:		gcc-mingw32.patch
+Patch4:		gcc-build-libvtv.patch
 URL:		http://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
@@ -44,21 +45,20 @@ BuildRequires:	crossmingw32-w32api >= 3.1
 BuildRequires:	flex >= 2.5.4
 BuildRequires:	gettext-tools >= 0.14.5
 BuildRequires:	gmp-devel >= 4.3.2
-BuildRequires:	isl-devel >= 0.14
+BuildRequires:	isl-devel >= 0.15
 BuildRequires:	libmpc-devel >= 0.8.1
+BuildRequires:	libstdc++-devel
 BuildRequires:	mpfr-devel >= 2.4.2
 BuildRequires:	perl-tools-pod
-BuildRequires:	texinfo >= 4.7
-BuildRequires:	zlib-devel
-%if %{with booststrap}
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	texinfo >= 4.7
 BuildRequires:	xz
-%endif
+BuildRequires:	zlib-devel
 BuildConflicts:	pdksh < 5.2.14-50
 Requires:	crossmingw32-binutils >= 2.23
 Requires:	gcc-dirs
 Requires:	gmp >= 4.3.2
-Requires:	isl >= 0.14
+Requires:	isl >= 0.15
 Requires:	libmpc >= 0.8.1
 Requires:	mpfr >= 2.4.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -492,6 +492,7 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch0 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dir is special, handled by gcc's configure
@@ -504,6 +505,12 @@ echo %{version} > gcc/BASE-VER
 echo "release" > gcc/DEV-PHASE
 
 %build
+cd libvtv
+%{__aclocal} -I .. -I ../config
+%{__autoconf}
+%{__automake}
+cd ..
+
 rm -rf builddir && install -d builddir && cd builddir
 %if %{with bootstrap}
 install -d %{target}/winsup
@@ -512,16 +519,19 @@ ln -sf ../../../winsup/mingw/include %{target}/winsup/w32api
 WINSUPDIR=$(cd ..; pwd)/winsup
 %endif
 
+# note: libbacktrace requires at least i486 now
 CC="%{__cc}" \
 CFLAGS="%{rpmcflags}" \
 CXXFLAGS="%{rpmcxxflags}" \
 TEXCONFIG=false \
+CFLAGS_FOR_TARGET="-O2 -march=i486" \
+CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 ../configure \
 	--prefix=%{sysprefix} \
 	--bindir=%{arch}/bin \
 	--libdir=%{_libdir} \
 	--includedir=%{arch}/include \
-	--libexecdir=%{_libdir} \
+	--libexecdir=%{_libexecdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--with-build-time-tools=%{arch}/bin \
@@ -536,8 +546,6 @@ TEXCONFIG=false \
 	--enable-fully-dynamic-string \
 	--disable-isl-version-check \
 	--enable-languages="c,c++,fortran,java,objc,obj-c++" \
-	--enable-shared \
-	--enable-threads \
 	--disable-libcc1 \
 	--enable-libgomp%{!?with_gomp:=no} \
 	--disable-libssp \
@@ -547,8 +555,10 @@ TEXCONFIG=false \
 	--enable-lto \
 	--disable-multilib \
 	--disable-nls \
+	--enable-shared \
 	--disable-sjlj-exceptions \
 	--disable-symvers \
+	--enable-threads \
 	--enable-version-specific-runtime-libs \
 	--disable-werror \
 	--disable-win32-registry \
@@ -575,6 +585,7 @@ ln -sf %{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
 ln -sf %{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
 ln -sf %{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -sf %{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
+ln -sf %{arch}/bin/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
 ln -sf %{arch}/bin/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
 ln -sf %{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
 ln -sf %{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
@@ -595,7 +606,7 @@ fi
 %endif
 
 # avoid -L poisoning in *.la
-for f in libcaf_single.la libgfortran.la libgfortranbegin.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
+for f in libatomic.la libcaf_single.la libgfortran.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
 	file="$RPM_BUILD_ROOT%{gcclibdir}/$f"
 	%{__perl} %{SOURCE2} "$file" %{gcclibdir} >"${file}.fixed"
 	%{__mv} "${file}.fixed" "$file"
@@ -622,6 +633,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcc
 %attr(755,root,root) %{_bindir}/%{target}-cpp
 %attr(755,root,root) %{_bindir}/%{target}-gcov
+%attr(755,root,root) %{_bindir}/%{target}-gcov-dump
 %attr(755,root,root) %{_bindir}/%{target}-gcov-tool
 %attr(755,root,root) %{arch}/bin/%{target}-gcc
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-%{version}
@@ -630,6 +642,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{arch}/bin/%{target}-gcc-ranlib
 %attr(755,root,root) %{arch}/bin/%{target}-cpp
 %attr(755,root,root) %{arch}/bin/%{target}-gcov
+%attr(755,root,root) %{arch}/bin/%{target}-gcov-dump
 %attr(755,root,root) %{arch}/bin/%{target}-gcov-tool
 %dir %{gccarchdir}
 %dir %{gcclibdir}
@@ -650,6 +663,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
 %{_mandir}/man1/%{target}-gcov.1*
+%{_mandir}/man1/%{target}-gcov-dump.1*
+%{_mandir}/man1/%{target}-gcov-tool.1*
 
 %files -n crossmingw32-libgcc-dll
 %defattr(644,root,root,755)
@@ -673,8 +688,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{gcclibdir}/libgomp.dll.a
 %{gcclibdir}/libgomp.la
-%{gcclibdir}/libgomp-plugin-host_nonshm.dll.a
-%{gcclibdir}/libgomp-plugin-host_nonshm.la
 %{gcclibdir}/libgomp.spec
 
 %files -n crossmingw32-libgomp-static
@@ -684,7 +697,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libgomp-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libgomp-1.dll
-%{_dlldir}/libgomp-plugin-host_nonshm-1.dll
 %endif
 
 %files -n crossmingw32-libvtv
@@ -757,8 +769,6 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/libgfortran.dll.a
 %{gcclibdir}/libgfortran.la
 %{gcclibdir}/libgfortran.spec
-%{gcclibdir}/libgfortranbegin.a
-%{gcclibdir}/libgfortranbegin.la
 %{_mandir}/man1/%{target}-gfortran.1*
 
 %files -n crossmingw32-libgfortran-static

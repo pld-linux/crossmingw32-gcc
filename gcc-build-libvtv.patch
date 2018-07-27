@@ -1,0 +1,28 @@
+--- gcc-6.4.0/libvtv/Makefile.am.orig	2016-05-02 20:12:21.855998000 +0200
++++ gcc-6.4.0/libvtv/Makefile.am	2018-07-27 21:11:59.794464041 +0200
+@@ -38,12 +38,10 @@
+ AM_CXXFLAGS += $(LIBSTDCXX_RAW_CXX_CXXFLAGS)
+ AM_CXXFLAGS += -Wl,-u_vtable_map_vars_start,-u_vtable_map_vars_end
+ 
+-if ENABLE_VTABLE_VERIFY
+   toolexeclib_LTLIBRARIES = libvtv.la
+ if VTV_CYGMIN
+   toolexeclib_LTLIBRARIES += libvtv_stubs.la
+ endif
+-endif
+ 
+ vtv_headers = \
+ 	vtv_map.h \
+--- gcc-6.4.0/config/override.m4.orig	2018-07-27 21:32:13.571116850 +0200
++++ gcc-6.4.0/config/override.m4	2018-07-27 21:52:06.134436565 +0200
+@@ -37,9 +37,7 @@
+ dnl without rewriting this file.
+ dnl Or for updating the whole tree at once with the definition above.
+ AC_DEFUN([_GCC_AUTOCONF_VERSION_CHECK],
+-[m4_if(m4_defn([_GCC_AUTOCONF_VERSION]),
+-  m4_defn([m4_PACKAGE_VERSION]), [],
+-  [m4_fatal([Please use exactly Autoconf ]_GCC_AUTOCONF_VERSION[ instead of ]m4_defn([m4_PACKAGE_VERSION])[.])])
++[
+ ])
+ m4_define([AC_INIT], m4_defn([AC_INIT])[
+ _GCC_AUTOCONF_VERSION_CHECK
