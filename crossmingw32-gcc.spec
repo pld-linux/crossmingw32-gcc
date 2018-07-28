@@ -531,7 +531,7 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--bindir=%{arch}/bin \
 	--libdir=%{_libdir} \
 	--includedir=%{arch}/include \
-	--libexecdir=%{_libexecdir} \
+	--libexecdir=%{_libdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
 	--with-build-time-tools=%{arch}/bin \
