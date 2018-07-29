@@ -65,7 +65,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		i386-mingw32
 %define		sysprefix	/usr
-%define		arch		%{sysprefix}/%{target}
+%define		archprefix	%{sysprefix}/%{target}
+%define		archbindir	%{archprefix}/bin
+%define		archincludedir	%{archprefix}/include
+%define		archlibdir	%{archprefix}/lib
 %define		gccarchdir	%{_libdir}/gcc/%{target}
 %define		gcclibdir	%{gccarchdir}/%{version}
 %define		_dlldir		/usr/share/wine/windows/system
@@ -528,20 +531,22 @@ CFLAGS_FOR_TARGET="-O2 -march=i486" \
 CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 ../configure \
 	--prefix=%{sysprefix} \
-	--bindir=%{arch}/bin \
+	--bindir=%{archbindir} \
 	--libdir=%{_libdir} \
-	--includedir=%{arch}/include \
+	--includedir=%{archincludedir} \
 	--libexecdir=%{_libdir} \
 	--infodir=%{_infodir} \
 	--mandir=%{_mandir} \
-	--with-build-time-tools=%{arch}/bin \
-	%{!?with_bootstrap:--with-headers=%{arch}/include} \
-	--with-libs=%{!?with_bootstrap:%{arch}/lib}%{?with_bootstrap:${WINSUPDIR}/mingw/lib} \
+	--with-bugurl="http://bugs.pld-linux.org" \
+	--with-build-time-tools=%{archbindir} \
+	%{!?with_bootstrap:--with-headers=%{archincludedir}} \
+	--with-libs=%{!?with_bootstrap:%{archlibdir}}%{?with_bootstrap:${WINSUPDIR}/mingw/lib} \
 	--with-demangler-in-ld \
 	--with-dwarf2 \
 	--with-gnu-as \
 	--with-gnu-ld \
 	--with-long-double-128 \
+	--with-pkgversion="PLD-Linux" \
 	--enable-c99 \
 	--enable-fully-dynamic-string \
 	--disable-isl-version-check \
@@ -581,15 +586,15 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
 # these must be symlinks: gcclibdir is calculated relatively to real binary path
-ln -sf %{arch}/bin/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
-ln -sf %{arch}/bin/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
-ln -sf %{arch}/bin/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
-ln -sf %{arch}/bin/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
-ln -sf %{arch}/bin/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
-ln -sf %{arch}/bin/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
-ln -sf %{arch}/bin/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
-ln -sf %{arch}/bin/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
-ln -sf %{arch}/bin/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
+ln -sf %{archbindir}/%{target}-gcc $RPM_BUILD_ROOT%{_bindir}/%{target}-gcc
+ln -sf %{archbindir}/%{target}-g++ $RPM_BUILD_ROOT%{_bindir}/%{target}-g++
+ln -sf %{archbindir}/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
+ln -sf %{archbindir}/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
+ln -sf %{archbindir}/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
+ln -sf %{archbindir}/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
+ln -sf %{archbindir}/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
+ln -sf %{archbindir}/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
+ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
@@ -635,15 +640,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcov
 %attr(755,root,root) %{_bindir}/%{target}-gcov-dump
 %attr(755,root,root) %{_bindir}/%{target}-gcov-tool
-%attr(755,root,root) %{arch}/bin/%{target}-gcc
-%attr(755,root,root) %{arch}/bin/%{target}-gcc-%{version}
-%attr(755,root,root) %{arch}/bin/%{target}-gcc-ar
-%attr(755,root,root) %{arch}/bin/%{target}-gcc-nm
-%attr(755,root,root) %{arch}/bin/%{target}-gcc-ranlib
-%attr(755,root,root) %{arch}/bin/%{target}-cpp
-%attr(755,root,root) %{arch}/bin/%{target}-gcov
-%attr(755,root,root) %{arch}/bin/%{target}-gcov-dump
-%attr(755,root,root) %{arch}/bin/%{target}-gcov-tool
+%attr(755,root,root) %{archbindir}/%{target}-gcc
+%attr(755,root,root) %{archbindir}/%{target}-gcc-%{version}
+%attr(755,root,root) %{archbindir}/%{target}-gcc-ar
+%attr(755,root,root) %{archbindir}/%{target}-gcc-nm
+%attr(755,root,root) %{archbindir}/%{target}-gcc-ranlib
+%attr(755,root,root) %{archbindir}/%{target}-cpp
+%attr(755,root,root) %{archbindir}/%{target}-gcov
+%attr(755,root,root) %{archbindir}/%{target}-gcov-dump
+%attr(755,root,root) %{archbindir}/%{target}-gcov-tool
 %dir %{gccarchdir}
 %dir %{gcclibdir}
 %attr(755,root,root) %{gcclibdir}/cc1
@@ -719,8 +724,8 @@ rm -rf $RPM_BUILD_ROOT
 %files c++
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-g++
-%attr(755,root,root) %{arch}/bin/%{target}-c++
-%attr(755,root,root) %{arch}/bin/%{target}-g++
+%attr(755,root,root) %{archbindir}/%{target}-c++
+%attr(755,root,root) %{archbindir}/%{target}-g++
 %attr(755,root,root) %{gcclibdir}/cc1plus
 %{gcclibdir}/libstdc++.dll.a
 %{gcclibdir}/libstdc++.la
@@ -761,7 +766,7 @@ rm -rf $RPM_BUILD_ROOT
 %files fortran
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
-%attr(755,root,root) %{arch}/bin/%{target}-gfortran
+%attr(755,root,root) %{archbindir}/%{target}-gfortran
 %attr(755,root,root) %{gcclibdir}/f951
 %{gcclibdir}/finclude
 %{gcclibdir}/libcaf_single.a
@@ -796,8 +801,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gcj
 %attr(755,root,root) %{_bindir}/%{target}-jcf-dump
-%attr(755,root,root) %{arch}/bin/%{target}-gcj
-%attr(755,root,root) %{arch}/bin/%{target}-jcf-dump
+%attr(755,root,root) %{archbindir}/%{target}-gcj
+%attr(755,root,root) %{archbindir}/%{target}-jcf-dump
 %attr(755,root,root) %{gcclibdir}/jc1
 %attr(755,root,root) %{gcclibdir}/jvgenmain
 %{_mandir}/man1/%{target}-gcj.1*
