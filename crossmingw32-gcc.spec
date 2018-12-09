@@ -13,20 +13,23 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	6.4.0
+Version:	6.5.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	11ba51a0cfb8471927f387c8895fe232
-%define		mingw32_ver	4.0.3
-Source1:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-1-mingw32-dev.tar.lzma
-# Source1-md5:	c2c9aa82e0cb47abac01760525684858
-Source2:	gcc-optimize-la.pl
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_5_4_0_release svn://gcc.gnu.org/svn/gcc/branches/gcc-5-branch > gcc-branch.diff
+# Source0-md5:	edaeff1cc020b16a0c19a6d5e80dc2fd
+%define		w32api_ver	5.0.2
+Source1:	http://downloads.sourceforge.net/mingw/w32api-%{w32api_ver}-mingw32-dev.tar.xz
+# Source1-md5:	78aa3ed3964f32aec8c0d40521c40eb8
+%define		mingw32_ver	5.0.2
+Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-mingw32-dev.tar.xz
+# Source2-md5:	ebb43675d02887e045812debfbabe061
+Source3:	gcc-optimize-la.pl
+# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_6_5_0_release svn://gcc.gnu.org/svn/gcc/branches/gcc-6-branch > gcc-branch.diff
 Patch100:	gcc-branch.diff
-# Patch100-md5:	1d4bc26154e47de7d727d6767215e776
+# Patch100-md5:	5ad5a566cbaf57f985192534e5ef1c32
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -498,9 +501,10 @@ Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
 %patch4 -p1
 
 %if %{with bootstrap}
-# note: "winsup" dir is special, handled by gcc's configure
-install -d winsup/mingw
-tar xf %{SOURCE1} -C winsup/mingw
+# note: "winsup" dirs are special, handled by gcc's configure
+install -d winsup/{mingw,w32api}
+tar xf %{SOURCE1} -C winsup/w32api
+tar xf %{SOURCE2} -C winsup/mingw
 %endif
 
 # override snapshot version.
@@ -518,7 +522,7 @@ rm -rf builddir && install -d builddir && cd builddir
 %if %{with bootstrap}
 install -d %{target}/winsup
 ln -sf ../../../winsup/mingw/lib %{target}/winsup/mingw
-ln -sf ../../../winsup/mingw/include %{target}/winsup/w32api
+ln -sf ../../../winsup/w32api %{target}/winsup/w32api
 WINSUPDIR=$(cd ..; pwd)/winsup
 %endif
 
@@ -564,7 +568,6 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--disable-sjlj-exceptions \
 	--disable-symvers \
 	--enable-threads \
-	--enable-version-specific-runtime-libs \
 	--disable-werror \
 	--disable-win32-registry \
 	--target=%{target}
@@ -598,8 +601,7 @@ ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfor
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
-%{__mv} $RPM_BUILD_ROOT%{gccarchdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
-%{__mv} $RPM_BUILD_ROOT%{gcclibdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
+%{__mv} $RPM_BUILD_ROOT%{archlibdir}/*.dll $RPM_BUILD_ROOT%{_dlldir}
 if [ ! -f $RPM_BUILD_ROOT%{_dlldir}/libgcc_s_dw2-1.dll ]; then
 	echo "libgcc DLL not installed?"
 	install builddir/i386-mingw32/libgcc/shlib/libgcc_s_dw2-1.dll $RPM_BUILD_ROOT%{_dlldir}
@@ -607,18 +609,24 @@ fi
 
 %if 0%{!?debug:1}
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
+%{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{archlibdir}/lib*.a
 %{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{gcclibdir}/lib*.a
 %endif
 
 # avoid -L poisoning in *.la
-for f in libatomic.la libcaf_single.la libgfortran.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
+for f in libatomic.la libgfortran.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
+	file="$RPM_BUILD_ROOT%{archlibdir}/$f"
+	%{__perl} %{SOURCE3} "$file" %{gcclibdir} >"${file}.fixed"
+	%{__mv} "${file}.fixed" "$file"
+done
+for f in libcaf_single.la ; do
 	file="$RPM_BUILD_ROOT%{gcclibdir}/$f"
-	%{__perl} %{SOURCE2} "$file" %{gcclibdir} >"${file}.fixed"
+	%{__perl} %{SOURCE3} "$file" %{gcclibdir} >"${file}.fixed"
 	%{__mv} "${file}.fixed" "$file"
 done
 
 # for pretty-printers see native gcc
-%{__rm} $RPM_BUILD_ROOT%{gcclibdir}/libstdc++.dll.a-gdb.py
+%{__rm} $RPM_BUILD_ROOT%{archlibdir}/libstdc++.dll.a-gdb.py
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/gcc-%{version}/python/libstdcxx
 # no plugin development for mingw32 (at least for now)
 %{__rm} $RPM_BUILD_ROOT%{gcclibdir}/liblto_plugin.la
@@ -649,6 +657,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{archbindir}/%{target}-gcov
 %attr(755,root,root) %{archbindir}/%{target}-gcov-dump
 %attr(755,root,root) %{archbindir}/%{target}-gcov-tool
+%{archlibdir}/libgcc_s.a
 %dir %{gccarchdir}
 %dir %{gcclibdir}
 %attr(755,root,root) %{gcclibdir}/cc1
@@ -658,7 +667,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclibdir}/liblto_plugin.so*
 %{gcclibdir}/libgcc.a
 %{gcclibdir}/libgcc_eh.a
-%{gcclibdir}/libgcc_s.a
 %{gcclibdir}/libgcov.a
 %{gcclibdir}/crtbegin.o
 %{gcclibdir}/crtend.o
@@ -677,12 +685,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libatomic
 %defattr(644,root,root,755)
-%{gcclibdir}/libatomic.dll.a
-%{gcclibdir}/libatomic.la
+%{archlibdir}/libatomic.dll.a
+%{archlibdir}/libatomic.la
 
 %files -n crossmingw32-libatomic-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libatomic.a
+%{archlibdir}/libatomic.a
 
 %files -n crossmingw32-libatomic-dll
 %defattr(644,root,root,755)
@@ -691,13 +699,13 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with gomp}
 %files -n crossmingw32-libgomp
 %defattr(644,root,root,755)
-%{gcclibdir}/libgomp.dll.a
-%{gcclibdir}/libgomp.la
-%{gcclibdir}/libgomp.spec
+%{archlibdir}/libgomp.dll.a
+%{archlibdir}/libgomp.la
+%{archlibdir}/libgomp.spec
 
 %files -n crossmingw32-libgomp-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libgomp.a
+%{archlibdir}/libgomp.a
 
 %files -n crossmingw32-libgomp-dll
 %defattr(644,root,root,755)
@@ -706,15 +714,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libvtv
 %defattr(644,root,root,755)
-%{gcclibdir}/libvtv.dll.a
-%{gcclibdir}/libvtv.la
-%{gcclibdir}/libvtv_stubs.dll.a
-%{gcclibdir}/libvtv_stubs.la
+%{archlibdir}/libvtv.dll.a
+%{archlibdir}/libvtv.la
+%{archlibdir}/libvtv_stubs.dll.a
+%{archlibdir}/libvtv_stubs.la
 
 %files -n crossmingw32-libvtv-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libvtv.a
-%{gcclibdir}/libvtv_stubs.a
+%{archlibdir}/libvtv.a
+%{archlibdir}/libvtv_stubs.a
 
 %files -n crossmingw32-libvtv-dll
 %defattr(644,root,root,755)
@@ -727,16 +735,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{archbindir}/%{target}-c++
 %attr(755,root,root) %{archbindir}/%{target}-g++
 %attr(755,root,root) %{gcclibdir}/cc1plus
-%{gcclibdir}/libstdc++.dll.a
-%{gcclibdir}/libstdc++.la
-%{gcclibdir}/libsupc++.la
-%{gcclibdir}/libsupc++.a
-%{gcclibdir}/include/c++
+%{archlibdir}/libstdc++.dll.a
+%{archlibdir}/libstdc++.la
+%{archlibdir}/libsupc++.la
+%{archlibdir}/libsupc++.a
+%{archincludedir}/c++
 %{_mandir}/man1/%{target}-g++.1*
 
 %files -n crossmingw32-libstdc++-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libstdc++.a
+%{archlibdir}/libstdc++.a
 
 %files -n crossmingw32-libstdc++-dll
 %defattr(644,root,root,755)
@@ -746,8 +754,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc libobjc/README
 %attr(755,root,root) %{gcclibdir}/cc1obj
-%{gcclibdir}/libobjc.dll.a
-%{gcclibdir}/libobjc.la
+%{archlibdir}/libobjc.dll.a
+%{archlibdir}/libobjc.la
 %{gcclibdir}/include/objc
 
 %files objc++
@@ -757,7 +765,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libobjc-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libobjc.a
+%{archlibdir}/libobjc.a
 
 %files -n crossmingw32-libobjc-dll
 %defattr(644,root,root,755)
@@ -768,17 +776,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gfortran
 %attr(755,root,root) %{archbindir}/%{target}-gfortran
 %attr(755,root,root) %{gcclibdir}/f951
+%{archlibdir}/libgfortran.dll.a
+%{archlibdir}/libgfortran.la
+%{archlibdir}/libgfortran.spec
 %{gcclibdir}/finclude
 %{gcclibdir}/libcaf_single.a
 %{gcclibdir}/libcaf_single.la
-%{gcclibdir}/libgfortran.dll.a
-%{gcclibdir}/libgfortran.la
-%{gcclibdir}/libgfortran.spec
 %{_mandir}/man1/%{target}-gfortran.1*
 
 %files -n crossmingw32-libgfortran-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libgfortran.a
+%{archlibdir}/libgfortran.a
 
 %files -n crossmingw32-libgfortran-dll
 %defattr(644,root,root,755)
@@ -786,12 +794,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libquadmath
 %defattr(644,root,root,755)
-%{gcclibdir}/libquadmath.dll.a
-%{gcclibdir}/libquadmath.la
+%{archlibdir}/libquadmath.dll.a
+%{archlibdir}/libquadmath.la
 
 %files -n crossmingw32-libquadmath-static
 %defattr(644,root,root,755)
-%{gcclibdir}/libquadmath.a
+%{archlibdir}/libquadmath.a
 
 %files -n crossmingw32-libquadmath-dll
 %defattr(644,root,root,755)
