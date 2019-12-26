@@ -620,12 +620,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcov
 %attr(755,root,root) %{_bindir}/%{target}-gcov-dump
 %attr(755,root,root) %{_bindir}/%{target}-gcov-tool
+%attr(755,root,root) %{archbindir}/%{target}-cpp
 %attr(755,root,root) %{archbindir}/%{target}-gcc
 %attr(755,root,root) %{archbindir}/%{target}-gcc-%{version}
 %attr(755,root,root) %{archbindir}/%{target}-gcc-ar
 %attr(755,root,root) %{archbindir}/%{target}-gcc-nm
 %attr(755,root,root) %{archbindir}/%{target}-gcc-ranlib
-%attr(755,root,root) %{archbindir}/%{target}-cpp
 %attr(755,root,root) %{archbindir}/%{target}-gcov
 %attr(755,root,root) %{archbindir}/%{target}-gcov-dump
 %attr(755,root,root) %{archbindir}/%{target}-gcov-tool
