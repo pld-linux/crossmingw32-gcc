@@ -10,3 +10,40 @@
  
  
  /* INTEGER FUNCTION CHMOD (NAME, MODE)
+--- gcc-7.5.0/libstdc++-v3/libsupc++/new_opa.cc.orig	2019-10-24 17:31:00.754226000 +0200
++++ gcc-7.5.0/libstdc++-v3/libsupc++/new_opa.cc	2019-12-26 09:33:51.155818937 +0100
+@@ -29,10 +29,13 @@
+ #include <bits/exception_defines.h>
+ #include "new"
+ 
+-#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && !_GLIBCXX_HAVE__ALIGNED_MALLOC \
+-  && !_GLIBCXX_HAVE_POSIX_MEMALIGN && _GLIBCXX_HAVE_MEMALIGN
++#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && (!_GLIBCXX_HAVE__ALIGNED_MALLOC || defined(__MINGW32__)) \
++  && !_GLIBCXX_HAVE_POSIX_MEMALIGN && (_GLIBCXX_HAVE_MEMALIGN || defined(__MINGW32__))
+ # if _GLIBCXX_HOSTED && __has_include(<malloc.h>)
+ // Some C libraries declare memalign in <malloc.h>
++#  ifdef __MINGW32__
++#    define __MSVCRT_VERSION__ 0x0700
++#  endif
+ #  include <malloc.h>
+ # else
+ extern "C" void *memalign(std::size_t boundary, std::size_t size);
+--- gcc-7.5.0/libstdc++-v3/libsupc++/del_opa.cc.orig	2017-01-26 15:30:45.014860000 +0100
++++ gcc-7.5.0/libstdc++-v3/libsupc++/del_opa.cc	2019-12-26 09:41:01.210155799 +0100
+@@ -40,6 +40,16 @@
+ 
+ #include "new"
+ 
++#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && (!_GLIBCXX_HAVE__ALIGNED_MALLOC || defined(__MINGW32__)) \
++  && !_GLIBCXX_HAVE_POSIX_MEMALIGN && (_GLIBCXX_HAVE_MEMALIGN || defined(__MINGW32__))
++# if _GLIBCXX_HOSTED && __has_include(<malloc.h>)
++#  ifdef __MINGW32__
++#    define __MSVCRT_VERSION__ 0x0700
++#  endif
++#  include <malloc.h>
++# endif
++#endif
++
+ // The sized deletes are defined in other files.
+ #pragma GCC diagnostic ignored "-Wsized-deallocation"
+ 

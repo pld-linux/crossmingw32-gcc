@@ -13,13 +13,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	6.5.0
-Release:	2
+Version:	7.5.0
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	edaeff1cc020b16a0c19a6d5e80dc2fd
+# Source0-md5:	79cb8a65d44dfc8a2402b46395535c9a
 %define		w32api_ver	5.0.2
 Source1:	http://downloads.sourceforge.net/mingw/w32api-%{w32api_ver}-mingw32-dev.tar.xz
 # Source1-md5:	78aa3ed3964f32aec8c0d40521c40eb8
@@ -27,9 +27,7 @@ Source1:	http://downloads.sourceforge.net/mingw/w32api-%{w32api_ver}-mingw32-dev
 Source2:	http://downloads.sourceforge.net/mingw/mingwrt-%{mingw32_ver}-mingw32-dev.tar.xz
 # Source2-md5:	ebb43675d02887e045812debfbabe061
 Source3:	gcc-optimize-la.pl
-# svn diff -x --ignore-eol-style --force svn://gcc.gnu.org/svn/gcc/tags/gcc_6_5_0_release svn://gcc.gnu.org/svn/gcc/branches/gcc-6-branch > gcc-branch.diff
-Patch100:	gcc-branch.diff
-# Patch100-md5:	5ad5a566cbaf57f985192534e5ef1c32
+#Patch100:	gcc-branch.diff
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -64,6 +62,8 @@ Requires:	gmp >= 4.3.2
 Requires:	isl >= 0.15
 Requires:	libmpc >= 0.8.1
 Requires:	mpfr >= 2.4.2
+# java support dropped from gcc 7+
+Obsoletes:	crossmingw32-java < 1:7
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		target		i386-mingw32
@@ -468,33 +468,9 @@ DLL GCC __float128 support library for Windows.
 %description -n crossmingw32-libquadmath-dll -l pl.UTF-8
 Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 
-%package java
-Summary:	MinGW32 binary utility development utilities - Java
-Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Java
-Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-
-%description java
-crossmingw32 is a complete cross-compiling development system for
-building stand-alone Microsoft Windows applications under Linux using
-the MinGW32 build libraries. This includes a binutils, gcc with g++
-and objc, and libstdc++, all cross targeted to i386-mingw32, along
-with supporting Win32 libraries in 'coff' format from free sources.
-
-This package contains cross targeted Java compiler.
-
-%description java -l pl.UTF-8
-crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
-pozwalającym budować aplikacje MS Windows pod Linuksem używając
-bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
-libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
-z bibliotek w formacie COFF.
-
-Ten pakiet zawiera kompilator Javy generujący kod pod Win32.
-
 %prep
 %setup -q -n gcc-%{version}
-%patch100 -p0
+#patch100 -p0
 %patch0 -p1
 %patch2 -p1
 %patch3 -p1
@@ -554,7 +530,7 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--enable-c99 \
 	--enable-fully-dynamic-string \
 	--disable-isl-version-check \
-	--enable-languages="c,c++,fortran,java,objc,obj-c++" \
+	--enable-languages="c,c++,fortran,objc,obj-c++" \
 	--disable-libcc1 \
 	--enable-libgomp%{!?with_gomp:=no} \
 	--disable-libssp \
@@ -595,8 +571,6 @@ ln -sf %{archbindir}/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -sf %{archbindir}/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
 ln -sf %{archbindir}/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
 ln -sf %{archbindir}/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
-ln -sf %{archbindir}/%{target}-gcj $RPM_BUILD_ROOT%{_bindir}/%{target}-gcj
-ln -sf %{archbindir}/%{target}-jcf-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-jcf-dump
 ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 
 # DLLs
@@ -635,8 +609,6 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{_infodir}
 # common FSF man pages
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man7/{fsf-funding,gfdl,gpl}.7
-# programs not packaged
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/%{target}-{aot-compile,gc-analyze,gcj-dbtool,gij,grmic,jv-convert,rebuild-gcj-db}.1
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -790,7 +762,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n crossmingw32-libgfortran-dll
 %defattr(644,root,root,755)
-%{_dlldir}/libgfortran-3.dll
+%{_dlldir}/libgfortran-4.dll
 
 %files -n crossmingw32-libquadmath
 %defattr(644,root,root,755)
@@ -804,14 +776,3 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libquadmath-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libquadmath-0.dll
-
-%files java
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/%{target}-gcj
-%attr(755,root,root) %{_bindir}/%{target}-jcf-dump
-%attr(755,root,root) %{archbindir}/%{target}-gcj
-%attr(755,root,root) %{archbindir}/%{target}-jcf-dump
-%attr(755,root,root) %{gcclibdir}/jc1
-%attr(755,root,root) %{gcclibdir}/jvgenmain
-%{_mandir}/man1/%{target}-gcj.1*
-%{_mandir}/man1/%{target}-jcf-dump.1*
