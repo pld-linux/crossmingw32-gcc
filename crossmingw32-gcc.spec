@@ -382,7 +382,7 @@ Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	crossmingw32-libquadmath = %{epoch}:%{version}-%{release}
-Obsoletes:	crossmingw32-gcc-g77
+Obsoletes:	crossmingw32-gcc-g77 < 1:4
 
 %description fortran
 crossmingw32 is a complete cross-compiling development system for
