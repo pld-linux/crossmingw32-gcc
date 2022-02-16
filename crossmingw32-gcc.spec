@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt, no gomp)
+%bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt, only C/C++, no gomp)
 %bcond_without	gomp		# OpenMP libraries
 #
 %if %{with bootstrap}
@@ -483,6 +483,8 @@ Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 install -d winsup/{mingw,w32api}
 tar xf %{SOURCE1} -C winsup/w32api
 tar xf %{SOURCE2} -C winsup/mingw
+# required by _mingw.h
+touch winsup/mingw/include/features.h
 %endif
 
 # override snapshot version.
@@ -532,11 +534,14 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--enable-c99 \
 	--enable-fully-dynamic-string \
 	--disable-isl-version-check \
-	--enable-languages="c,c++,fortran,objc,obj-c++" \
+	--enable-languages="c,c++%{!?with_bootstrap:,fortran,objc,obj-c++}" \
+	%{?with_bootstrap:--disable-libatomic} \
 	--disable-libcc1 \
 	--enable-libgomp%{!?with_gomp:=no} \
+	%{?with_bootstrap:--disable-libquadmath} \
 	--disable-libssp \
 	--enable-libstdcxx-allocator=new \
+	%{?with_bootstrap:--disable-libvtv} \
 	--enable-linker-build-id \
 	--enable-long-long \
 	--enable-lto \
@@ -590,6 +595,7 @@ fi
 %endif
 
 # avoid -L poisoning in *.la
+%if %{without bootstrap}
 for f in libatomic.la libgfortran.la libobjc.la libquadmath.la %{?with_gomp:libgomp.la} ; do
 	file="$RPM_BUILD_ROOT%{archlibdir}/$f"
 	%{__perl} %{SOURCE3} "$file" %{gcclibdir} >"${file}.fixed"
@@ -600,6 +606,7 @@ for f in libcaf_single.la ; do
 	%{__perl} %{SOURCE3} "$file" %{gcclibdir} >"${file}.fixed"
 	%{__mv} "${file}.fixed" "$file"
 done
+%endif
 
 # for pretty-printers see native gcc
 %{__rm} $RPM_BUILD_ROOT%{archlibdir}/libstdc++.dll.a-gdb.py
@@ -657,6 +664,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libgcc_s_dw2-1.dll
 
+%if %{without bootstrap}
 %files -n crossmingw32-libatomic
 %defattr(644,root,root,755)
 %{archlibdir}/libatomic.dll.a
@@ -669,6 +677,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libatomic-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libatomic-1.dll
+%endif
 
 %if %{with gomp}
 %files -n crossmingw32-libgomp
@@ -686,6 +695,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_dlldir}/libgomp-1.dll
 %endif
 
+%if %{without bootstrap}
 %files -n crossmingw32-libvtv
 %defattr(644,root,root,755)
 %{archlibdir}/libvtv.dll.a
@@ -702,6 +712,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libvtv-0.dll
 %{_dlldir}/libvtv_stubs-0.dll
+%endif
 
 %files c++
 %defattr(644,root,root,755)
@@ -724,6 +735,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_dlldir}/libstdc++-6.dll
 
+%if %{without bootstrap}
 %files objc
 %defattr(644,root,root,755)
 %doc libobjc/README
@@ -778,3 +790,4 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libquadmath-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libquadmath-0.dll
+%endif
