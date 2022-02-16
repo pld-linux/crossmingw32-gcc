@@ -150,7 +150,7 @@ Requires:	crossmingw32-libatomic = %{epoch}:%{version}-%{release}
 %description -n crossmingw32-libatomic-static
 The GNU Atomic static library - cross MinGW32 version.
 
-%description -n crossmingw32-libatomic-static
+%description -n crossmingw32-libatomic-static -l pl.UTF-8
 Statyczna biblioteka GNU Atomic - wersja skrośna MinGW32.
 
 %package -n crossmingw32-libatomic-dll
