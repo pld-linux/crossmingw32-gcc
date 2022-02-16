@@ -1,8 +1,8 @@
---- gcc-5.4.0/libgfortran/intrinsics/chmod.c.orig	2016-12-18 10:38:13.034904609 +0100
-+++ gcc-5.4.0/libgfortran/intrinsics/chmod.c	2016-12-18 10:38:15.398237920 +0100
-@@ -30,6 +30,9 @@
- #include <string.h>	/* For memcpy. */
- #include <stdlib.h>	/* For free.  */
+--- gcc-8.5.0/libgfortran/intrinsics/chmod.c.orig	2021-05-14 10:42:10.000000000 +0200
++++ gcc-8.5.0/libgfortran/intrinsics/chmod.c	2022-02-16 06:22:37.688407716 +0100
+@@ -28,6 +28,9 @@ see the files COPYING3 and COPYING.RUNTI
+ #if defined(HAVE_SYS_STAT_H)
+ 
  #include <sys/stat.h>	/* For stat, chmod and umask.  */
 +#ifdef __MINGW32__
 +#include <io.h>
@@ -10,10 +10,10 @@
  
  
  /* INTEGER FUNCTION CHMOD (NAME, MODE)
---- gcc-7.5.0/libstdc++-v3/libsupc++/new_opa.cc.orig	2019-10-24 17:31:00.754226000 +0200
-+++ gcc-7.5.0/libstdc++-v3/libsupc++/new_opa.cc	2019-12-26 09:33:51.155818937 +0100
-@@ -29,10 +29,13 @@
- #include <bits/exception_defines.h>
+--- gcc-8.5.0/libstdc++-v3/libsupc++/new_opa.cc.orig	2022-02-16 06:33:02.466274733 +0100
++++ gcc-8.5.0/libstdc++-v3/libsupc++/new_opa.cc	2022-02-16 06:24:22.683854869 +0100
+@@ -28,10 +28,13 @@
+ #include <stdint.h>
  #include "new"
  
 -#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && !_GLIBCXX_HAVE__ALIGNED_MALLOC \
