@@ -10,10 +10,10 @@
  
  
  /* INTEGER FUNCTION CHMOD (NAME, MODE)
---- gcc-8.5.0/libstdc++-v3/libsupc++/new_opa.cc.orig	2022-02-16 06:33:02.466274733 +0100
-+++ gcc-8.5.0/libstdc++-v3/libsupc++/new_opa.cc	2022-02-16 06:24:22.683854869 +0100
-@@ -28,10 +28,13 @@
- #include <stdint.h>
+--- gcc-9.5.0/libstdc++-v3/libsupc++/new_opa.cc.orig	2023-04-15 22:04:10.903826873 +0200
++++ gcc-9.5.0/libstdc++-v3/libsupc++/new_opa.cc	2023-04-15 22:58:08.356288088 +0200
+@@ -29,10 +29,13 @@
+ #include <bit>
  #include "new"
  
 -#if !_GLIBCXX_HAVE_ALIGNED_ALLOC && !_GLIBCXX_HAVE__ALIGNED_MALLOC \
@@ -47,3 +47,64 @@
  // The sized deletes are defined in other files.
  #pragma GCC diagnostic ignored "-Wsized-deallocation"
  
+--- gcc-9.5.0/libstdc++-v3/src/filesystem/ops-common.h.orig	2022-05-27 09:21:13.451391769 +0200
++++ gcc-9.5.0/libstdc++-v3/src/filesystem/ops-common.h	2023-04-16 15:41:54.130017065 +0200
+@@ -106,7 +106,7 @@ namespace __gnu_posix
+   inline int rename(const wchar_t* oldname, const wchar_t* newname)
+   { return _wrename(oldname, newname); }
+ 
+-  inline int truncate(const wchar_t* path, _off64_t length)
++  inline int truncate(const wchar_t* path, __off64_t length)
+   {
+     const int fd = ::_wopen(path, _O_BINARY|_O_RDWR);
+     if (fd == -1)
+--- gcc-9.5.0/libstdc++-v3/config/os/mingw32/error_constants.h.orig	2022-05-27 09:21:13.331391181 +0200
++++ gcc-9.5.0/libstdc++-v3/config/os/mingw32/error_constants.h	2023-04-16 18:55:43.337016242 +0200
+@@ -33,6 +33,18 @@
+ #include <bits/c++config.h>
+ #include <cerrno>
+ 
++#ifndef EOVERFLOW
++#define EOVERFLOW ERANGE
++#endif
++
++#ifndef ELOOP
++#define ELOOP ERANGE
++#endif
++
++#ifndef ENOTSUP
++#define ENOTSUP ENOSYS
++#endif
++
+ namespace std _GLIBCXX_VISIBILITY(default)
+ {
+ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+--- gcc-9.5.0/libstdc++-v3/src/c++11/system_error.cc.orig	2022-05-27 09:21:13.447391751 +0200
++++ gcc-9.5.0/libstdc++-v3/src/c++11/system_error.cc	2023-04-16 20:09:05.676500055 +0200
+@@ -168,7 +168,7 @@ namespace
+ #ifdef EISDIR
+       case EISDIR:
+ #endif
+-#ifdef ELOOP
++#if defined(ELOOP) && (ELOOP != ERANGE)
+       case ELOOP:
+ #endif
+ #ifdef EMFILE
+@@ -253,7 +253,7 @@ namespace
+ #ifdef ENOTSOCK
+       case ENOTSOCK:
+ #endif
+-#ifdef ENOTSUP
++#if defined (ENOTSUP) && (ENOTSUP != ENOSYS)
+       case ENOTSUP:
+ #endif
+ #ifdef ENOTTY
+@@ -265,7 +265,7 @@ namespace
+ #if defined EOPNOTSUPP && (!defined ENOTSUP || EOPNOTSUPP != ENOTSUP)
+       case EOPNOTSUPP:
+ #endif
+-#ifdef EOVERFLOW
++#if defined(EOVERFLOW) && (EOVERFLOW != ERANGE)
+       case EOVERFLOW:
+ #endif
+ #ifdef EOWNERDEAD

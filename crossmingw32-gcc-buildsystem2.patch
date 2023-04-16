@@ -9,14 +9,14 @@
  CFLAGS = @CFLAGS@
  RANLIB = @RANLIB@
  LN_S = @LN_S@
---- gcc/libgcc/configure.org	2010-09-29 01:36:46.047000017 +0200
-+++ gcc/libgcc/configure	2010-09-29 01:40:00.929000003 +0200
-@@ -2687,6 +2687,7 @@
+--- gcc-9.5.0/libgcc/configure.orig	2023-04-15 23:24:15.271132715 +0200
++++ gcc-9.5.0/libgcc/configure	2023-04-16 07:36:39.584410765 +0200
+@@ -3208,6 +3208,7 @@ if test -n "$ac_tool_prefix"; then
  set dummy ${ac_tool_prefix}gcc; ac_word=$2
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
  $as_echo_n "checking for $ac_word... " >&6; }
 +CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
- if test "${ac_cv_prog_CC+set}" = set; then :
+ if ${ac_cv_prog_CC+:} false; then :
    $as_echo_n "(cached) " >&6
  else
 --- gcc/libiberty/Makefile.in.org	2010-04-29 23:53:50.429231967 +0200
@@ -30,19 +30,19 @@
  CFLAGS = @CFLAGS@
  CPPFLAGS = @CPPFLAGS@
  RANLIB = @RANLIB@
---- gcc/libiberty/configure.org	2010-09-29 01:46:07.266000013 +0200
-+++ gcc/libiberty/configure	2010-09-29 01:46:35.758000014 +0200
-@@ -2789,6 +2789,7 @@
+--- gcc-9.5.0/libiberty/configure.orig	2023-04-15 23:24:15.307799183 +0200
++++ gcc-9.5.0/libiberty/configure	2023-04-16 07:37:20.094191305 +0200
+@@ -2990,6 +2990,7 @@ if test -n "$ac_tool_prefix"; then
  set dummy ${ac_tool_prefix}gcc; ac_word=$2
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
  $as_echo_n "checking for $ac_word... " >&6; }
 +CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
- if test "${ac_cv_prog_CC+set}" = set; then :
+ if ${ac_cv_prog_CC+:} false; then :
    $as_echo_n "(cached) " >&6
  else
---- gcc/libstdc++-v3/Makefile.in.org	2010-04-29 23:58:03.243106668 +0200
-+++ gcc/libstdc++-v3/Makefile.in	2010-04-29 23:57:34.857355967 +0200
-@@ -115,7 +115,7 @@
+--- gcc-9.5.0/libstdc++-v3/Makefile.in.orig	2022-05-27 09:21:13.311391084 +0200
++++ gcc-9.5.0/libstdc++-v3/Makefile.in	2023-04-15 23:24:15.351132282 +0200
+@@ -197,7 +197,7 @@ AUTOMAKE = @AUTOMAKE@
  AWK = @AWK@
  BASIC_FILE_CC = @BASIC_FILE_CC@
  BASIC_FILE_H = @BASIC_FILE_H@
@@ -51,18 +51,18 @@
  CCODECVT_CC = @CCODECVT_CC@
  CCOLLATE_CC = @CCOLLATE_CC@
  CCTYPE_CC = @CCTYPE_CC@
-@@ -133,7 +133,7 @@
+@@ -217,7 +217,7 @@ CPU_OPT_EXT_RANDOM = @CPU_OPT_EXT_RANDOM
  CSTDIO_H = @CSTDIO_H@
  CTIME_CC = @CTIME_CC@
  CTIME_H = @CTIME_H@
 -CXX = @CXX@
 +override CXX = @CXX@
  CXXCPP = @CXXCPP@
+ CXXFILT = @CXXFILT@
  CXXFLAGS = @CXXFLAGS@
- CYGPATH_W = @CYGPATH_W@
---- gcc/libstdc++-v3/configure.org	2010-09-29 01:48:10.661000013 +0200
-+++ gcc/libstdc++-v3/configure	2010-09-29 01:51:34.583000014 +0200
-@@ -3498,6 +3498,7 @@
+--- gcc-9.5.0/libstdc++-v3/configure.orig	2022-05-27 09:21:13.335391201 +0200
++++ gcc-9.5.0/libstdc++-v3/configure	2023-04-16 07:38:19.120538198 +0200
+@@ -3795,6 +3795,7 @@ fi
  save_CXXFLAGS="$CXXFLAGS"
  CXXFLAGS="$CXXFLAGS -fno-builtin"
  ac_ext=c
@@ -70,12 +70,12 @@
  ac_cpp='$CPP $CPPFLAGS'
  ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
  ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-@@ -3507,6 +3508,8 @@
+@@ -3804,6 +3805,8 @@ if test -n "$ac_tool_prefix"; then
  set dummy ${ac_tool_prefix}gcc; ac_word=$2
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
  $as_echo_n "checking for $ac_word... " >&6; }
 +CC="$CC -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
 +CXX="$CXX -isystem `pwd`/../../sysroot/i386-mingw32/include -isystem `pwd`/../../sysroot/i386-mingw32/sys-include -B`pwd`/../../sysroot/i386-mingw32/lib/"
- if test "${ac_cv_prog_CC+set}" = set; then :
+ if ${ac_cv_prog_CC+:} false; then :
    $as_echo_n "(cached) " >&6
  else

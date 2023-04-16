@@ -13,13 +13,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	8.5.0
-Release:	2
+Version:	9.5.0
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	0c1f625768840187ef3b10adebe8e3b0
+# Source0-md5:	34cd76facb562835ff5faca81fead17e
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
