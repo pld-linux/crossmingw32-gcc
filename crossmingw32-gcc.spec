@@ -1,9 +1,13 @@
 #
 # Conditional build:
 %bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt, only C/C++, no gomp)
+%bcond_without	pthreads	# POSIX threads support (needed for GOMP and C++ 11 thread/mutex support)
 %bcond_without	gomp		# OpenMP libraries
 #
 %if %{with bootstrap}
+%undefine	with_pthreads
+%endif
+%if %{without pthreads}
 %undefine	with_gomp
 %endif
 Summary:	Cross MinGW32 GNU binary utility development utilities - gcc
@@ -35,12 +39,13 @@ Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
 Patch3:		gcc-mingw32.patch
 Patch4:		gcc-build-libvtv.patch
+Patch5:		gcc-pthreads-w32.patch
 URL:		http://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
 BuildRequires:	bison
 BuildRequires:	crossmingw32-binutils >= 2.23
-%{?with_gomp:BuildRequires:	crossmingw32-pthreads-w32}
+%{?with_pthreads:BuildRequires:	crossmingw32-pthreads-w32}
 %if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 3.1
@@ -477,6 +482,7 @@ Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs are special, handled by gcc's configure
@@ -550,7 +556,7 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--enable-shared \
 	--disable-sjlj-exceptions \
 	--disable-symvers \
-	--enable-threads \
+	--enable-threads%{?with_pthreads:=posix} \
 	--disable-werror \
 	--disable-win32-registry \
 	--target=%{target}

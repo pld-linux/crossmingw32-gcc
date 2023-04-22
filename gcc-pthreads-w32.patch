@@ -1,0 +1,49 @@
+--- gcc-9.5.0/libgcc/gthr-posix.h.orig	2022-05-27 09:21:12.915389144 +0200
++++ gcc-9.5.0/libgcc/gthr-posix.h	2023-04-21 21:34:01.235216833 +0200
+@@ -372,7 +372,7 @@ __gthread_objc_thread_detach (void (*fun
+ 
+   if (!(__gthrw_(pthread_create) (&new_thread_handle, &_objc_thread_attribs,
+ 				  (void *) func, arg)))
+-    thread_id = (objc_thread_t) new_thread_handle;
++    thread_id = (objc_thread_t) new_thread_handle.p;
+   else
+     thread_id = NULL;
+ 
+@@ -469,7 +469,7 @@ static inline objc_thread_t
+ __gthread_objc_thread_id (void)
+ {
+   if (__gthread_active_p ())
+-    return (objc_thread_t) __gthrw_(pthread_self) ();
++    return (objc_thread_t) __gthrw_(pthread_self) ().x;
+   else
+     return (objc_thread_t) 1;
+ }
+--- gcc-9.5.0/libstdc++-v3/include/std/thread.orig	2022-05-27 09:21:13.435391692 +0200
++++ gcc-9.5.0/libstdc++-v3/include/std/thread	2023-04-21 22:05:23.125021761 +0200
+@@ -279,7 +279,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+     // can't safely use __gthread_equal on default-constructed values (nor
+     // the non-zero value returned by this_thread::get_id() for
+     // single-threaded programs using GNU libc). Assume EqualityComparable.
+-    return __x._M_thread == __y._M_thread;
++    return __x._M_thread.p == __y._M_thread.p;
+   }
+ 
+   inline bool
+@@ -291,7 +291,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+   {
+     // Pthreads doesn't define any way to do this, so we just have to
+     // assume native_handle_type is LessThanComparable.
+-    return __x._M_thread < __y._M_thread;
++    return __x._M_thread.p < __y._M_thread.p;
+   }
+ 
+   inline bool
+@@ -314,7 +314,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+     {
+       size_t
+       operator()(const thread::id& __id) const noexcept
+-      { return std::_Hash_impl::hash(__id._M_thread); }
++      { return std::_Hash_impl::hash(__id._M_thread.p); }
+     };
+ 
+   template<class _CharT, class _Traits>
