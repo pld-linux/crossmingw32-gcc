@@ -44,7 +44,7 @@ URL:		http://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
 BuildRequires:	bison
-BuildRequires:	crossmingw32-binutils >= 2.23
+BuildRequires:	crossmingw32-binutils >= 2.30
 %{?with_pthreads:BuildRequires:	crossmingw32-pthreads-w32}
 %if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
@@ -56,19 +56,19 @@ BuildRequires:	gmp-devel >= 4.3.2
 BuildRequires:	isl-devel >= 0.15
 BuildRequires:	libmpc-devel >= 0.8.1
 BuildRequires:	libstdc++-devel
-BuildRequires:	mpfr-devel >= 2.4.2
+BuildRequires:	mpfr-devel >= 3.1.0
 BuildRequires:	perl-tools-pod
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo >= 4.7
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildConflicts:	pdksh < 5.2.14-50
-Requires:	crossmingw32-binutils >= 2.23
+Requires:	crossmingw32-binutils >= 2.30
 Requires:	gcc-dirs
 Requires:	gmp >= 4.3.2
 Requires:	isl >= 0.15
 Requires:	libmpc >= 0.8.1
-Requires:	mpfr >= 2.4.2
+Requires:	mpfr >= 3.1.0
 # java support dropped from gcc 7+
 Obsoletes:	crossmingw32-java < 1:7
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
