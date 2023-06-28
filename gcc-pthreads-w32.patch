@@ -18,9 +18,9 @@
    else
      return (objc_thread_t) 1;
  }
---- gcc-9.5.0/libstdc++-v3/include/std/thread.orig	2022-05-27 09:21:13.435391692 +0200
-+++ gcc-9.5.0/libstdc++-v3/include/std/thread	2023-04-21 22:05:23.125021761 +0200
-@@ -279,7 +279,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+--- gcc-10.4.0/libstdc++-v3/include/std/thread.orig	2022-06-28 10:54:31.000000000 +0200
++++ gcc-10.4.0/libstdc++-v3/include/std/thread	2023-06-26 20:52:28.956925074 +0200
+@@ -299,7 +299,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
      // can't safely use __gthread_equal on default-constructed values (nor
      // the non-zero value returned by this_thread::get_id() for
      // single-threaded programs using GNU libc). Assume EqualityComparable.
@@ -28,8 +28,8 @@
 +    return __x._M_thread.p == __y._M_thread.p;
    }
  
-   inline bool
-@@ -291,7 +291,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+ #if __cpp_lib_three_way_comparison
+@@ -316,7 +316,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    {
      // Pthreads doesn't define any way to do this, so we just have to
      // assume native_handle_type is LessThanComparable.
@@ -38,7 +38,7 @@
    }
  
    inline bool
-@@ -314,7 +314,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+@@ -340,7 +340,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
      {
        size_t
        operator()(const thread::id& __id) const noexcept

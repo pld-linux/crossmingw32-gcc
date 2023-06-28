@@ -47,11 +47,11 @@
  // The sized deletes are defined in other files.
  #pragma GCC diagnostic ignored "-Wsized-deallocation"
  
---- gcc-9.5.0/libstdc++-v3/src/filesystem/ops-common.h.orig	2022-05-27 09:21:13.451391769 +0200
-+++ gcc-9.5.0/libstdc++-v3/src/filesystem/ops-common.h	2023-04-16 15:41:54.130017065 +0200
-@@ -106,7 +106,7 @@ namespace __gnu_posix
-   inline int rename(const wchar_t* oldname, const wchar_t* newname)
-   { return _wrename(oldname, newname); }
+--- gcc-10.4.0/libstdc++-v3/src/filesystem/ops-common.h.orig	2023-06-26 19:29:27.267246537 +0200
++++ gcc-10.4.0/libstdc++-v3/src/filesystem/ops-common.h	2023-06-26 20:39:47.401050776 +0200
+@@ -115,7 +115,7 @@ namespace __gnu_posix
+     return -1;
+   }
  
 -  inline int truncate(const wchar_t* path, _off64_t length)
 +  inline int truncate(const wchar_t* path, __off64_t length)
@@ -79,8 +79,8 @@
  namespace std _GLIBCXX_VISIBILITY(default)
  {
  _GLIBCXX_BEGIN_NAMESPACE_VERSION
---- gcc-9.5.0/libstdc++-v3/src/c++11/system_error.cc.orig	2022-05-27 09:21:13.447391751 +0200
-+++ gcc-9.5.0/libstdc++-v3/src/c++11/system_error.cc	2023-04-16 20:09:05.676500055 +0200
+--- gcc-10.4.0/libstdc++-v3/src/c++11/system_error.cc.orig	2022-06-28 10:54:32.000000000 +0200
++++ gcc-10.4.0/libstdc++-v3/src/c++11/system_error.cc	2023-06-26 19:29:27.740577306 +0200
 @@ -168,7 +168,7 @@ namespace
  #ifdef EISDIR
        case EISDIR:
@@ -90,16 +90,7 @@
        case ELOOP:
  #endif
  #ifdef EMFILE
-@@ -253,7 +253,7 @@ namespace
- #ifdef ENOTSOCK
-       case ENOTSOCK:
- #endif
--#ifdef ENOTSUP
-+#if defined (ENOTSUP) && (ENOTSUP != ENOSYS)
-       case ENOTSUP:
- #endif
- #ifdef ENOTTY
-@@ -265,7 +265,7 @@ namespace
+@@ -266,10 +266,10 @@ namespace
  #if defined EOPNOTSUPP && (!defined ENOTSUP || EOPNOTSUPP != ENOTSUP)
        case EOPNOTSUPP:
  #endif
@@ -107,4 +98,112 @@
 +#if defined(EOVERFLOW) && (EOVERFLOW != ERANGE)
        case EOVERFLOW:
  #endif
- #ifdef EOWNERDEAD
+-#ifdef EOWNERDEAD
++#if defined(EOWNERDEAD) && (!defined EILSEQ || EOWNERDEAD != EILSEQ)
+       case EOWNERDEAD:
+ #endif
+ #ifdef EPERM
+--- gcc-10.4.0/libgfortran/io/io.h.orig	2022-06-28 10:54:30.000000000 +0200
++++ gcc-10.4.0/libgfortran/io/io.h	2023-06-27 16:00:06.467225258 +0200
+@@ -291,7 +291,7 @@ typedef enum
+ unit_share;
+ 
+ typedef enum
+-{ CC_LIST, CC_FORTRAN, CC_NONE,
++{ CC_LIST, CC_FORTRAN, CC_NONE_,
+   CC_UNSPECIFIED
+ }
+ unit_cc;
+--- gcc-10.4.0/libgfortran/io/transfer.c.orig	2022-06-28 10:54:30.000000000 +0200
++++ gcc-10.4.0/libgfortran/io/transfer.c	2023-06-27 18:46:33.802431279 +0200
+@@ -388,7 +388,7 @@ read_sf (st_parameter_dt *dtp, size_t *l
+       q = fbuf_getc (dtp->u.p.current_unit);
+       if (q == EOF)
+ 	break;
+-      else if (dtp->u.p.current_unit->flags.cc != CC_NONE
++      else if (dtp->u.p.current_unit->flags.cc != CC_NONE_
+ 	       && (q == '\n' || q == '\r'))
+ 	{
+ 	  /* Unexpected end of line. Set the position.  */
+@@ -3660,7 +3660,7 @@ next_record_r (st_parameter_dt *dtp, int
+ 	    }
+ 	  break;
+ 	}
+-      else if (dtp->u.p.current_unit->flags.cc != CC_NONE)
++      else if (dtp->u.p.current_unit->flags.cc != CC_NONE_)
+ 	{
+ 	  do
+ 	    {
+@@ -4026,7 +4026,7 @@ next_record_w (st_parameter_dt *dtp, int
+       else
+ 	{
+ 	  /* Skip newlines for CC=CC_NONE.  */
+-	  const int len = (dtp->u.p.current_unit->flags.cc == CC_NONE)
++	  const int len = (dtp->u.p.current_unit->flags.cc == CC_NONE_)
+ 	    ? 0
+ #ifdef HAVE_CRLF
+ 	    : 2;
+@@ -4034,7 +4034,7 @@ next_record_w (st_parameter_dt *dtp, int
+ 	    : 1;
+ #endif
+ 	  fbuf_seek (dtp->u.p.current_unit, 0, SEEK_END);
+-	  if (dtp->u.p.current_unit->flags.cc != CC_NONE)
++	  if (dtp->u.p.current_unit->flags.cc != CC_NONE_)
+ 	    {
+ 	      char *p = fbuf_alloc (dtp->u.p.current_unit, len);
+ 	      if (!p)
+--- gcc-10.4.0/libgfortran/io/open.c.orig	2022-06-28 10:54:30.000000000 +0200
++++ gcc-10.4.0/libgfortran/io/open.c	2023-06-27 18:46:19.772507286 +0200
+@@ -63,7 +63,7 @@ static const st_option cc_opt[] =
+ {
+   { "list", CC_LIST },
+   { "fortran", CC_FORTRAN },
+-  { "none", CC_NONE },
++  { "none", CC_NONE_ },
+   { NULL, 0}
+ };
+ 
+@@ -354,8 +354,8 @@ new_unit (st_parameter_open *opp, gfc_un
+     flags->status = STATUS_UNKNOWN;
+ 
+   if (flags->cc == CC_UNSPECIFIED)
+-    flags->cc = flags->form == FORM_UNFORMATTED ? CC_NONE : CC_LIST;
+-  else if (flags->form == FORM_UNFORMATTED && flags->cc != CC_NONE)
++    flags->cc = flags->form == FORM_UNFORMATTED ? CC_NONE_ : CC_LIST;
++  else if (flags->form == FORM_UNFORMATTED && flags->cc != CC_NONE_)
+     {
+       generate_error (&opp->common, LIBERROR_OPTION_CONFLICT,
+ 	  "CARRIAGECONTROL parameter conflicts with UNFORMATTED form in "
+--- gcc-10.4.0/libgfortran/io/read.c.orig	2022-06-28 10:54:30.000000000 +0200
++++ gcc-10.4.0/libgfortran/io/read.c	2023-06-27 18:46:49.979010309 +0200
+@@ -1275,7 +1275,7 @@ read_x (st_parameter_dt *dtp, size_t n)
+       q = fbuf_getc (dtp->u.p.current_unit);
+       if (q == EOF)
+ 	break;
+-      else if (dtp->u.p.current_unit->flags.cc != CC_NONE
++      else if (dtp->u.p.current_unit->flags.cc != CC_NONE_
+ 	       && (q == '\n' || q == '\r'))
+ 	{
+ 	  /* Unexpected end of line. Set the position.  */
+--- gcc-10.4.0/libgfortran/io/inquire.c.orig	2022-06-28 10:54:30.000000000 +0200
++++ gcc-10.4.0/libgfortran/io/inquire.c	2023-06-27 18:46:57.988966916 +0200
+@@ -489,7 +489,7 @@ inquire_via_unit (st_parameter_inquire *
+ 		case CC_LIST:
+ 		  p = "LIST";
+ 		  break;
+-		case CC_NONE:
++		case CC_NONE_:
+ 		  p = "NONE";
+ 		  break;
+ 		case CC_UNSPECIFIED:
+--- gcc-10.4.0/libstdc++-v3/src/filesystem/ops.cc.orig	2022-06-28 10:54:32.000000000 +0200
++++ gcc-10.4.0/libstdc++-v3/src/filesystem/ops.cc	2023-06-27 19:57:41.412644984 +0200
+@@ -971,7 +971,7 @@ fs::permissions(const path& p, perms prm
+     err = errno;
+ #else
+   if (nofollow && is_symlink(st))
+-    ec = std::make_error_code(std::errc::operation_not_supported);
++    ec = std::make_error_code(std::errc::function_not_supported);
+   else if (posix::chmod(p.c_str(), static_cast<mode_t>(prms)))
+     err = errno;
+ #endif

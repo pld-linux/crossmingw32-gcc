@@ -17,13 +17,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	9.5.0
+Version:	10.4.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	34cd76facb562835ff5faca81fead17e
+# Source0-md5:	d307b8748a74939359a5843f859a4dec
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
@@ -585,6 +585,7 @@ ln -sf %{archbindir}/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
 ln -sf %{archbindir}/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
 ln -sf %{archbindir}/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
 ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
+ln -sf %{archbindir}/%{target}-lto-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-lto-dump
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
@@ -635,6 +636,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/%{target}-gcov
 %attr(755,root,root) %{_bindir}/%{target}-gcov-dump
 %attr(755,root,root) %{_bindir}/%{target}-gcov-tool
+%attr(755,root,root) %{_bindir}/%{target}-lto-dump
 %attr(755,root,root) %{archbindir}/%{target}-cpp
 %attr(755,root,root) %{archbindir}/%{target}-gcc
 %attr(755,root,root) %{archbindir}/%{target}-gcc-%{version}
@@ -644,6 +646,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{archbindir}/%{target}-gcov
 %attr(755,root,root) %{archbindir}/%{target}-gcov-dump
 %attr(755,root,root) %{archbindir}/%{target}-gcov-tool
+%attr(755,root,root) %{archbindir}/%{target}-lto-dump
 %{archlibdir}/libgcc_s.a
 %dir %{gccarchdir}
 %dir %{gcclibdir}
@@ -665,6 +668,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/%{target}-gcov.1*
 %{_mandir}/man1/%{target}-gcov-dump.1*
 %{_mandir}/man1/%{target}-gcov-tool.1*
+%{_mandir}/man1/%{target}-lto-dump.1*
 
 %files -n crossmingw32-libgcc-dll
 %defattr(644,root,root,755)
@@ -728,6 +732,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclibdir}/cc1plus
 %{archlibdir}/libstdc++.dll.a
 %{archlibdir}/libstdc++.la
+%{archlibdir}/libstdc++fs.a
+%{archlibdir}/libstdc++fs.la
 %{archlibdir}/libsupc++.la
 %{archlibdir}/libsupc++.a
 %{archincludedir}/c++
