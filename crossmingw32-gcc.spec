@@ -48,7 +48,7 @@ BuildRequires:	crossmingw32-binutils >= 2.30
 %{?with_pthreads:BuildRequires:	crossmingw32-pthreads-w32}
 %if %{without bootstrap}
 BuildRequires:	crossmingw32-runtime >= 3.5
-BuildRequires:	crossmingw32-w32api >= 3.1
+BuildRequires:	crossmingw32-w32api >= 1:5.4.2-3
 %endif
 BuildRequires:	flex >= 2.5.4
 BuildRequires:	gettext-tools >= 0.14.5
