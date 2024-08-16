@@ -47,13 +47,15 @@
  // The sized deletes are defined in other files.
  #pragma GCC diagnostic ignored "-Wsized-deallocation"
  
---- gcc-10.4.0/libstdc++-v3/src/filesystem/ops-common.h.orig	2023-06-26 19:29:27.267246537 +0200
-+++ gcc-10.4.0/libstdc++-v3/src/filesystem/ops-common.h	2023-06-26 20:39:47.401050776 +0200
-@@ -115,7 +115,7 @@ namespace __gnu_posix
+--- gcc-11.5.0/libstdc++-v3/src/filesystem/ops-common.h.orig	2024-08-15 21:59:14.425694267 +0200
++++ gcc-11.5.0/libstdc++-v3/src/filesystem/ops-common.h	2024-08-15 22:02:27.797980013 +0200
+@@ -157,8 +157,8 @@ namespace __gnu_posix
      return -1;
    }
  
+-  using off_t = _off64_t;
 -  inline int truncate(const wchar_t* path, _off64_t length)
++  using off_t = __off64_t;
 +  inline int truncate(const wchar_t* path, __off64_t length)
    {
      const int fd = ::_wopen(path, _O_BINARY|_O_RDWR);
@@ -196,14 +198,3 @@
  		  p = "NONE";
  		  break;
  		case CC_UNSPECIFIED:
---- gcc-10.4.0/libstdc++-v3/src/filesystem/ops.cc.orig	2022-06-28 10:54:32.000000000 +0200
-+++ gcc-10.4.0/libstdc++-v3/src/filesystem/ops.cc	2023-06-27 19:57:41.412644984 +0200
-@@ -971,7 +971,7 @@ fs::permissions(const path& p, perms prm
-     err = errno;
- #else
-   if (nofollow && is_symlink(st))
--    ec = std::make_error_code(std::errc::operation_not_supported);
-+    ec = std::make_error_code(std::errc::function_not_supported);
-   else if (posix::chmod(p.c_str(), static_cast<mode_t>(prms)))
-     err = errno;
- #endif

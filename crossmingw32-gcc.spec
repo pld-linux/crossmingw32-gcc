@@ -17,13 +17,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	10.5.0
+Version:	11.5.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	c7d1958570fbd1cd859b015774b9987a
+# Source0-md5:	03473f26c87e05e789a32208f1fe4491
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
@@ -40,7 +40,7 @@ Patch2:		%{name}-lfs.patch
 Patch3:		gcc-mingw32.patch
 Patch4:		gcc-build-libvtv.patch
 Patch5:		gcc-pthreads-w32.patch
-URL:		http://gcc.gnu.org/
+URL:		https://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
 BuildRequires:	bison
@@ -730,6 +730,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{archbindir}/%{target}-c++
 %attr(755,root,root) %{archbindir}/%{target}-g++
 %attr(755,root,root) %{gcclibdir}/cc1plus
+%attr(755,root,root) %{gcclibdir}/g++-mapper-server
 %{archlibdir}/libstdc++.dll.a
 %{archlibdir}/libstdc++.la
 %{archlibdir}/libstdc++fs.a
