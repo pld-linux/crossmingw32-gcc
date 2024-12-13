@@ -477,12 +477,12 @@ Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 
 %prep
 %setup -q -n gcc-%{version}
-#patch100 -p0
-%patch0 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+#patch -P100 -p0
+%patch -P0 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs are special, handled by gcc's configure
