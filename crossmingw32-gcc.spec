@@ -3,9 +3,14 @@
 %bcond_with	bootstrap	# bootstrap build (using binary w32api/mingwrt, only C/C++, no gomp)
 %bcond_without	pthreads	# POSIX threads support (needed for GOMP and C++ 11 thread/mutex support)
 %bcond_without	gomp		# OpenMP libraries
-#
+%bcond_with	ada		# Ada language support (doesn't build for mingw32)
+%bcond_without	d		# D language support
+# go is not supported for mingw
+
 %if %{with bootstrap}
 %undefine	with_pthreads
+%undefine	with_ada
+%undefine	with_d
 %endif
 %if %{without pthreads}
 %undefine	with_gomp
@@ -51,6 +56,7 @@ BuildRequires:	crossmingw32-runtime >= 3.5
 BuildRequires:	crossmingw32-w32api >= 1:5.4.2-3
 %endif
 BuildRequires:	flex >= 2.5.4
+%{?with_ada:BuildRequires:	gcc-ada}
 BuildRequires:	gettext-tools >= 0.14.5
 BuildRequires:	gmp-devel >= 4.3.2
 BuildRequires:	isl-devel >= 0.15
@@ -381,6 +387,30 @@ libobjc DLL library for Windows.
 %description -n crossmingw32-libobjc-dll -l pl.UTF-8
 Biblioteka DLL libobjc dla Windows.
 
+%package d
+Summary:	MinGW32 binary utility development utilities - D
+Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - D
+Group:		Development/Languages
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description d
+crossmingw32 is a complete cross-compiling development system for
+building stand-alone Microsoft Windows applications under Linux using
+the MinGW32 build libraries. This includes a binutils, gcc with g++
+and objc, and libstdc++, all cross targeted to i386-mingw32, along
+with supporting Win32 libraries in 'coff' format from free sources.
+
+This package contains cross targeted D compiler.
+
+%description d -l pl.UTF-8
+crossmingw32 jest kompletnym systemem do kompilacji skrośnej,
+pozwalającym budować aplikacje MS Windows pod Linuksem używając
+bibliotek MinGW32. System składa się z binutils, gcc z g++ i objc,
+libstdc++ - wszystkie generujące kod dla platformy i386-mingw32, oraz
+z bibliotek w formacie COFF.
+
+Ten pakiet zawiera kompilator języka D generujący kod pod Win32.
+
 %package fortran
 Summary:	MinGW32 binary utility development utilities - Fortran
 Summary(pl.UTF-8):	Zestaw narzędzi MinGW32 - Fortran
@@ -540,7 +570,7 @@ CXXFLAGS_FOR_TARGET="-O2 -march=i486" \
 	--enable-c99 \
 	--enable-fully-dynamic-string \
 	--disable-isl-version-check \
-	--enable-languages="c,c++%{!?with_bootstrap:,fortran,objc,obj-c++}" \
+	--enable-languages="c,c++%{!?with_bootstrap:,fortran,objc,obj-c++}%{?with_ada:,ada}%{?with_d:,d}" \
 	%{?with_bootstrap:--disable-libatomic} \
 	--disable-libcc1 \
 	--enable-libgomp%{!?with_gomp:=no} \
@@ -769,6 +799,14 @@ rm -rf $RPM_BUILD_ROOT
 %files -n crossmingw32-libobjc-dll
 %defattr(644,root,root,755)
 %{_dlldir}/libobjc-4.dll
+
+%if %{with d}
+%files d
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/%{target}-gdc
+%attr(755,root,root) %{gcclibdir}/d21
+%{_mandir}/man1/%{target}-gdc.1*
+%endif
 
 %files fortran
 %defattr(644,root,root,755)
