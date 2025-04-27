@@ -81,9 +81,33 @@
  namespace std _GLIBCXX_VISIBILITY(default)
  {
  _GLIBCXX_BEGIN_NAMESPACE_VERSION
---- gcc-10.4.0/libstdc++-v3/src/c++11/system_error.cc.orig	2022-06-28 10:54:32.000000000 +0200
-+++ gcc-10.4.0/libstdc++-v3/src/c++11/system_error.cc	2023-06-26 19:29:27.740577306 +0200
-@@ -168,7 +168,7 @@ namespace
+--- gcc-12.4.0/libstdc++-v3/src/c++11/system_error.cc.orig	2024-06-20 10:08:10.000000000 +0200
++++ gcc-12.4.0/libstdc++-v3/src/c++11/system_error.cc	2025-04-27 19:31:06.902992927 +0200
+@@ -153,7 +153,11 @@ namespace
+ 	X (CANNOT_MAKE,			EPERM);
+ 	X (CHILD_NOT_COMPLETE,		EBUSY);
+ 	X (COMMITMENT_LIMIT,		EAGAIN);
++#ifdef ECONNREFUSED
+ 	X (CONNECTION_REFUSED,		ECONNREFUSED);
++#else
++	X (CONNECTION_REFUSED,		WSAECONNREFUSED);
++#endif
+ 	X (CRC,				EIO);
+ 	X (DEVICE_DOOR_OPEN,		EIO);
+ 	X (DEVICE_IN_USE,		EAGAIN);
+@@ -200,7 +204,11 @@ namespace
+ 	X (MAX_THRDS_REACHED,		EAGAIN);
+ 	X (META_EXPANSION_TOO_LONG,	EINVAL);
+ 	X (MOD_NOT_FOUND,		ENOENT);
++#ifdef EMSGSIZE
+ 	X (MORE_DATA,			EMSGSIZE);
++#else
++	X (MORE_DATA,			WSAEMSGSIZE);
++#endif
+ 	X (NEGATIVE_SEEK,		EINVAL);
+ 	X (NETNAME_DELETED,		ENOENT);
+ 	X (NOACCESS,			EFAULT);
+@@ -355,7 +363,7 @@ namespace
  #ifdef EISDIR
        case EISDIR:
  #endif
@@ -92,7 +116,7 @@
        case ELOOP:
  #endif
  #ifdef EMFILE
-@@ -266,10 +266,10 @@ namespace
+@@ -453,10 +461,10 @@ namespace
  #if defined EOPNOTSUPP && (!defined ENOTSUP || EOPNOTSUPP != ENOTSUP)
        case EOPNOTSUPP:
  #endif
@@ -198,3 +222,14 @@
  		  p = "NONE";
  		  break;
  		case CC_UNSPECIFIED:
+--- gcc-12.4.0/libstdc++-v3/src/c++17/fast_float/fast_float.h.orig	2024-06-20 10:08:10.000000000 +0200
++++ gcc-12.4.0/libstdc++-v3/src/c++17/fast_float/fast_float.h	2025-04-27 19:42:34.869265894 +0200
+@@ -120,7 +120,7 @@ from_chars_result from_chars_advanced(co
+   #endif
+ #endif
+ 
+-#if ((defined(_WIN32) || defined(_WIN64)) && !defined(__clang__))
++#if ((defined(_WIN32) || defined(_WIN64)) && defined(_MSC_VER) && !defined(__clang__))
+ #include <intrin.h>
+ #endif
+ 

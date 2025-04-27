@@ -22,13 +22,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	11.5.0
+Version:	12.4.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	03473f26c87e05e789a32208f1fe4491
+# Source0-md5:	fd7779aee878db67456575922281fa71
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
@@ -38,7 +38,8 @@ Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mi
 Source2:	https://osdn.net/projects/mingw/downloads/74925/mingwrt-%{mingw32_ver}-mingw32-dev.tar.xz
 # Source2-md5:	d8dceb05b85602eec82eac4e11d5c027
 Source3:	gcc-optimize-la.pl
-#Patch100:	gcc-branch.diff
+Patch100:	gcc-branch.diff
+# Patch100-md5:	57034537c40d4d70828540f9c0bc2cf3
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -507,7 +508,7 @@ Biblioteka DLL GCC do obsługi typu __float128 dla Windows.
 
 %prep
 %setup -q -n gcc-%{version}
-#patch -P100 -p0
+%patch -P100 -p1
 %patch -P0 -p1
 %patch -P2 -p1
 %patch -P3 -p1
@@ -713,6 +714,8 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/avx512dqintrin.h
 %{gcclibdir}/include/avx512erintrin.h
 %{gcclibdir}/include/avx512fintrin.h
+%{gcclibdir}/include/avx512fp16intrin.h
+%{gcclibdir}/include/avx512fp16vlintrin.h
 %{gcclibdir}/include/avx512ifmaintrin.h
 %{gcclibdir}/include/avx512ifmavlintrin.h
 %{gcclibdir}/include/avx512pfintrin.h
