@@ -614,8 +614,13 @@ ln -sf %{archbindir}/%{target}-cpp $RPM_BUILD_ROOT%{_bindir}/%{target}-cpp
 ln -sf %{archbindir}/%{target}-gcov $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov
 ln -sf %{archbindir}/%{target}-gcov-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-dump
 ln -sf %{archbindir}/%{target}-gcov-tool $RPM_BUILD_ROOT%{_bindir}/%{target}-gcov-tool
-ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
 ln -sf %{archbindir}/%{target}-lto-dump $RPM_BUILD_ROOT%{_bindir}/%{target}-lto-dump
+%if %{without bootstrap}
+ln -sf %{archbindir}/%{target}-gfortran $RPM_BUILD_ROOT%{_bindir}/%{target}-gfortran
+%endif
+%if %{with d}
+ln -sf %{archbindir}/%{target}-gdc $RPM_BUILD_ROOT%{_bindir}/%{target}-gdc
+%endif
 
 # DLLs
 install -d $RPM_BUILD_ROOT%{_dlldir}
@@ -692,7 +697,117 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/crtend.o
 %{gcclibdir}/crtfastmath.o
 %dir %{gcclibdir}/include
-%{gcclibdir}/include/*.h
+%{gcclibdir}/include/adxintrin.h
+%{gcclibdir}/include/ammintrin.h
+%{gcclibdir}/include/amxbf16intrin.h
+%{gcclibdir}/include/amxint8intrin.h
+%{gcclibdir}/include/amxtileintrin.h
+%{gcclibdir}/include/avx2intrin.h
+%{gcclibdir}/include/avx5124fmapsintrin.h
+%{gcclibdir}/include/avx5124vnniwintrin.h
+%{gcclibdir}/include/avx512bf16intrin.h
+%{gcclibdir}/include/avx512bf16vlintrin.h
+%{gcclibdir}/include/avx512bitalgintrin.h
+%{gcclibdir}/include/avx512bwintrin.h
+%{gcclibdir}/include/avx512cdintrin.h
+%{gcclibdir}/include/avx512dqintrin.h
+%{gcclibdir}/include/avx512erintrin.h
+%{gcclibdir}/include/avx512fintrin.h
+%{gcclibdir}/include/avx512ifmaintrin.h
+%{gcclibdir}/include/avx512ifmavlintrin.h
+%{gcclibdir}/include/avx512pfintrin.h
+%{gcclibdir}/include/avx512vbmi2intrin.h
+%{gcclibdir}/include/avx512vbmi2vlintrin.h
+%{gcclibdir}/include/avx512vbmiintrin.h
+%{gcclibdir}/include/avx512vbmivlintrin.h
+%{gcclibdir}/include/avx512vlbwintrin.h
+%{gcclibdir}/include/avx512vldqintrin.h
+%{gcclibdir}/include/avx512vlintrin.h
+%{gcclibdir}/include/avx512vnniintrin.h
+%{gcclibdir}/include/avx512vnnivlintrin.h
+%{gcclibdir}/include/avx512vp2intersectintrin.h
+%{gcclibdir}/include/avx512vp2intersectvlintrin.h
+%{gcclibdir}/include/avx512vpopcntdqintrin.h
+%{gcclibdir}/include/avx512vpopcntdqvlintrin.h
+%{gcclibdir}/include/avxintrin.h
+%{gcclibdir}/include/avxvnniintrin.h
+%{gcclibdir}/include/bmi2intrin.h
+%{gcclibdir}/include/bmiintrin.h
+%{gcclibdir}/include/bmmintrin.h
+%{gcclibdir}/include/cet.h
+%{gcclibdir}/include/cetintrin.h
+%{gcclibdir}/include/cldemoteintrin.h
+%{gcclibdir}/include/clflushoptintrin.h
+%{gcclibdir}/include/clwbintrin.h
+%{gcclibdir}/include/clzerointrin.h
+%{gcclibdir}/include/cpuid.h
+%{gcclibdir}/include/cross-stdarg.h
+%{gcclibdir}/include/emmintrin.h
+%{gcclibdir}/include/enqcmdintrin.h
+%{gcclibdir}/include/f16cintrin.h
+%{gcclibdir}/include/float.h
+%{gcclibdir}/include/fma4intrin.h
+%{gcclibdir}/include/fmaintrin.h
+%{gcclibdir}/include/fxsrintrin.h
+%{gcclibdir}/include/gcov.h
+%{gcclibdir}/include/gfniintrin.h
+%{gcclibdir}/include/hresetintrin.h
+%{gcclibdir}/include/ia32intrin.h
+%{gcclibdir}/include/immintrin.h
+%{gcclibdir}/include/iso646.h
+%{gcclibdir}/include/keylockerintrin.h
+%{gcclibdir}/include/limits.h
+%{gcclibdir}/include/lwpintrin.h
+%{gcclibdir}/include/lzcntintrin.h
+%{gcclibdir}/include/mm3dnow.h
+%{gcclibdir}/include/mm_malloc.h
+%{gcclibdir}/include/mmintrin.h
+%{gcclibdir}/include/movdirintrin.h
+%{gcclibdir}/include/mwaitintrin.h
+%{gcclibdir}/include/mwaitxintrin.h
+%{gcclibdir}/include/nmmintrin.h
+%{gcclibdir}/include/pconfigintrin.h
+%{gcclibdir}/include/pkuintrin.h
+%{gcclibdir}/include/pmmintrin.h
+%{gcclibdir}/include/popcntintrin.h
+%{gcclibdir}/include/prfchwintrin.h
+%{gcclibdir}/include/rdseedintrin.h
+%{gcclibdir}/include/rtmintrin.h
+%{gcclibdir}/include/serializeintrin.h
+%{gcclibdir}/include/sgxintrin.h
+%{gcclibdir}/include/shaintrin.h
+%{gcclibdir}/include/smmintrin.h
+%{gcclibdir}/include/stdalign.h
+%{gcclibdir}/include/stdarg.h
+%{gcclibdir}/include/stdatomic.h
+%{gcclibdir}/include/stdbool.h
+%{gcclibdir}/include/stddef.h
+%{gcclibdir}/include/stdfix.h
+%{gcclibdir}/include/stdint-gcc.h
+%{gcclibdir}/include/stdint.h
+%{gcclibdir}/include/stdnoreturn.h
+%{gcclibdir}/include/syslimits.h
+%{gcclibdir}/include/tbmintrin.h
+%{gcclibdir}/include/tgmath.h
+%{gcclibdir}/include/tmmintrin.h
+%{gcclibdir}/include/tsxldtrkintrin.h
+%{gcclibdir}/include/uintrintrin.h
+%{gcclibdir}/include/unwind.h
+%{gcclibdir}/include/vaesintrin.h
+%{gcclibdir}/include/varargs.h
+%{gcclibdir}/include/vpclmulqdqintrin.h
+%{gcclibdir}/include/waitpkgintrin.h
+%{gcclibdir}/include/wbnoinvdintrin.h
+%{gcclibdir}/include/wmmintrin.h
+%{gcclibdir}/include/x86gprintrin.h
+%{gcclibdir}/include/x86intrin.h
+%{gcclibdir}/include/xmmintrin.h
+%{gcclibdir}/include/xopintrin.h
+%{gcclibdir}/include/xsavecintrin.h
+%{gcclibdir}/include/xsaveintrin.h
+%{gcclibdir}/include/xsaveoptintrin.h
+%{gcclibdir}/include/xsavesintrin.h
+%{gcclibdir}/include/xtestintrin.h
 %{_mandir}/man1/%{target}-cpp.1*
 %{_mandir}/man1/%{target}-gcc.1*
 %{_mandir}/man1/%{target}-gcov.1*
@@ -725,6 +840,9 @@ rm -rf $RPM_BUILD_ROOT
 %{archlibdir}/libgomp.dll.a
 %{archlibdir}/libgomp.la
 %{archlibdir}/libgomp.spec
+%{gcclibdir}/include/acc_prof.h
+%{gcclibdir}/include/omp.h
+%{gcclibdir}/include/openacc.h
 
 %files -n crossmingw32-libgomp-static
 %defattr(644,root,root,755)
@@ -804,6 +922,7 @@ rm -rf $RPM_BUILD_ROOT
 %files d
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/%{target}-gdc
+%attr(755,root,root) %{archbindir}/%{target}-gdc
 %attr(755,root,root) %{gcclibdir}/d21
 %{_mandir}/man1/%{target}-gdc.1*
 %endif
@@ -817,6 +936,7 @@ rm -rf $RPM_BUILD_ROOT
 %{archlibdir}/libgfortran.la
 %{archlibdir}/libgfortran.spec
 %{gcclibdir}/finclude
+%{gcclibdir}/include/ISO_Fortran_binding.h
 %{gcclibdir}/libcaf_single.a
 %{gcclibdir}/libcaf_single.la
 %{_mandir}/man1/%{target}-gfortran.1*
@@ -833,6 +953,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{archlibdir}/libquadmath.dll.a
 %{archlibdir}/libquadmath.la
+%{gcclibdir}/include/quadmath.h
+%{gcclibdir}/include/quadmath_weak.h
 
 %files -n crossmingw32-libquadmath-static
 %defattr(644,root,root,755)
