@@ -58,6 +58,7 @@ BuildRequires:	crossmingw32-w32api >= 1:5.4.2-3
 %endif
 BuildRequires:	flex >= 2.5.4
 %{?with_ada:BuildRequires:	gcc-ada}
+%{?with_d:BuildRequires:	gcc-d >= 6:11}
 BuildRequires:	gettext-tools >= 0.14.5
 BuildRequires:	gmp-devel >= 4.3.2
 BuildRequires:	isl-devel >= 0.15
