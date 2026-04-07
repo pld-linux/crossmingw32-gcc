@@ -22,13 +22,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	12.5.0
+Version:	13.4.0
 Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	605d4923d9daabcd8c8c22d844af57e5
+# Source0-md5:	260096adee8b1cf3dde6e61c11cccca6
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
@@ -38,8 +38,8 @@ Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mi
 Source2:	https://osdn.net/projects/mingw/downloads/74925/mingwrt-%{mingw32_ver}-mingw32-dev.tar.xz
 # Source2-md5:	d8dceb05b85602eec82eac4e11d5c027
 Source3:	gcc-optimize-la.pl
-#Patch100:	gcc-branch.diff
-## Patch100-md5:	57034537c40d4d70828540f9c0bc2cf3
+Patch100:	gcc-branch.diff
+# Patch100-md5:	895a5bedb56e00ee3da9c7f619af0991
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
@@ -605,7 +605,6 @@ install -d $RPM_BUILD_ROOT%{_bindir}
 %{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__mv} $RPM_BUILD_ROOT%{gcclibdir}/include-fixed/{limits,syslimits}.h $RPM_BUILD_ROOT%{gcclibdir}/include
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/include-fixed
 %{__rm} -r $RPM_BUILD_ROOT%{gcclibdir}/install-tools
 
@@ -702,6 +701,8 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/adxintrin.h
 %{gcclibdir}/include/ammintrin.h
 %{gcclibdir}/include/amxbf16intrin.h
+%{gcclibdir}/include/amxcomplexintrin.h
+%{gcclibdir}/include/amxfp16intrin.h
 %{gcclibdir}/include/amxint8intrin.h
 %{gcclibdir}/include/amxtileintrin.h
 %{gcclibdir}/include/avx2intrin.h
@@ -733,7 +734,10 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/avx512vp2intersectvlintrin.h
 %{gcclibdir}/include/avx512vpopcntdqintrin.h
 %{gcclibdir}/include/avx512vpopcntdqvlintrin.h
+%{gcclibdir}/include/avxifmaintrin.h
 %{gcclibdir}/include/avxintrin.h
+%{gcclibdir}/include/avxneconvertintrin.h
+%{gcclibdir}/include/avxvnniint8intrin.h
 %{gcclibdir}/include/avxvnniintrin.h
 %{gcclibdir}/include/bmi2intrin.h
 %{gcclibdir}/include/bmiintrin.h
@@ -744,6 +748,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/clflushoptintrin.h
 %{gcclibdir}/include/clwbintrin.h
 %{gcclibdir}/include/clzerointrin.h
+%{gcclibdir}/include/cmpccxaddintrin.h
 %{gcclibdir}/include/cpuid.h
 %{gcclibdir}/include/cross-stdarg.h
 %{gcclibdir}/include/emmintrin.h
@@ -774,7 +779,9 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/pkuintrin.h
 %{gcclibdir}/include/pmmintrin.h
 %{gcclibdir}/include/popcntintrin.h
+%{gcclibdir}/include/prfchiintrin.h
 %{gcclibdir}/include/prfchwintrin.h
+%{gcclibdir}/include/raointintrin.h
 %{gcclibdir}/include/rdseedintrin.h
 %{gcclibdir}/include/rtmintrin.h
 %{gcclibdir}/include/serializeintrin.h
@@ -885,6 +892,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gcclibdir}/g++-mapper-server
 %{archlibdir}/libstdc++.dll.a
 %{archlibdir}/libstdc++.la
+%{archlibdir}/libstdc++exp.a
+%{archlibdir}/libstdc++exp.la
 %{archlibdir}/libstdc++fs.a
 %{archlibdir}/libstdc++fs.la
 %{archlibdir}/libsupc++.la
