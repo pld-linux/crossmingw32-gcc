@@ -24,7 +24,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	13.4.0
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -64,8 +64,8 @@ BuildRequires:	flex >= 2.5.4
 BuildRequires:	gettext-tools >= 0.14.5
 BuildRequires:	gmp-devel >= 4.3.2
 BuildRequires:	isl-devel >= 0.15
+%{?with_d:BuildRequires:	libgphobos-static >= 6:11}
 BuildRequires:	libmpc-devel >= 0.8.1
-%{?with_d:BuildRequires:	libphobos-static >= 6:11}
 BuildRequires:	libstdc++-devel
 BuildRequires:	mpfr-devel >= 3.1.0
 BuildRequires:	perl-tools-pod
