@@ -24,7 +24,7 @@ Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - Mi
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
 Version:	13.4.0
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
@@ -39,14 +39,15 @@ Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mi
 Source2:	https://osdn.net/projects/mingw/downloads/74925/mingwrt-%{mingw32_ver}-mingw32-dev.tar.xz
 # Source2-md5:	d8dceb05b85602eec82eac4e11d5c027
 Source3:	gcc-optimize-la.pl
-Patch100:	gcc-branch.diff
-# Patch100-md5:	895a5bedb56e00ee3da9c7f619af0991
 Patch0:		%{name}-buildsystem1.patch
 Patch1:		%{name}-buildsystem2.patch
 Patch2:		%{name}-lfs.patch
 Patch3:		gcc-mingw32.patch
 Patch4:		gcc-build-libvtv.patch
 Patch5:		gcc-pthreads-w32.patch
+Patch6:		gcc-types.patch
+Patch100:	gcc-branch.diff
+# Patch100-md5:	895a5bedb56e00ee3da9c7f619af0991
 URL:		https://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
@@ -64,6 +65,7 @@ BuildRequires:	gettext-tools >= 0.14.5
 BuildRequires:	gmp-devel >= 4.3.2
 BuildRequires:	isl-devel >= 0.15
 BuildRequires:	libmpc-devel >= 0.8.1
+%{?with_d:BuildRequires:	libphobos-static >= 6:11}
 BuildRequires:	libstdc++-devel
 BuildRequires:	mpfr-devel >= 3.1.0
 BuildRequires:	perl-tools-pod
@@ -542,6 +544,7 @@ Win32.
 %patch -P3 -p1
 %patch -P4 -p1
 %patch -P5 -p1
+%patch -P6 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs are special, handled by gcc's configure

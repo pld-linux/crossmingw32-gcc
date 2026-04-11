@@ -1,0 +1,11 @@
+--- gcc-13.4.0/gcc/m2/mc/mc.flex.orig	2025-06-05 18:02:59.000000000 +0200
++++ gcc-13.4.0/gcc/m2/mc/mc.flex	2026-04-11 21:30:39.772934242 +0200
+@@ -326,7 +326,7 @@ handleColumn (void)
+ static void
+ handleDate (void)
+ {
+-  time_t  clock = time ((long *)0);
++  time_t  clock = time (NULL);
+   char   *sdate = ctime (&clock);
+   char   *s     = (char *)alloca (strlen (sdate)+2+1);
+   char   *p     = index(sdate, '\n');
