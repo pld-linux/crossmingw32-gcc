@@ -23,13 +23,13 @@ Summary(pl.UTF-8):	Skrośne narzędzia programistyczne GNU dla MinGW32 - gcc
 Summary(pt_BR.UTF-8):	Utilitários para desenvolvimento de binários da GNU - MinGW32 gcc
 Summary(tr.UTF-8):	GNU geliştirme araçları - MinGW32 gcc
 Name:		crossmingw32-gcc
-Version:	13.4.0
-Release:	3
+Version:	14.4.0
+Release:	1
 Epoch:		1
 License:	GPL v3+
 Group:		Development/Languages
 Source0:	https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
-# Source0-md5:	260096adee8b1cf3dde6e61c11cccca6
+# Source0-md5:	bbc2c125da14c0b800561e165aaafec2
 %define		w32api_ver	5.4.2
 #Source1Download: https://osdn.net/projects/mingw/releases/
 Source1:	https://osdn.net/projects/mingw/downloads/74926/w32api-%{w32api_ver}-mingw32-dev.tar.xz
@@ -45,9 +45,8 @@ Patch2:		%{name}-lfs.patch
 Patch3:		gcc-mingw32.patch
 Patch4:		gcc-build-libvtv.patch
 Patch5:		gcc-pthreads-w32.patch
-Patch6:		gcc-types.patch
 Patch100:	gcc-branch.diff
-# Patch100-md5:	895a5bedb56e00ee3da9c7f619af0991
+# Patch100-md5:	3bbbef4fb482fbf6a1b34b179c9224cf
 URL:		https://gcc.gnu.org/
 BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1
@@ -538,13 +537,12 @@ Win32.
 
 %prep
 %setup -q -n gcc-%{version}
-#patch -P100 -p1
+%patch -P100 -p1
 %patch -P0 -p1
 %patch -P2 -p1
 %patch -P3 -p1
 %patch -P4 -p1
 %patch -P5 -p1
-%patch -P6 -p1
 
 %if %{with bootstrap}
 # note: "winsup" dirs are special, handled by gcc's configure
@@ -744,6 +742,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/avx512bf16intrin.h
 %{gcclibdir}/include/avx512bf16vlintrin.h
 %{gcclibdir}/include/avx512bitalgintrin.h
+%{gcclibdir}/include/avx512bitalgvlintrin.h
 %{gcclibdir}/include/avx512bwintrin.h
 %{gcclibdir}/include/avx512cdintrin.h
 %{gcclibdir}/include/avx512dqintrin.h
@@ -771,6 +770,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/avxintrin.h
 %{gcclibdir}/include/avxneconvertintrin.h
 %{gcclibdir}/include/avxvnniint8intrin.h
+%{gcclibdir}/include/avxvnniint16intrin.h
 %{gcclibdir}/include/avxvnniintrin.h
 %{gcclibdir}/include/bmi2intrin.h
 %{gcclibdir}/include/bmiintrin.h
@@ -820,11 +820,15 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/serializeintrin.h
 %{gcclibdir}/include/sgxintrin.h
 %{gcclibdir}/include/shaintrin.h
+%{gcclibdir}/include/sha512intrin.h
+%{gcclibdir}/include/sm3intrin.h
+%{gcclibdir}/include/sm4intrin.h
 %{gcclibdir}/include/smmintrin.h
 %{gcclibdir}/include/stdalign.h
 %{gcclibdir}/include/stdarg.h
 %{gcclibdir}/include/stdatomic.h
 %{gcclibdir}/include/stdbool.h
+%{gcclibdir}/include/stdckdint.h
 %{gcclibdir}/include/stddef.h
 %{gcclibdir}/include/stdfix.h
 %{gcclibdir}/include/stdint-gcc.h
@@ -836,6 +840,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gcclibdir}/include/tmmintrin.h
 %{gcclibdir}/include/tsxldtrkintrin.h
 %{gcclibdir}/include/uintrintrin.h
+%{gcclibdir}/include/usermsrintrin.h
 %{gcclibdir}/include/unwind.h
 %{gcclibdir}/include/vaesintrin.h
 %{gcclibdir}/include/varargs.h

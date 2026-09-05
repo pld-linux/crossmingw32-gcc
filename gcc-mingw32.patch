@@ -233,3 +233,16 @@
  #include <intrin.h>
  #endif
  
+--- gcc-14.4.0/libstdc++-v3/src/c++23/print.cc.orig	2026-06-26 10:13:48.000000000 +0200
++++ gcc-14.4.0/libstdc++-v3/src/c++23/print.cc	2026-09-05 18:47:32.204164817 +0200
+@@ -38,6 +38,10 @@
+ # include <io.h>      // _get_osfhandle, _open_osfhandle, _write
+ # include <fcntl.h>   // _O_APPEND
+ # include <windows.h> // GetLastError, WriteConsoleW
++# ifdef _fileno
++   // ::_fileno is invalid when using macro
++#  undef _fileno
++# endif
+ #elifdef _GLIBCXX_HAVE_UNISTD_H
+ # include <stdio.h>   // fileno
+ # include <unistd.h>  // isatty
